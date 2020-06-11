@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,58 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'helipopper-playground';
+  tooltipPositions = ['auto', 'top', 'right', 'bottom', 'left'];
+  tooltipAlignments = [
+    { label: 'start', value: '-start' },
+    { label: 'center', value: '' },
+    { label: 'end', value: '-end' }
+  ];
+  tooltipTypes = ['popper', 'tooltip'];
+  tooltipSettings = this.fb.group({
+    type: this.fb.control('tooltip'),
+    alignment: this.fb.control(''),
+    position: this.fb.control('top')
+  });
+
+  get tooltipPosition(): string {
+    const { position, alignment } = this.tooltipSettings.value;
+
+    return `${position}${alignment}`;
+  }
+
+  get tooltipType(): string {
+    return this.tooltipSettings.value.type;
+  }
+
+  items = Array.from({ length: 500 }, (_, i) => ({
+    id: i,
+    label: `Value ${i + 1}`
+  }));
+
+  peace = ['We', 'Come', 'In', 'Peace', '👽'];
+  war = ['👽🚀🛰', 'Your', 'world', 'is', 'ours', '👽🚀🛰'];
+  thoughts = 'We just need someone to talk to 🥺';
+  messages = this.war;
+  isDisabled = false;
+  text = `Long Long All Text`;
+  isSticky = false;
+
+  changeContent() {
+    this.text = this.text === `Long Long All Text` ? `Short` : `Long Long All Text`;
+  }
+
+  constructor(private fb: FormBuilder) {}
+
+  toggleSticky() {
+    this.isSticky = !this.isSticky;
+  }
+
+  toggle() {
+    this.isDisabled = !this.isDisabled;
+  }
+
+  talk() {
+    this.messages = this.peace;
+    this.thoughts = 'We love our human friends! 🥳';
+  }
 }

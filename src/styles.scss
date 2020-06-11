@@ -1,1 +1,69 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+body {
+  margin: 100px;
+}
+
+.block {
+  margin-top: 40px;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  display: block;
+}
+
+@import '~tippy.js/dist/tippy.css';
+@import '~tippy.js/themes/light.css';
+@import '~tippy.js/animations/scale.css';
+
+.tippy-content {
+  position: relative;
+}
+
+.tippy-close {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 9px;
+  right: 9px;
+  fill: rgb(158, 160, 165);
+  cursor: pointer;
+  z-index: 10000000;
+}
+
+.tippy-box {
+  border-radius: 4px;
+  font-size: 11px;
+
+  .tippy-content {
+    padding: 4px 6px;
+  }
+}
+
+.tippy-box[data-theme~='light'] {
+  font-size: 12px;
+  word-break: break-word;
+  border-radius: 0;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 2px 14px 0 rgba(0, 0, 0, 0.2);
+  color: rgb(79, 80, 83);
+
+  .tippy-content {
+    padding: 13px 48px 13px 20px;
+  }
+}
+
+.tippy-arrow::before {
+  box-shadow: -4px 4px 14px -4px rgba(0, 0, 0, 0.2);
+}
