@@ -62,7 +62,7 @@ Now you can use it:
 |------------------------|---------------------------|--------------------------------------------------------------|------------------------------------------------------------------------|
 | helipopperVariation    | `tooltip` \| `popper`     | The helipopper type                                          | `tooltip`                                                              |
 | helipopper             | `string` \| `TemplateRef` | The helipopper content                                       | `none`                                                                 |
-| helipopperPlacement    | `popper placement`        | The helipopper placement                                     | `none`                                                                 |
+| helipopperPlacement    | `popper placement`        | The helipopper placement                                     | `bottom`                                                                 |
 | helipopperClass        | `string` \| `string[]`    | Custom class that'll be added to the tooltip                 | `none`                                                                 |
 | helipopperOffset       | `[number, number]`        | Set tooltip offset position                                  | `[0, 10]`                                                              |
 | helipopperDisabled     | `Boolean`                 | Whether to disabled the tooltip                              | `false`                                                                |
