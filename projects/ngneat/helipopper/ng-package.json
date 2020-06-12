@@ -3,5 +3,6 @@
   "dest": "../../../dist/ngneat/helipopper",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "whitelistedNonPeerDependencies": ["tippy.js"]
 }
