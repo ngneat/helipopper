@@ -8,7 +8,7 @@
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 [![ngneat](https://img.shields.io/badge/@-ngneat-383636?style=flat-square&labelColor=8f68d4)](https://github.com/ngneat/)
 [![spectator](https://img.shields.io/badge/tested%20with-spectator-2196F3.svg?style=flat-square)]()
 
@@ -18,17 +18,19 @@
 
 It is an abstraction over Popper that provides the logic and optionally the styling involved in all types of elements that pop out from the flow of the document and get overlaid on top of the UI, positioned next to a reference element.
 
-This is a lightweight wrapper with additional features that lets you use it decoratively in Angular. Tippy has virtually no restrictions over Popper and gives you limitless control while providing useful behavior and defaults.
+This is a lightweight wrapper with additional features that lets you use it declaratively in Angular. Tippy has virtually no restrictions over Popper and gives you limitless control while providing useful behavior and defaults.
+
+
+
 
 ## Features
 
 - ✅ Tooltip & Popover Variations
+- ✅ TemplateRef Support
 - ✅ Lazy Registration
 - ✅ Manual Trigger Support
 - ✅ Text Overflow Support
 - ✅ Sticky Support
-- ✅ Custom Target Support
-- ✅ Dynamic Container Support
 
 ## Installation
 ```
@@ -56,13 +58,103 @@ Now you can use it:
 </button>
 ```
 
+#### TemplateRef:
+
+```html
+<button [helipopper]="tpl" helipopperVariation="popper">
+  Click Me
+</button>
+
+<ng-template #tpl>
+  <div *ngFor="let msg of messages">{{ msg }}</div>
+  <button (click)="talk()">Click to talk ☮️️</button>
+</ng-template>
+```
+
+#### Text Overflow:
+
+```html
+<ul style="max-width: 100px;">
+  <li class="ellipsis"
+      [helipopper]="text"
+      helipopperPlacement="right"
+      [helipopperTextOverflow]="true">
+      {{ text }}
+  </li>
+</ul>
+```
+
+#### Manual Trigger:
+
+```html
+<span helipopper="Helpful Message" 
+      helipopperTrigger="manual" 
+      #tooltip="helipopper">Click Open to see me</span>
+
+<button (click)="tooltip.show()">Open</button>
+<button (click)="tooltip.hide()">Close</button>
+```
+
+You can see more examples in our [playground](https://github.com/ngneat/helipopper/blob/master/src/app/app.component.html).
+
+## Styling
+Add the following style to your main `scss` file:
+
+```scss
+@import '~tippy.js/dist/tippy.css';
+@import '~tippy.js/themes/light.css';
+@import '~tippy.js/animations/scale.css';
+
+.tippy-content {
+  position: relative;
+}
+
+.tippy-close {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 9px;
+  right: 9px;
+  fill: rgb(158, 160, 165);
+  cursor: pointer;
+}
+
+.tippy-box {
+  border-radius: 4px;
+  font-size: 11px;
+
+  .tippy-content {
+    padding: 4px 6px;
+  }
+}
+
+.tippy-box[data-theme~='light'] {
+  font-size: 12px;
+  word-break: break-word;
+  border-radius: 0;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 2px 14px 0 rgba(0, 0, 0, 0.2);
+  color: rgb(79, 80, 83);
+
+  .tippy-content {
+    padding: 13px 48px 13px 20px;
+  }
+}
+
+.tippy-arrow::before {
+  box-shadow: -4px 4px 14px -4px rgba(0, 0, 0, 0.2);
+}
+```
+
+You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/) it if you need to.
+
 ## Inputs
 
 | @Input                 | Type                      | Description                                                  | Default                                                                |
 |------------------------|---------------------------|--------------------------------------------------------------|------------------------------------------------------------------------|
 | helipopperVariation    | `tooltip` \| `popper`     | The helipopper type                                          | `tooltip`                                                              |
 | helipopper             | `string` \| `TemplateRef` | The helipopper content                                       | `none`                                                                 |
-| helipopperPlacement    | `popper placement`        | The helipopper placement                                     | `bottom`                                                                 |
+| helipopperPlacement    | `Popper placement`        | The helipopper placement                                     | `bottom`                                                                 |
 | helipopperClass        | `string` \| `string[]`    | Custom class that'll be added to the tooltip                 | `none`                                                                 |
 | helipopperOffset       | `[number, number]`        | Set tooltip offset position                                  | `[0, 10]`                                                              |
 | helipopperDisabled     | `Boolean`                 | Whether to disabled the tooltip                              | `false`                                                                |
