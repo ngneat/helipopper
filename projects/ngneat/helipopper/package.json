@@ -1,16 +1,24 @@
 {
   "name": "@ngneat/helipopper",
   "version": "1.0.0",
+  "description": "A Powerful Tooltip and Popover for Angular Applications",
   "peerDependencies": {
     "@angular/common": "^9.1.11",
     "@angular/core": "^9.1.11"
   },
   "dependencies": {
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "tippy.js": "^6.2.3",
+    "@popperjs/core": "^2.4.2"
   },
   "keywords": [
     "angular",
-    "angular 2",
+    "angular tooltip",
+    "angular popover",
+    "tooltip",
+    "popover",
+    "tippy.js",
+    "popper.js",
     "helipopper"
   ],
   "license": "MIT",

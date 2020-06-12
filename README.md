@@ -20,17 +20,14 @@ It is an abstraction over Popper that provides the logic and optionally the styl
 
 This is a lightweight wrapper with additional features that lets you use it declaratively in Angular. Tippy has virtually no restrictions over Popper and gives you limitless control while providing useful behavior and defaults.
 
-
-
-
 ## Features
 
-- ✅ Tooltip & Popover Variations
-- ✅ TemplateRef Support
-- ✅ Lazy Registration
-- ✅ Manual Trigger Support
-- ✅ Text Overflow Support
-- ✅ Sticky Support
+✅ Tooltip & Popover Variations <br>
+✅ TemplateRef Support<br>
+✅ Lazy Registration<br>
+✅ Manual Trigger Support<br>
+✅ Text Overflow Support<br>
+✅ Sticky Support
 
 ## Installation
 ```
