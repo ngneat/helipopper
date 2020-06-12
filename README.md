@@ -149,9 +149,9 @@ You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/
 
 | @Input                 | Type                      | Description                                                  | Default                                                                |
 |------------------------|---------------------------|--------------------------------------------------------------|------------------------------------------------------------------------|
-| helipopperVariation    | `tooltip` \| `popper`     | The helipopper type                                          | `tooltip`                                                              |
-| helipopper             | `string` \| `TemplateRef` | The helipopper content                                       | `none`                                                                 |
-| helipopperPlacement    | `Popper placement`        | The helipopper placement                                     | `bottom`                                                                 |
+| helipopperVariation    | `tooltip` \| `popper`     | The tooltip type                                             | `tooltip`                                                              |
+| helipopper             | `string` \| `TemplateRef` | The tooltip content                                          | `none`                                                                 |
+| helipopperPlacement    | `Popper placement`        | The tooltip placement                                        | `bottom`                                                               |
 | helipopperClass        | `string` \| `string[]`    | Custom class that'll be added to the tooltip                 | `none`                                                                 |
 | helipopperOffset       | `[number, number]`        | Set tooltip offset position                                  | `[0, 10]`                                                              |
 | helipopperDisabled     | `Boolean`                 | Whether to disabled the tooltip                              | `false`                                                                |
@@ -164,7 +164,7 @@ You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/
 
 ## Config
 
-- `beforeRender` - Hook that'll be called before rendering the tooltip content: ( apply only for string )
+- `beforeRender` - Hook that'll be called before rendering the tooltip content: ( applies only for string )
 ```ts
 import { HelipopperModule } from '@ngneat/helipopper';
 
