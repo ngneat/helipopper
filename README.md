@@ -114,6 +114,7 @@ Add the following style to your main `scss` file:
   right: 9px;
   fill: rgb(158, 160, 165);
   cursor: pointer;
+  z-index: 1;
 }
 
 .tippy-box {
