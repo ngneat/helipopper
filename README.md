@@ -30,6 +30,7 @@ This is a lightweight wrapper with additional features that lets you use it decl
 ✅ Sticky Support
 
 ## Installation
+
 ```
 npm install @ngneat/helipopper
 ```
@@ -72,11 +73,8 @@ Now you can use it:
 
 ```html
 <ul style="max-width: 100px;">
-  <li class="ellipsis"
-      [helipopper]="text"
-      helipopperPlacement="right"
-      [helipopperTextOverflow]="true">
-      {{ text }}
+  <li class="ellipsis" [helipopper]="text" helipopperPlacement="right" [helipopperTextOverflow]="true">
+    {{ text }}
   </li>
 </ul>
 ```
@@ -84,17 +82,16 @@ Now you can use it:
 #### Manual Trigger:
 
 ```html
-<span helipopper="Helpful Message" 
-      helipopperTrigger="manual" 
-      #tooltip="helipopper">Click Open to see me</span>
+<span helipopper="Helpful Message" helipopperTrigger="manual" #tooltip="helipopper">Click Open to see me</span>
 
 <button (click)="tooltip.show()">Open</button>
 <button (click)="tooltip.hide()">Close</button>
 ```
 
-You can see more examples in our [playground](https://github.com/ngneat/helipopper/blob/master/src/app/app.component.html).
+You can see more examples in our [playground](https://github.com/ngneat/helipopper/blob/master/src/app/app.component.html), or live [here](https://ngneat.github.io/helipopper/).
 
 ## Styling
+
 Add the following style to your main `scss` file:
 
 ```scss
@@ -149,7 +146,7 @@ You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/
 ## Inputs
 
 | @Input                 | Type                      | Description                                                  | Default                                                                |
-|------------------------|---------------------------|--------------------------------------------------------------|------------------------------------------------------------------------|
+| ---------------------- | ------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------- |
 | helipopperVariation    | `tooltip` \| `popper`     | The tooltip type                                             | `tooltip`                                                              |
 | helipopper             | `string` \| `TemplateRef` | The tooltip content                                          | `none`                                                                 |
 | helipopperPlacement    | `Popper placement`        | The tooltip placement                                        | `bottom`                                                               |
@@ -161,20 +158,23 @@ You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/
 | helipopperOptions      | `tippy` options           | `tippy` options                                              | [docs](https://atomiks.github.io/tippyjs/v6/all-props)                 |
 | helipopperTextOverflow | `Boolean`                 | Show the tooltip only when the text overflows its container  | `false`                                                                |
 | helipopperSticky       | `Boolean`                 | Whether the tooltip should be sticky (i.e. always displayed) | `false`                                                                |
-| helipopperTarget       | `ElementRef` \| `Element` | The element(s) that the trigger event listeners are added to | `Host`                                                                 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Ex: `{ width: '100%', height: '70px' }`                                                                                         |
+| helipopperTarget       | `ElementRef` \| `Element` | The element(s) that the trigger event listeners are added to | `Host`                                                                 |  | Ex: `{ width: '100%', height: '70px' }` |
 
 ## Config
 
 - `beforeRender` - Hook that'll be called before rendering the tooltip content: ( applies only for string )
+
 ```ts
 import { HelipopperModule } from '@ngneat/helipopper';
 
 @NgModule({
-  imports: [HelipopperModule.forRoot({
-    beforeRender(content) {
-      return sanitize(content);
-    }
-  })]
+  imports: [
+    HelipopperModule.forRoot({
+      beforeRender(content) {
+        return sanitize(content);
+      }
+    })
+  ]
 })
 export class AppModule {}
 ```
@@ -196,6 +196,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
