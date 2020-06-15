@@ -1,4 +1,18 @@
-import { ApplicationRef, Directive, ElementRef, Inject, Input, NgZone, OnDestroy, TemplateRef } from '@angular/core';
+import {
+  ApplicationRef,
+  ComponentFactoryResolver,
+  ComponentRef,
+  Directive,
+  ElementRef,
+  Inject,
+  Injector,
+  Input,
+  NgZone,
+  OnDestroy,
+  Output,
+  TemplateRef,
+  Type
+} from '@angular/core';
 import tippy, { Instance, Props } from 'tippy.js';
 import { forkJoin, fromEvent, Subject } from 'rxjs';
 import { Options as PopperOptions } from '@popperjs/core';
@@ -15,6 +29,14 @@ import {
 } from './utils';
 import { takeUntil } from 'rxjs/operators';
 import { HELIPOPPER_CONFIG, HelipopperConfig, InstanceWithClose, Variation } from './helipopper.types';
+
+const icon = `
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
+<path d="M12.793 12l4.039-4.025c0.219-0.219 0.224-0.578 0.012-0.802-0.213-0.225-0.563-0.231-0.782-0.011l-4.062 4.049-4.062-4.049c-0.219-0.22-0.569-0.213-0.782 0.011s-0.208 0.583 0.012 0.802l4.039 4.025-4.039 4.025c-0.22 0.219-0.224 0.578-0.012 0.802 0.108 0.115 0.252 0.172 0.397 0.172 0.138 0 0.278-0.053 0.385-0.161l4.062-4.049 4.062 4.049c0.107 0.108 0.245 0.161 0.385 0.161 0.144 0 0.287-0.058 0.397-0.172 0.212-0.225 0.207-0.583-0.012-0.802l-4.039-4.025z"></path>
+</svg>
+      `;
+
+type Content = string | TemplateRef<any> | Type<any>;
 
 @Directive({ selector: `[helipopper]`, exportAs: 'helipopper' })
 export class HelipopperDirective implements OnDestroy {
@@ -42,6 +64,9 @@ export class HelipopperDirective implements OnDestroy {
 
   @Input()
   helipopperOffset: [number, number] | undefined;
+
+  @Input('helipopperInjector')
+  injector: Injector | undefined;
 
   @Input('helipopperPlacement')
   set placement(placement: PopperOptions['placement']) {
@@ -76,24 +101,21 @@ export class HelipopperDirective implements OnDestroy {
     }
   }
 
-  @Input() set helipopper(content: string | TemplateRef<any>) {
-    let _content;
-    if (content instanceof TemplateRef) {
-      _content = this.resolveTemplate(content);
-    } else {
-      _content = this.mergedConfig.beforeRender(content);
-    }
+  @Input() set helipopper(content: Content) {
+    this._content = content;
 
     if (this.instance) {
-      this.instance.setContent(_content);
       this.checkOverflow();
     } else {
       forkJoin([inView(this.host.nativeElement), zoneStable(this.zone)])
         .pipe(takeUntil(this._destroy))
-        .subscribe(() => this.create(_content));
+        .subscribe(() => this.create());
     }
   }
 
+  @Output() helipopperClose = new Subject();
+
+  private _content: Content;
   private _destroy = new Subject();
   private _placement: PopperOptions['placement'] = 'top';
   private _disabled = false;
@@ -101,11 +123,14 @@ export class HelipopperDirective implements OnDestroy {
   private instance: Instance;
   private tplPortal: TemplatePortal;
   private mergedConfig: HelipopperConfig;
+  private innerComponentRef: ComponentRef<any>;
 
   constructor(
     private host: ElementRef,
     private appRef: ApplicationRef,
     private zone: NgZone,
+    private resolver: ComponentFactoryResolver,
+    private hostInjector: Injector,
     @Inject(HELIPOPPER_CONFIG) private config: HelipopperConfig
   ) {
     this.mergedConfig = this.createConfig(config);
@@ -140,17 +165,22 @@ export class HelipopperDirective implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.tplPortal && this.destroyTemplate();
+    this.destroyView();
     this.instance && this.instance.destroy();
     this.instance = null;
     this._destroy.next();
   }
 
-  private create(content) {
-    this.zone.runOutsideAngular(() => this.createInstance(content));
+  private destroyView() {
+    this.tplPortal && this.destroyTemplate();
+    this.innerComponentRef && this.destroyComponent();
   }
 
-  private createInstance(content) {
+  private create() {
+    this.zone.runOutsideAngular(() => this.createInstance());
+  }
+
+  private createInstance() {
     if (this.showOnlyOnTextOverflow) {
       dimensionsChanges(this._tooltipHost)
         .pipe(takeUntil(this._destroy))
@@ -162,7 +192,7 @@ export class HelipopperDirective implements OnDestroy {
     this.helipopperTrigger = this.resolveTrigger();
 
     this.instance = tippy(this._tooltipHost, {
-      content,
+      content: undefined,
       appendTo: this.getParent(),
       arrow: !this.isTooltip,
       allowHTML: true,
@@ -175,10 +205,13 @@ export class HelipopperDirective implements OnDestroy {
         this.helipopperClass && addClass(instance.popper, this.helipopperClass);
       },
       onShow: instance => {
+        this.zone.run(() => this.instance.setContent(this.resolveContent()));
         this.isPopper && this.addCloseButton(instance as InstanceWithClose);
       },
       onHidden: instance => {
         this.isPopper && this.removeCloseButton(instance as InstanceWithClose);
+        this.destroyView();
+        this.helipopperClose.next();
       },
       ...this.resolveTheme(),
       ...this.helipopperOptions
@@ -245,11 +278,11 @@ export class HelipopperDirective implements OnDestroy {
     addClass(closeButtonElement, 'tippy-close');
     closeButtonElement.innerHTML = closeIcon;
 
-    const closeButtonSubcription = fromEvent(closeButtonElement, 'click').subscribe(() => this.hide());
+    const closeButtonSubscription = fromEvent(closeButtonElement, 'click').subscribe(() => this.hide());
     popper.appendChild(closeButtonElement);
 
     instance.closeButtonElement = closeButtonElement;
-    instance.closeButtonSubscription = closeButtonSubcription;
+    instance.closeButtonSubscription = closeButtonSubscription;
   }
 
   private removeCloseButton(instance: InstanceWithClose) {
@@ -268,15 +301,12 @@ export class HelipopperDirective implements OnDestroy {
   private destroyTemplate() {
     this.appRef.detachView(this.tplPortal.viewRef);
     this.tplPortal.destroy();
+    this.tplPortal = null;
   }
 
   private createConfig(config: HelipopperConfig) {
     const defaults: HelipopperConfig = {
-      closeIcon: `
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
-<path d="M12.793 12l4.039-4.025c0.219-0.219 0.224-0.578 0.012-0.802-0.213-0.225-0.563-0.231-0.782-0.011l-4.062 4.049-4.062-4.049c-0.219-0.22-0.569-0.213-0.782 0.011s-0.208 0.583 0.012 0.802l4.039 4.025-4.039 4.025c-0.22 0.219-0.224 0.578-0.012 0.802 0.108 0.115 0.252 0.172 0.397 0.172 0.138 0 0.278-0.053 0.385-0.161l4.062-4.049 4.062 4.049c0.107 0.108 0.245 0.161 0.385 0.161 0.144 0 0.287-0.058 0.397-0.172 0.212-0.225 0.207-0.583-0.012-0.802l-4.039-4.025z"></path>
-</svg>
-      `,
+      closeIcon: icon,
       beforeRender(content: string): string {
         return content;
       }
@@ -286,5 +316,35 @@ export class HelipopperDirective implements OnDestroy {
       ...defaults,
       ...config
     };
+  }
+
+  private resolveComponent(content: Type<any>) {
+    const factory = this.resolver.resolveComponentFactory(content);
+    const injector = this.injector || this.hostInjector;
+    this.innerComponentRef = factory.create(injector);
+    this.appRef.attachView(this.innerComponentRef.hostView);
+    this.innerComponentRef.hostView.detectChanges();
+    return this.innerComponentRef.location.nativeElement;
+  }
+
+  private destroyComponent() {
+    this.innerComponentRef.destroy();
+    this.appRef.attachView(this.innerComponentRef.hostView);
+    this.innerComponentRef = null;
+  }
+
+  private resolveContent() {
+    const content = this._content;
+    let finalContent;
+
+    if (content instanceof TemplateRef) {
+      finalContent = this.resolveTemplate(content);
+    } else if (typeof content === 'string') {
+      finalContent = this.mergedConfig.beforeRender(content);
+    } else {
+      finalContent = this.resolveComponent(content);
+    }
+
+    return finalContent;
   }
 }

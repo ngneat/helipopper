@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { ExampleComponent } from './example/example.component';
+import { interval } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +22,8 @@ export class AppComponent {
     alignment: this.fb.control(''),
     position: this.fb.control('top')
   });
+
+  interval$ = interval(1000).pipe(finalize(() => console.log('interval completed')));
 
   get tooltipPosition(): string {
     const { position, alignment } = this.tooltipSettings.value;
@@ -42,6 +47,7 @@ export class AppComponent {
   isDisabled = false;
   text = `Long Long All Text`;
   isSticky = false;
+  comp = ExampleComponent;
 
   changeContent() {
     this.text = this.text === `Long Long All Text` ? `Short` : `Long Long All Text`;
@@ -60,5 +66,9 @@ export class AppComponent {
   talk() {
     this.messages = this.peace;
     this.thoughts = 'We love our human friends! 🥳';
+  }
+
+  close() {
+    console.log('close');
   }
 }

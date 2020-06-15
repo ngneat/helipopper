@@ -23,7 +23,7 @@ This is a lightweight wrapper with additional features that lets you use it decl
 ## Features
 
 ✅ Tooltip & Popover Variations <br>
-✅ TemplateRef Support<br>
+✅ TemplateRef/Component Support<br>
 ✅ Lazy Registration<br>
 ✅ Manual Trigger Support<br>
 ✅ Text Overflow Support<br>
@@ -67,6 +67,14 @@ Now you can use it:
   <div *ngFor="let msg of messages">{{ msg }}</div>
   <button (click)="talk()">Click to talk ☮️️</button>
 </ng-template>
+```
+
+#### Component:
+
+```html
+<button [helipopper]="component" (helipopperClose)="onClose()">
+  Click Me
+</button>
 ```
 
 #### Text Overflow:

@@ -50,6 +50,7 @@
   <ng-template #tpl>
     <div>
       <div [helipopper]="thoughts">
+        {{ interval$ | async }}
         <div *ngFor="let msg of messages">{{ msg }}</div>
       </div>
       <div>
@@ -169,4 +170,9 @@
 
     <button (click)="toggleSticky()">{{ isSticky ? 'Hide sticky tooltip' : 'Make the tooltip sticky' }}</button>
   </div>
+</div>
+
+<div class="block">
+  <h2>Custom Component</h2>
+  <button [helipopper]="comp" helipopperVariation="popper" (helipopperClose)="close()">Open component</button>
 </div>
