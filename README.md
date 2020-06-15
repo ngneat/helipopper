@@ -32,7 +32,7 @@ This is a lightweight wrapper with additional features that lets you use it decl
 ## Installation
 
 ```
-npm install @ngneat/helipopper
+ng add @ngneat/helipopper
 ```
 
 Add the `HelipopperModule` to your `AppModule`:

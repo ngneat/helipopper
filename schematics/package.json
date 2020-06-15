@@ -1,0 +1,24 @@
+{
+  "name": "@ngneat/helipopper",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && jest --watch"
+  },
+  "keywords": [
+    "schematics"
+  ],
+  "license": "MIT",
+  "schematics": "./src/collection.json",
+  "dependencies": {
+    "@angular-devkit/core": "^8.1.2",
+    "@angular-devkit/schematics": "^8.1.2",
+    "@schematics/angular": ">=7.3.9 <9.0.0",
+    "fs-extra": "^8.1.0",
+    "typescript": "~3.4.3"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^3.3.9",
+    "@types/node": "^8.0.31"
+  }
+}
