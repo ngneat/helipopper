@@ -190,19 +190,22 @@ export class HelipopperDirective implements OnDestroy {
     }
 
     this.helipopperTrigger = this.resolveTrigger();
-
     this.instance = tippy(this._tooltipHost, {
       content: undefined,
       appendTo: this.getParent(),
       arrow: !this.isTooltip,
-      allowHTML: true,
+      allowHTML: this.config.allowHtml || this.mergedConfig.allowHtml,
       zIndex: 1000000,
       trigger: this.helipopperTrigger,
       placement: this._placement,
       triggerTarget: this._tooltipTarget,
       // TODO: Merge the following methods with the passed config
       onCreate: instance => {
-        this.helipopperClass && addClass(instance.popper, this.helipopperClass);
+        let classes = []
+          .concat(this.mergedConfig.helipopperClass)
+          .concat(this.helipopperClass)
+          .filter(v => !!v);
+        addClass(instance.popper, classes);
       },
       onShow: instance => {
         this.zone.run(() => this.instance.setContent(this.resolveContent()));
@@ -309,7 +312,9 @@ export class HelipopperDirective implements OnDestroy {
       closeIcon: icon,
       beforeRender(content: string): string {
         return content;
-      }
+      },
+      helipopperClass: [],
+      allowHtml: true
     };
 
     return {

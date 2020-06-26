@@ -9,6 +9,8 @@ export type Element = HTMLElement | ElementRef | undefined;
 export type HelipopperConfig = {
   beforeRender?(content: string): string;
   closeIcon?: string;
+  helipopperClass?: string | Array<string>;
+  allowHtml?: boolean;
 };
 
 export const HELIPOPPER_CONFIG = new InjectionToken<HelipopperConfig>('HELIPOPPER_CONFIG');

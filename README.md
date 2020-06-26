@@ -20,6 +20,8 @@ It is an abstraction over Popper that provides the logic and optionally the styl
 
 This is a lightweight wrapper with additional features that lets you use it declaratively in Angular. Tippy has virtually no restrictions over Popper and gives you limitless control while providing useful behavior and defaults.
 
+<a href="https://www.buymeacoffee.com/basalnetanel" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
 ## Features
 
 ✅ Tooltip & Popover Variations <br>
@@ -188,6 +190,8 @@ export class AppModule {}
 ```
 
 - `closeIcon` - The svg close icon that'll be used inside the popper.
+- `helipopperClass` - String or array of string of custom classes that'll be added to the tooltip.
+- `allowHtml` - Whether or not to globally allow HTML or not. Default is true.
 
 ## Contributors ✨
 
