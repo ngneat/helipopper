@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsTranslocoAdd",
-  "title": "Add Transloco to Your Project",
+  "id": "SchematicsHelipopperAdd",
+  "title": "Add Helipopper to Your Project",
   "type": "object",
   "properties": {
     "project": {
