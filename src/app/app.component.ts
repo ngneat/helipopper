@@ -4,6 +4,7 @@ import { ExampleComponent } from './example/example.component';
 import { interval } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { HelipopperDirective, HelipopperService } from '@ngneat/helipopper';
+import { NestedPopperComponent } from './nested-popper/nested-popper.component';
 
 @Component({
   selector: 'app-root',
@@ -49,8 +50,12 @@ export class AppComponent implements AfterViewInit {
   text = `Long Long All Text`;
   isSticky = false;
   comp = ExampleComponent;
+  nestedPopperComp = NestedPopperComponent;
   formControl = new FormControl();
+  formControlWithComp = new FormControl();
   popper: HelipopperDirective;
+  popperWithComp: HelipopperDirective;
+  popperWithNestedComp: HelipopperDirective;
 
   changeContent() {
     this.text = this.text === `Long Long All Text` ? `Short` : `Long Long All Text`;
@@ -59,6 +64,8 @@ export class AppComponent implements AfterViewInit {
   constructor(private fb: FormBuilder, private service: HelipopperService) {}
 
   @ViewChild('inputName', { static: true }) inputName: ElementRef;
+  @ViewChild('inputNameComp', { static: true }) inputNameComp: ElementRef;
+  @ViewChild(NestedPopperComponent, { static: true }) nestedComp: NestedPopperComponent;
 
   ngAfterViewInit() {
     this.formControl.valueChanges.subscribe(value => {
@@ -66,6 +73,14 @@ export class AppComponent implements AfterViewInit {
         this.popper.hide();
       } else if (!value && this.popper) {
         this.popper.show();
+      }
+    });
+
+    this.formControlWithComp.valueChanges.subscribe(value => {
+      if (value && this.popperWithComp) {
+        this.popperWithComp.hide();
+      } else if (!value && this.popperWithComp) {
+        this.popperWithComp.show();
       }
     });
   }
@@ -90,6 +105,19 @@ export class AppComponent implements AfterViewInit {
   submit(): void {
     if (!this.formControl.value) {
       this.popper = this.service.open(this.inputName, 'this field is required');
+    }
+  }
+
+  submitWithComp(): void {
+    if (!this.formControlWithComp.value) {
+      this.popperWithComp = this.service.open(this.inputNameComp, this.comp);
+    }
+  }
+
+  submitWithNestedComp(value: string): void {
+    if (!value) {
+      console.log(this.inputName);
+      this.popperWithNestedComp = this.service.open(this.nestedComp.inputName, this.comp);
     }
   }
 }

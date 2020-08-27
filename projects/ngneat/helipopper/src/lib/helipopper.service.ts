@@ -45,9 +45,9 @@ export class HelipopperService {
     directive.helipopperClass = options?.helipopperClass;
     directive.helipopperOffset = options?.helipopperOffset;
     directive.injector = options?.helipopperInjector;
-    directive.placement = options?.helipopperPlacement;
-    directive.variation = options?.helipopperVariation;
-    directive.disabled = options?.helipopperDisabled;
+    directive.placement = options?.helipopperPlacement || 'top';
+    directive.variation = options?.helipopperVariation || 'tooltip';
+    directive.disabled = options?.helipopperDisabled || false;
     directive.sticky = options?.helipopperSticky;
 
     directive.whenStable.subscribe(() => directive.show());

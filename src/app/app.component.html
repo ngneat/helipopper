@@ -177,7 +177,23 @@
   <button [helipopper]="comp" helipopperVariation="popper" (helipopperClose)="close()">Open component</button>
 </div>
 
-<fieldset>
-  <legend>Enter your name</legend>
-  <input #inputName type="text" [formControl]="formControl" (keyup.enter)="submit()" />
-</fieldset>
+<div class="block">
+  <h2>Attach the popper manually</h2>
+  <fieldset>
+    <legend>Enter your name</legend>
+    <input #inputName type="text" [formControl]="formControl" (keyup.enter)="submit()" />
+  </fieldset>
+</div>
+
+<div class="block">
+  <h2>Attach the popper manually (with provided component)</h2>
+  <fieldset>
+    <legend>Enter your name</legend>
+    <input #inputNameComp type="text" [formControl]="formControlWithComp" (keyup.enter)="submitWithComp()" />
+  </fieldset>
+</div>
+
+<div class="block">
+  <h2>Attach the popper manually (with provided component with nested popper)</h2>
+  <app-nested-popper (submit)="submitWithNestedComp($event)"></app-nested-popper>
+</div>
