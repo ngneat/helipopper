@@ -169,6 +169,7 @@ You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/
 | helipopperTextOverflow | `Boolean`                 | Show the tooltip only when the text overflows its container  | `false`                                                                |
 | helipopperSticky       | `Boolean`                 | Whether the tooltip should be sticky (i.e. always displayed) | `false`                                                                |
 | helipopperTarget       | `ElementRef` \| `Element` | The element(s) that the trigger event listeners are added to | `Host`                                                                 |  | Ex: `{ width: '100%', height: '70px' }` |
+| helipopperInjector     | `Injector` \| `undefined` | The custom injector to be provided                           | `none`                                                                 |
 
 ## Config
 
@@ -190,6 +191,25 @@ export class AppModule {}
 ```
 
 - `closeIcon` - The svg close icon that'll be used inside the popper.
+
+## Attach the popper manually
+
+```typescript
+@ViewChild('inputName', { static: true }) inputName: ElementRef;
+
+constructor(private service: HelipopperService) {}
+
+const popper = this.service.open(this.inputName, 'this field is required', options);
+```
+
+`open()` returns an `HelipopperDirective` which allows you to use [manual trigger](#manual-trigger) on it.
+
+It takes 2-3 paramaters :
+- the host Element
+- the popper content
+- an optional options object with all the [@Input options](#inputs) available.
+
+
 
 ## Contributors ✨
 

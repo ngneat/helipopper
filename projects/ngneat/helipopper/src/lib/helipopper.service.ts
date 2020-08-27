@@ -6,10 +6,12 @@ import {
   Injectable,
   Injector,
   NgZone,
-  TemplateRef
+  TemplateRef,
+  Type
 } from '@angular/core';
-import { HELIPOPPER_CONFIG, HelipopperConfig, HelipopperOptions } from './helipopper.types';
+import { HELIPOPPER_CONFIG, HelipopperConfig } from './helipopper.types';
 import { HelipopperDirective } from './helipopper.directive';
+import { HelipopperOptions } from './helipopper-options';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +25,7 @@ export class HelipopperService {
     @Inject(HELIPOPPER_CONFIG) private config: HelipopperConfig
   ) {}
 
-  open(host: ElementRef, helipopper: string | TemplateRef<any>, options?: HelipopperOptions) {
+  open(host: ElementRef, helipopper: string | TemplateRef<any> | Type<any>, options?: Partial<HelipopperOptions>) {
     let directive: HelipopperDirective = new HelipopperDirective(
       host,
       this.appRef,
@@ -33,14 +35,22 @@ export class HelipopperService {
       this.config
     );
 
-    //todo :  if helipopperAppendTo === undefined then document.body;
-    //todo :  if helipopperOptions === undeifned then {}
-    // todo : if helipopperTextOverflow === undefined then showOnlyOnTextOverflow = false
     directive.helipopper = helipopper;
 
-    directive.whenStable.subscribe(() => {
-      directive.show();
-    });
+    directive.helipopperOptions = options?.helipopperOptions || {};
+    directive.showOnlyOnTextOverflow = options?.helipopperTextOverflow || false;
+    directive.triggerTarget = options?.triggerTarget;
+    directive.helipopperAppendTo = options?.helipopperAppendTo || document.body;
+    directive.helipopperTrigger = options?.helipopperTrigger;
+    directive.helipopperClass = options?.helipopperClass;
+    directive.helipopperOffset = options?.helipopperOffset;
+    directive.injector = options?.helipopperInjector;
+    directive.placement = options?.helipopperPlacement;
+    directive.variation = options?.helipopperVariation;
+    directive.disabled = options?.helipopperDisabled;
+    directive.sticky = options?.helipopperSticky;
+
+    directive.whenStable.subscribe(() => directive.show());
 
     return directive;
   }
