@@ -124,6 +124,7 @@ export class HelipopperDirective implements OnDestroy {
   private tplPortal: TemplatePortal;
   private mergedConfig: HelipopperConfig;
   private innerComponentRef: ComponentRef<any>;
+  public whenStable: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private host: ElementRef,
@@ -217,6 +218,7 @@ export class HelipopperDirective implements OnDestroy {
       ...this.helipopperOptions
     });
 
+    this.whenStable.next(true);
     this.markDisabled(this._disabled);
   }
 

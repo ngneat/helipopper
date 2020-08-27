@@ -176,3 +176,8 @@
   <h2>Custom Component</h2>
   <button [helipopper]="comp" helipopperVariation="popper" (helipopperClose)="close()">Open component</button>
 </div>
+
+<fieldset>
+  <legend>Enter your name</legend>
+  <input #inputName type="text" [formControl]="formControl" (keyup.enter)="submit()" />
+</fieldset>
