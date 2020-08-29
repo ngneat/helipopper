@@ -4,7 +4,7 @@ import { ExampleComponent } from './example/example.component';
 import { interval } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { HelipopperDirective, HelipopperService } from '@ngneat/helipopper';
-import { NestedPopperComponent } from './nested-popper/nested-popper.component';
+import { MenuComponent } from './menu/menu.component';
 
 @Component({
   selector: 'app-root',
@@ -50,7 +50,7 @@ export class AppComponent implements AfterViewInit {
   text = `Long Long All Text`;
   isSticky = false;
   comp = ExampleComponent;
-  nestedPopperComp = NestedPopperComponent;
+  menu = MenuComponent;
   formControl = new FormControl();
   formControlWithComp = new FormControl();
   popper: HelipopperDirective;
@@ -65,7 +65,6 @@ export class AppComponent implements AfterViewInit {
 
   @ViewChild('inputName', { static: true }) inputName: ElementRef;
   @ViewChild('inputNameComp', { static: true }) inputNameComp: ElementRef;
-  @ViewChild(NestedPopperComponent, { static: true }) nestedComp: NestedPopperComponent;
 
   ngAfterViewInit() {
     this.formControl.valueChanges.subscribe(value => {
@@ -111,13 +110,6 @@ export class AppComponent implements AfterViewInit {
   submitWithComp(): void {
     if (!this.formControlWithComp.value) {
       this.popperWithComp = this.service.open(this.inputNameComp, this.comp);
-    }
-  }
-
-  submitWithNestedComp(value: string): void {
-    if (!value) {
-      console.log(this.inputName);
-      this.popperWithNestedComp = this.service.open(this.nestedComp.inputName, this.comp);
     }
   }
 }

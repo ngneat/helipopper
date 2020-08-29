@@ -194,6 +194,6 @@
 </div>
 
 <div class="block">
-  <h2>Attach the popper manually (with provided component with nested popper)</h2>
-  <app-nested-popper (submit)="submitWithNestedComp($event)"></app-nested-popper>
+  <h2>Nested menu</h2>
+  <button [helipopper]="menu" helipopperVariation="popper" (helipopperClose)="close()">menu</button>
 </div>

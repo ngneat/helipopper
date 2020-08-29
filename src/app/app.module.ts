@@ -6,10 +6,10 @@ import { AppComponent } from './app.component';
 import { HelipopperModule } from '@ngneat/helipopper';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ExampleComponent } from './example/example.component';
-import { NestedPopperComponent } from './nested-popper/nested-popper.component';
+import { MenuComponent } from './menu/menu.component';
 
 @NgModule({
-  declarations: [AppComponent, ExampleComponent, NestedPopperComponent],
+  declarations: [AppComponent, ExampleComponent, MenuComponent],
   imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule, HelipopperModule.forRoot()],
   providers: [],
   bootstrap: [AppComponent]
