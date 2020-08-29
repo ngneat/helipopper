@@ -29,6 +29,7 @@ import {
 } from './utils';
 import { takeUntil } from 'rxjs/operators';
 import { HELIPOPPER_CONFIG, HelipopperConfig, InstanceWithClose, Variation } from './helipopper.types';
+import { initialHelipopperOptions as initialOptions } from './helipopper-options';
 
 const icon = `
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
@@ -41,10 +42,10 @@ type Content = string | TemplateRef<any> | Type<any>;
 @Directive({ selector: `[helipopper]`, exportAs: 'helipopper' })
 export class HelipopperDirective implements OnDestroy {
   @Input()
-  helipopperOptions: Partial<Props> = {};
+  helipopperOptions: Partial<Props> = initialOptions.options;
 
   @Input('helipopperTextOverflow')
-  showOnlyOnTextOverflow = false;
+  showOnlyOnTextOverflow = initialOptions.textOverflow;
 
   // The element that the trigger event listeners are added to
   @Input()
@@ -54,7 +55,7 @@ export class HelipopperDirective implements OnDestroy {
   helipopperHost: Element;
 
   @Input()
-  helipopperAppendTo: string | HTMLElement = document.body;
+  helipopperAppendTo: string | HTMLElement = initialOptions.appendTo;
 
   @Input()
   helipopperTrigger: string | undefined;
@@ -117,9 +118,9 @@ export class HelipopperDirective implements OnDestroy {
 
   private _content: Content;
   private _destroy = new Subject();
-  private _placement: PopperOptions['placement'] = 'top';
+  private _placement: PopperOptions['placement'] = initialOptions.placement;
   private _disabled = false;
-  private _variation: Variation = 'tooltip';
+  private _variation: Variation = initialOptions.variation;
   private instance: Instance;
   private tplPortal: TemplatePortal;
   private mergedConfig: HelipopperConfig;

@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { HELIPOPPER_CONFIG, HelipopperConfig } from './helipopper.types';
 import { HelipopperDirective } from './helipopper.directive';
-import { HelipopperOptions } from './helipopper-options';
+import { HelipopperOptions, initialHelipopperOptions as initialOptions } from './helipopper-options';
 
 @Injectable({
   providedIn: 'root'
@@ -37,18 +37,18 @@ export class HelipopperService {
 
     directive.helipopper = helipopper;
 
-    directive.helipopperOptions = options?.helipopperOptions || {};
-    directive.showOnlyOnTextOverflow = options?.helipopperTextOverflow || false;
+    directive.helipopperOptions = options?.options || initialOptions.options;
+    directive.showOnlyOnTextOverflow = options?.textOverflow || initialOptions.textOverflow;
     directive.triggerTarget = options?.triggerTarget;
-    directive.helipopperAppendTo = options?.helipopperAppendTo || document.body;
-    directive.helipopperTrigger = options?.helipopperTrigger;
-    directive.helipopperClass = options?.helipopperClass;
-    directive.helipopperOffset = options?.helipopperOffset;
-    directive.injector = options?.helipopperInjector;
-    directive.placement = options?.helipopperPlacement || 'top';
-    directive.variation = options?.helipopperVariation || 'tooltip';
-    directive.disabled = options?.helipopperDisabled || false;
-    directive.sticky = options?.helipopperSticky;
+    directive.helipopperAppendTo = options?.appendTo || initialOptions.appendTo;
+    directive.helipopperTrigger = options?.trigger;
+    directive.helipopperClass = options?.class;
+    directive.helipopperOffset = options?.offset;
+    directive.injector = options?.injector;
+    directive.placement = options?.placement || initialOptions.placement;
+    directive.variation = options?.variation || initialOptions.variation;
+    directive.disabled = options?.disabled || initialOptions.disabled;
+    directive.sticky = options?.sticky;
 
     directive.whenStable.subscribe(() => directive.show());
 

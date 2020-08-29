@@ -17,7 +17,7 @@ export class MenuComponent {
 
   openPopper() {
     this.service.open(this.el, this.comp, {
-      helipopperVariation: 'popper'
+      variation: 'popper'
     });
   }
 }
