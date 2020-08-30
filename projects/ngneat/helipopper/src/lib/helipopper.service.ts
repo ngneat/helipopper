@@ -38,7 +38,9 @@ export class HelipopperService {
     directive.helipopper = helipopper;
 
     directive.helipopperOptions = options?.options || initialOptions.options;
-    directive.showOnlyOnTextOverflow = options?.textOverflow || initialOptions.textOverflow;
+    directive.showOnlyOnTextOverflow = isDefined(options?.textOverflow)
+      ? options?.textOverflow
+      : initialOptions.textOverflow;
     directive.triggerTarget = options?.triggerTarget;
     directive.helipopperAppendTo = options?.appendTo || initialOptions.appendTo;
     directive.helipopperTrigger = options?.trigger;
@@ -47,12 +49,16 @@ export class HelipopperService {
     directive.injector = options?.injector;
     directive.placement = options?.placement || initialOptions.placement;
     directive.variation = options?.variation || initialOptions.variation;
-    directive.disabled = options?.disabled || initialOptions.disabled;
+    directive.disabled = isDefined(options?.disabled) ? options?.disabled : initialOptions.disabled;
     directive.sticky = options?.sticky;
-    directive.helipopperAllowClose = options?.allowClose || initialOptions.allowClose;
+    directive.helipopperAllowClose = isDefined(options?.allowClose) ? options?.allowClose : initialOptions.allowClose;
 
     directive.whenStable.subscribe(() => directive.show());
 
     return directive;
   }
+}
+
+function isDefined(value: any) {
+  return value === undefined;
 }
