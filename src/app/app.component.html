@@ -176,3 +176,24 @@
   <h2>Custom Component</h2>
   <button [helipopper]="comp" helipopperVariation="popper" (helipopperClose)="close()">Open component</button>
 </div>
+
+<div class="block">
+  <h2>Attach the popper manually</h2>
+  <fieldset>
+    <legend>Enter your name</legend>
+    <input #inputName type="text" [formControl]="formControl" (keyup.enter)="submit()" />
+  </fieldset>
+</div>
+
+<div class="block">
+  <h2>Attach the popper manually (with provided component)</h2>
+  <fieldset>
+    <legend>Enter your name</legend>
+    <input #inputNameComp type="text" [formControl]="formControlWithComp" (keyup.enter)="submitWithComp()" />
+  </fieldset>
+</div>
+
+<div class="block">
+  <h2>Nested menu</h2>
+  <button [helipopper]="menu" helipopperVariation="popper" (helipopperClose)="close()">menu</button>
+</div>
