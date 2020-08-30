@@ -29,6 +29,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "geromegrignon",
+      "name": "Gérôme Grignon",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/32737308?v=4",
+      "profile": "https://gerome-dev.netlify.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
