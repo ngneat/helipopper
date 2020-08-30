@@ -192,24 +192,33 @@ export class AppModule {}
 
 - `closeIcon` - The svg close icon that'll be used inside the popper.
 
-## Attach the popper manually
+## Attach the Popper Manually
 
 ```typescript
-@ViewChild('inputName', { static: true }) inputName: ElementRef;
+class Component {
+  @ViewChild('inputName', { static: true }) inputName: ElementRef;
 
-constructor(private service: HelipopperService) {}
+  constructor(private service: HelipopperService) {}
 
-const popper = this.service.open(this.inputName, 'this field is required', options);
+  open() {
+    if (!this.popper) {
+      this.popper = this.service.open(this.inputName, 'this field is required', options);
+    }
+  }
+
+  close() {
+    this.popper.hide();
+  }
+}
 ```
 
 `open()` returns an `HelipopperDirective` which allows you to use [manual trigger](#manual-trigger) on it.
 
-It takes 2-3 paramaters :
-- the host Element
-- the popper content
-- an optional options object with all the [@Input options](#inputs) available.
+It takes the following paramaters:
 
-
+- The host Element
+- The popper content
+- An optional options object with all the [@Input options](#inputs) available.
 
 ## Contributors ✨
 
@@ -227,6 +236,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
