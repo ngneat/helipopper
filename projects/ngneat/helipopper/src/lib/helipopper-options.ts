@@ -9,7 +9,8 @@ export const initialHelipopperOptions: Partial<HelipopperOptions> = {
   appendTo: document.body,
   placement: 'top',
   variation: 'tooltip',
-  disabled: false
+  disabled: false,
+  allowClose: true
 };
 
 export interface HelipopperOptions {
@@ -25,4 +26,5 @@ export interface HelipopperOptions {
   variation: Variation;
   disabled: boolean;
   sticky: boolean;
+  allowClose: boolean;
 }

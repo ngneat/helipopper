@@ -49,6 +49,7 @@ export class HelipopperService {
     directive.variation = options?.variation || initialOptions.variation;
     directive.disabled = options?.disabled || initialOptions.disabled;
     directive.sticky = options?.sticky;
+    directive.helipopperAllowClose = options?.allowClose || initialOptions.allowClose;
 
     directive.whenStable.subscribe(() => directive.show());
 

@@ -61,6 +61,9 @@ export class HelipopperDirective implements OnDestroy {
   helipopperTrigger: string | undefined;
 
   @Input()
+  helipopperAllowClose: boolean = initialOptions.allowClose;
+
+  @Input()
   helipopperClass: string | Array<string> | undefined;
 
   @Input()
@@ -173,6 +176,10 @@ export class HelipopperDirective implements OnDestroy {
     this._destroy.next();
   }
 
+  destroy() {
+    this.ngOnDestroy();
+  }
+
   private destroyView() {
     this.tplPortal && this.destroyTemplate();
     this.innerComponentRef && this.destroyComponent();
@@ -202,16 +209,17 @@ export class HelipopperDirective implements OnDestroy {
       trigger: this.helipopperTrigger,
       placement: this._placement,
       triggerTarget: this._tooltipTarget,
+      hideOnClick: this.helipopperAllowClose,
       // TODO: Merge the following methods with the passed config
       onCreate: instance => {
         this.helipopperClass && addClass(instance.popper, this.helipopperClass);
       },
       onShow: instance => {
         this.zone.run(() => this.instance.setContent(this.resolveContent()));
-        this.isPopper && this.addCloseButton(instance as InstanceWithClose);
+        this.helipopperAllowClose && this.isPopper && this.addCloseButton(instance as InstanceWithClose);
       },
       onHidden: instance => {
-        this.isPopper && this.removeCloseButton(instance as InstanceWithClose);
+        this.helipopperAllowClose && this.isPopper && this.removeCloseButton(instance as InstanceWithClose);
         this.destroyView();
         this.helipopperClose.next();
       },
