@@ -60,5 +60,5 @@ export class HelipopperService {
 }
 
 function isDefined(value: any) {
-  return value === undefined;
+  return value !== undefined;
 }
