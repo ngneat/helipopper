@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/ngneat/helipopper/compare/v1.2.0...v1.3.0) (2020-08-30)
+
+
+### Features
+
+* 🎸 add allow close input ([236a9dc](https://github.com/ngneat/helipopper/commit/236a9dce2646d5ad3bb887adc0a5c53bbc5bedcf))
+
 ## [1.2.0](https://github.com/ngneat/helipopper/compare/v1.1.0...v1.2.0) (2020-08-30)
 
 
