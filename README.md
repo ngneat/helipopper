@@ -189,10 +189,10 @@ You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/
 
 ## Outputs
 
-| @Output           | Type               | Description                                               |
-| ----------------- | ------------------ | --------------------------------------------------------- |
-| helipopperClose   | `Subject<any>`     | Method called when tooltip is closed                      |
-| helipopperVisible | `Subject<boolean>` | Method that emits the tooltip's current status as boolean |
+| @Output           | Type      | Description                                               |
+| ----------------- | --------- | --------------------------------------------------------- |
+| helipopperClose   | `void`    | Method called when tooltip is closed                      |
+| helipopperVisible | `boolean` | Method that emits the tooltip's current status as boolean |
 
 ## Config
 
