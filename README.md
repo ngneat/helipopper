@@ -79,6 +79,22 @@ Now you can use it:
 </button>
 ```
 
+#### Handle current status as boolean
+
+```html
+<button helipopper="Helpful Message" (helipopperVisible)="handleStatus($event)">
+  Click Me
+</button>
+```
+
+and on .ts
+
+```ts
+handleStatus($event: boolean): void {
+  console.log('show tooltip', $event);
+}
+```
+
 #### Text Overflow:
 
 ```html
@@ -171,6 +187,13 @@ You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/
 | helipopperTarget       | `ElementRef` \| `Element` | The element(s) that the trigger event listeners are added to | `Host`                                                                 |  | Ex: `{ width: '100%', height: '70px' }` |
 | helipopperInjector     | `Injector` \| `undefined` | The custom injector to be provided                           | `none`                                                                 |
 
+## Outputs
+
+| @Output           | Type               | Description                                               |
+| ----------------- | ------------------ | --------------------------------------------------------- |
+| helipopperClose   | `Subject<any>`     | Method called when tooltip is closed                      |
+| helipopperVisible | `Subject<boolean>` | Method that emits the tooltip's current status as boolean |
+
 ## Config
 
 - `beforeRender` - Hook that'll be called before rendering the tooltip content: ( applies only for string )
@@ -237,6 +260,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
