@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/ngneat/helipopper/compare/v1.3.2...v1.4.0) (2020-09-22)
+
+
+### Features
+
+* **doc:** add new table to manage Outputs ([25d0778](https://github.com/ngneat/helipopper/commit/25d077838ddffe0bdba3bd3d8be61ad5a0b52083))
+* **lib:** update Subject name into "helipopperVisible" ([3744d91](https://github.com/ngneat/helipopper/commit/3744d91d4288325f78609681fa04a5635c4e200b))
+* add [@output](https://github.com/output)() method to expose current tooltip status as boolean ([409ad7f](https://github.com/ngneat/helipopper/commit/409ad7f4b4074e907c4858cdd5a177dec913b8a8))
+
 ### [1.3.2](https://github.com/ngneat/helipopper/compare/v1.3.1...v1.3.2) (2020-08-30)
 
 
