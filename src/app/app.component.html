@@ -174,7 +174,14 @@
 
 <div class="block">
   <h2>Custom Component</h2>
-  <button [helipopper]="comp" helipopperVariation="popper" (helipopperClose)="close()">Open component</button>
+  <button
+    [helipopper]="comp"
+    helipopperVariation="popper"
+    (helipopperClose)="close()"
+    (helipopperShowing)="handleStatus($event)"
+  >
+    Open component
+  </button>
 </div>
 
 <div class="block">

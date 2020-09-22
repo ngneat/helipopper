@@ -79,6 +79,22 @@ Now you can use it:
 </button>
 ```
 
+#### Handle current status as boolean
+
+```html
+<button helipopper="Helpful Message" (helipopperShowing)="handleStatus($event)">
+  Click Me
+</button>
+```
+
+and on .ts
+
+```ts
+handleStatus($event: boolean): void {
+  console.log('show tooltip', $event);
+}
+```
+
 #### Text Overflow:
 
 ```html
@@ -237,6 +253,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

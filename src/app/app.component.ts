@@ -112,4 +112,8 @@ export class AppComponent implements AfterViewInit {
       this.popperWithComp = this.service.open(this.inputNameComp, this.comp);
     }
   }
+
+  handleStatus($event: boolean): void {
+    console.log('show tooltip', $event);
+  }
 }
