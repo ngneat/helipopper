@@ -118,8 +118,7 @@ export class HelipopperDirective implements OnDestroy {
   }
 
   @Output() helipopperClose = new Subject();
-  @Output() helipopperShowing = new Subject<boolean>();
-  // @Output() helipopperShowing = new EventEmitter<boolean>();
+  @Output() helipopperVisible = new Subject<boolean>();
 
   private _content: Content;
   private _destroy = new Subject();
@@ -219,13 +218,13 @@ export class HelipopperDirective implements OnDestroy {
       onShow: instance => {
         this.zone.run(() => this.instance.setContent(this.resolveContent()));
         this.helipopperAllowClose && this.isPopper && this.addCloseButton(instance as InstanceWithClose);
-        this.helipopperShowing.next(true);
+        this.helipopperVisible.next(true);
       },
       onHidden: instance => {
         this.helipopperAllowClose && this.isPopper && this.removeCloseButton(instance as InstanceWithClose);
         this.destroyView();
         this.helipopperClose.next();
-        this.helipopperShowing.next(false);
+        this.helipopperVisible.next(false);
       },
       ...this.resolveTheme(),
       ...this.helipopperOptions
