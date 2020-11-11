@@ -14,7 +14,7 @@ import {
   Type
 } from '@angular/core';
 import tippy, { Instance, Props } from 'tippy.js';
-import { forkJoin, fromEvent, Subject } from 'rxjs';
+import { fromEvent, Subject } from 'rxjs';
 import { Options as PopperOptions } from '@popperjs/core';
 import {
   addClass,
@@ -24,8 +24,7 @@ import {
   dimensionsChanges,
   inView,
   isString,
-  TemplatePortal,
-  zoneStable
+  TemplatePortal
 } from './utils';
 import { takeUntil } from 'rxjs/operators';
 import { HELIPOPPER_CONFIG, HelipopperConfig, InstanceWithClose, Variation } from './helipopper.types';
@@ -111,9 +110,11 @@ export class HelipopperDirective implements OnDestroy {
     if (this.instance) {
       this.checkOverflow();
     } else {
-      forkJoin([inView(this.host.nativeElement), zoneStable(this.zone)])
-        .pipe(takeUntil(this._destroy))
-        .subscribe(() => this.create());
+      requestAnimationFrame(() => {
+        inView(this.host.nativeElement)
+          .pipe(takeUntil(this._destroy))
+          .subscribe(() => this.create());
+      });
     }
   }
 
@@ -308,7 +309,7 @@ export class HelipopperDirective implements OnDestroy {
 
   private checkOverflow() {
     if (this.showOnlyOnTextOverflow) {
-      zoneStable(this.zone).subscribe(() => this.markDisabled(this.isElementOverflow() === false));
+      requestAnimationFrame(() => this.markDisabled(this.isElementOverflow() === false));
     }
   }
 

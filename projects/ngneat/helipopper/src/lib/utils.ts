@@ -1,6 +1,6 @@
 import { fromEvent, Observable } from 'rxjs';
 import { auditTime, distinctUntilChanged, map, take } from 'rxjs/operators';
-import { ElementRef, EmbeddedViewRef, NgZone, TemplateRef } from '@angular/core';
+import { ElementRef, EmbeddedViewRef, TemplateRef } from '@angular/core';
 
 const hasSupport = 'IntersectionObserver' in window;
 
@@ -118,10 +118,6 @@ function resizeObserverStrategy(
 
 export function coerceElement<T>(elementOrRef: ElementRef<T> | T): T {
   return elementOrRef instanceof ElementRef ? elementOrRef.nativeElement : elementOrRef;
-}
-
-export function zoneStable(zone: NgZone) {
-  return zone.onStable.pipe(take(1));
 }
 
 export function isString(value: any): value is string {
