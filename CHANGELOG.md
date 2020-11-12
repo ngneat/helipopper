@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/ngneat/helipopper/compare/v1.4.1...v1.5.0) (2020-11-12)
+
+
+### Features
+
+* 🎸 add maxwidth input ([1361d2b](https://github.com/ngneat/helipopper/commit/1361d2bdd2c0f8b16676950f1217c94b9d7639f6))
+
 ### [1.4.1](https://github.com/ngneat/helipopper/compare/v1.4.0...v1.4.1) (2020-11-11)
 
 
