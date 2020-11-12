@@ -60,6 +60,9 @@ export class HelipopperDirective implements OnDestroy {
   helipopperTrigger: string | undefined;
 
   @Input()
+  helipopperMaxWidth: 'none' | number;
+
+  @Input()
   helipopperAllowClose: boolean = initialOptions.allowClose;
 
   @Input()
@@ -211,6 +214,7 @@ export class HelipopperDirective implements OnDestroy {
       trigger: this.helipopperTrigger,
       placement: this._placement,
       triggerTarget: this._tooltipTarget,
+      maxWidth: this.helipopperMaxWidth,
       hideOnClick: this.helipopperAllowClose,
       // TODO: Merge the following methods with the passed config
       onCreate: instance => {

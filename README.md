@@ -175,7 +175,8 @@ You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/
 | ---------------------- | ------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------- |
 | helipopperVariation    | `tooltip` \| `popper`     | The tooltip type                                             | `tooltip`                                                              |
 | helipopper             | `string` \| `TemplateRef` | The tooltip content                                          | `none`                                                                 |
-| helipopperPlacement    | `Popper placement`        | The tooltip placement                                        | `top`                                                               |
+| helipopperPlacement    | `Popper placement`        | The tooltip placement                                        | `top`                                                                  |
+| helipopperTrigger      | `string`                  | The tooltip trigger                                          |                                                                        |
 | helipopperClass        | `string` \| `string[]`    | Custom class that'll be added to the tooltip                 | `none`                                                                 |
 | helipopperOffset       | `[number, number]`        | Set tooltip offset position                                  | `[0, 10]`                                                              |
 | helipopperDisabled     | `Boolean`                 | Whether to disabled the tooltip                              | `false`                                                                |
