@@ -11,6 +11,7 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 [![ngneat](https://img.shields.io/badge/@-ngneat-383636?style=flat-square&labelColor=8f68d4)](https://github.com/ngneat/)
 [![spectator](https://img.shields.io/badge/tested%20with-spectator-2196F3.svg?style=flat-square)]()
+[![@ngneat/helipopper](https://github.com/ngneat/helipopper/workflows/@ngneat/helipopper/badge.svg)]()
 
 > A Powerful Tooltip and Popover for Angular Applications
 
