@@ -204,3 +204,19 @@
   <h2>Nested menu</h2>
   <button [helipopper]="menu" helipopperVariation="popper" (helipopperClose)="close()">menu</button>
 </div>
+
+<div class="block">
+  <h2>Multiple child nodes</h2>
+
+  <button [helipopper]="multipleChildNodes" helipopperVariation="popper">
+    Click Me
+  </button>
+
+  <ng-template #multipleChildNodes>
+    <ng-container>
+      <div *ngFor="let message of messages">{{ message }}</div>
+    </ng-container>
+
+    <button (click)="talk()">Click to talk ☮️️</button>
+  </ng-template>
+</div>
