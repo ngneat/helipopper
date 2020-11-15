@@ -19,7 +19,10 @@
     "copy": "npm run schematics:copy && cp -r README.md dist/ngneat/helipopper",
     "schematics:watch": "cd ./schematics/ && npm link && cd .. && npm link @ngneat/helipopper && npm run build --prefix ./schematics -- --watch",
     "schematics:copy": "cp -r schematics/src/ dist/ngneat/helipopper/schematics",
-    "schematics:build": "npm run build --prefix ./schematics"
+    "schematics:build": "npm run build --prefix ./schematics",
+    "build:playground": "ng build --project helipopper-playground --prod",
+    "test:playground": "ng test --project helipopper-playground",
+    "test:playground:ci": "cross-env CI=true npm run test:playground -- --watch=false --browsers=ChromeHeadlessCustom"
   },
   "private": true,
   "dependencies": {
