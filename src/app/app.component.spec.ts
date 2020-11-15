@@ -1,11 +1,13 @@
 import { TestBed, async } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HelipopperModule } from '@ngneat/helipopper';
+
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [ReactiveFormsModule, HelipopperModule.forRoot()],
       declarations: [AppComponent]
     }).compileComponents();
   }));
