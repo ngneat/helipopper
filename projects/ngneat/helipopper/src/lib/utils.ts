@@ -179,6 +179,7 @@ export class TemplatePortal {
   destroy(): void {
     if (this.wrapper !== null) {
       this.wrapper.parentNode.removeChild(this.wrapper);
+      this.wrapper = null;
     }
 
     this.viewRef.destroy();
