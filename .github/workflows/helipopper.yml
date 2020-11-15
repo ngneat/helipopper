@@ -18,7 +18,11 @@ jobs:
       - uses: actions/cache@v1
         id: npm-cache
         with:
-          path: node_modules
+          # We also specify `~/.cache` because Cypress binary is installed
+          # in that location.
+          path: |
+            node_modules
+            ~/.cache
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-npm
 
@@ -43,3 +47,10 @@ jobs:
 
       - name: Build playground app in production mode
         run: npm run build:playground
+
+      - uses: cypress-io/github-action@v2
+        with:
+          browser: chrome
+          headless: true
+          start: npm run serve:integration:static
+          wait-on: 'http://localhost:4200'
