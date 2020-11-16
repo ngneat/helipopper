@@ -52,5 +52,5 @@ jobs:
         with:
           browser: chrome
           headless: true
-          start: npm run serve:integration:static
-          wait-on: 'http://localhost:4200'
+          start: npm run serve:playground:static
+          wait-on: http://localhost:4200
