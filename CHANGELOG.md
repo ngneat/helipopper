@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.1](https://github.com/ngneat/helipopper/compare/v1.5.0...v1.5.1) (2020-11-16)
+
+
+### Bug Fixes
+
+* allow `<ng-container>` and multiple child nodes ([e648877](https://github.com/ngneat/helipopper/commit/e64887761126acee7cae723a8778e595a133db0f))
+* allow `<ng-container>` and multiple child nodes ([e2b666b](https://github.com/ngneat/helipopper/commit/e2b666b3b6158d735e616bf6e4ead57e3c53d016))
+* support server-side rendering ([2602c3d](https://github.com/ngneat/helipopper/commit/2602c3df2fd3beb23e9e35c0d7a59f76ab715ac1))
+
+
+### Tests
+
+* fix Cypress tests related to scrolling ([743f1f8](https://github.com/ngneat/helipopper/commit/743f1f8801bd80b04300790b5532ea55e58e88ba))
+
 ## [1.5.0](https://github.com/ngneat/helipopper/compare/v1.4.1...v1.5.0) (2020-11-12)
 
 
