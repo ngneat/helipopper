@@ -161,18 +161,34 @@ export function closest(element: Element, selector: string) {
 }
 
 export class TemplatePortal {
-  viewRef: EmbeddedViewRef<any>;
+  viewRef: EmbeddedViewRef<{}>;
+  elementRef: HTMLElement;
 
-  constructor(tpl: TemplateRef<any>) {
+  private wrapper: HTMLElement | null = null;
+
+  constructor(tpl: TemplateRef<{}>) {
     this.viewRef = tpl.createEmbeddedView({});
     this.viewRef.detectChanges();
+
+    if (this.viewRef.rootNodes.length === 1) {
+      this.elementRef = this.viewRef.rootNodes[0];
+    } else {
+      this.wrapper = document.createElement('div');
+      // The `node` might be an instance of the `Comment` class,
+      // which is an `ng-container` element. We shouldn't filter it
+      // out since there can be `ngIf` or any other directive bound
+      // to the `ng-container`.
+      this.wrapper.append(...this.viewRef.rootNodes);
+      this.elementRef = this.wrapper;
+    }
   }
 
-  get elementRef() {
-    return this.viewRef.rootNodes[0] as HTMLElement;
-  }
+  destroy(): void {
+    if (this.wrapper !== null) {
+      this.wrapper.parentNode.removeChild(this.wrapper);
+      this.wrapper = null;
+    }
 
-  destroy() {
     this.viewRef.destroy();
   }
 }
