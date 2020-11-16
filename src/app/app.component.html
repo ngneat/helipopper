@@ -26,14 +26,14 @@
   </div>
 </div>
 
-<div class="block">
+<div id="lazy" class="block">
   <h2>Lazy</h2>
   <div style="height: 300px; overflow-y: auto">
     <div *ngFor="let item of items" [helipopper]="item.label">{{ item.label }}</div>
   </div>
 </div>
 
-<div class="block">
+<div id="manual-trigger" class="block">
   <h2>Manual Trigger</h2>
   <span helipopper="Helpful Message" helipopperTrigger="manual" #tooltip="helipopper">Click open to see me </span>
 
@@ -41,7 +41,7 @@
   <button (click)="tooltip.hide()">Close</button>
 </div>
 
-<div class="block">
+<div id="custom-template" class="block">
   <h2>Custom Template</h2>
   <button [helipopper]="tpl" helipopperVariation="popper">
     Click Me
@@ -60,7 +60,7 @@
   </ng-template>
 </div>
 
-<div class="block">
+<div id="disabled" class="block">
   <h2>Disabled</h2>
   <div>
     <div>
@@ -77,7 +77,7 @@
   </div>
 </div>
 
-<div class="block">
+<div id="text-overflow" class="block">
   <h2>Text Overflow</h2>
   <ul style="max-width: 100px;">
     <li
@@ -106,7 +106,7 @@
   <button (click)="changeContent()">Change Content</button>
 </div>
 
-<div class="block">
+<div id="custom-target" class="block">
   <h2>Custom Target</h2>
   <div
     helipopper="A tooltip for a nested span element"
@@ -139,7 +139,7 @@
   </div>
 </div>
 
-<div class="block">
+<div id="dynamic-container" class="block">
   <h2>Dynamic Container</h2>
   <div class="inline-block">
     <div helipopper="Knock knock. Who’s there? Cow says. Cow says who? No, a cow says mooooo!">
@@ -161,7 +161,7 @@
   </div>
 </div>
 
-<div class="block">
+<div id="sticky" class="block">
   <h2>Sticky</h2>
   <div class="inline-block">
     <div [helipopperSticky]="isSticky" helipopper="Knock knock. Who’s there? Spell. Spell who? Okay, okay: W. H. O.">
@@ -172,7 +172,7 @@
   </div>
 </div>
 
-<div class="block">
+<div id="custom-component" class="block">
   <h2>Custom Component</h2>
   <button
     [helipopper]="comp"
