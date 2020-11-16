@@ -10,9 +10,11 @@ import {
   NgZone,
   OnDestroy,
   Output,
+  PLATFORM_ID,
   TemplateRef,
   Type
 } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
 import tippy, { Instance, Props } from 'tippy.js';
 import { fromEvent, Subject } from 'rxjs';
 import { Options as PopperOptions } from '@popperjs/core';
@@ -28,7 +30,7 @@ import {
 } from './utils';
 import { takeUntil } from 'rxjs/operators';
 import { HELIPOPPER_CONFIG, HelipopperConfig, InstanceWithClose, Variation } from './helipopper.types';
-import { initialHelipopperOptions as initialOptions } from './helipopper-options';
+import { INITIAL_HELIPOPPER_OPTIONS, PartialHelipopperOptions } from './helipopper-options';
 
 const icon = `
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
@@ -41,10 +43,10 @@ type Content = string | TemplateRef<any> | Type<any>;
 @Directive({ selector: `[helipopper]`, exportAs: 'helipopper' })
 export class HelipopperDirective implements OnDestroy {
   @Input()
-  helipopperOptions: Partial<Props> = initialOptions.options;
+  helipopperOptions: Partial<Props> = this.initialOptions.options;
 
   @Input('helipopperTextOverflow')
-  showOnlyOnTextOverflow = initialOptions.textOverflow;
+  showOnlyOnTextOverflow = this.initialOptions.textOverflow;
 
   // The element that the trigger event listeners are added to
   @Input()
@@ -54,7 +56,7 @@ export class HelipopperDirective implements OnDestroy {
   helipopperHost: Element;
 
   @Input()
-  helipopperAppendTo: string | HTMLElement = initialOptions.appendTo;
+  helipopperAppendTo: string | HTMLElement = this.initialOptions.appendTo;
 
   @Input()
   helipopperTrigger: string | undefined;
@@ -63,7 +65,7 @@ export class HelipopperDirective implements OnDestroy {
   helipopperMaxWidth: 'none' | number;
 
   @Input()
-  helipopperAllowClose: boolean = initialOptions.allowClose;
+  helipopperAllowClose: boolean = this.initialOptions.allowClose;
 
   @Input()
   helipopperClass: string | Array<string> | undefined;
@@ -108,6 +110,17 @@ export class HelipopperDirective implements OnDestroy {
   }
 
   @Input() set helipopper(content: Content) {
+    // We shouldn't do anything on the server side,
+    // it will throw `requestAnimationFrame is not defined`,
+    // we could replace it with `setTimeout` on the server side,
+    // but `tippy.js` should be initialized only on the client side.
+    // The `tippy.js` library is browser-compatible only!
+    // It doesn't have any checks inside like `typeof window !== 'undefined`'
+    // and should it be called only if the code is executed on the client side.
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
     this._content = content;
 
     if (this.instance) {
@@ -126,9 +139,9 @@ export class HelipopperDirective implements OnDestroy {
 
   private _content: Content;
   private _destroy = new Subject();
-  private _placement: PopperOptions['placement'] = initialOptions.placement;
+  private _placement: PopperOptions['placement'] = this.initialOptions.placement;
   private _disabled = false;
-  private _variation: Variation = initialOptions.variation;
+  private _variation: Variation = this.initialOptions.variation;
   private instance: Instance;
   private tplPortal: TemplatePortal;
   private mergedConfig: HelipopperConfig;
@@ -141,7 +154,9 @@ export class HelipopperDirective implements OnDestroy {
     private zone: NgZone,
     private resolver: ComponentFactoryResolver,
     private hostInjector: Injector,
-    @Inject(HELIPOPPER_CONFIG) private config: HelipopperConfig
+    @Inject(PLATFORM_ID) private platformId: string,
+    @Inject(HELIPOPPER_CONFIG) config: HelipopperConfig,
+    @Inject(INITIAL_HELIPOPPER_OPTIONS) private initialOptions: PartialHelipopperOptions
   ) {
     this.mergedConfig = this.createConfig(config);
   }

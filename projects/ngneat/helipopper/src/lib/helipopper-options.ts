@@ -1,17 +1,27 @@
+import { inject, InjectionToken, Injector } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Options as PopperOptions } from '@popperjs/core';
 import { Props } from 'tippy.js';
 import { Variation } from './helipopper.types';
-import { Options as PopperOptions } from '@popperjs/core';
-import { Injector } from '@angular/core';
 
-export const initialHelipopperOptions: Partial<HelipopperOptions> = {
-  options: {},
-  textOverflow: false,
-  appendTo: document.body,
-  placement: 'top',
-  variation: 'tooltip',
-  disabled: false,
-  allowClose: true
-};
+export const INITIAL_HELIPOPPER_OPTIONS = new InjectionToken<Partial<HelipopperOptions>>('InitialHelipopperOptions', {
+  providedIn: 'root',
+  factory: () => {
+    const document = inject(DOCUMENT);
+    // The code actually shouldn't be executed on the server-side,
+    // but these options are "statically" initialized, thus Universal
+    // will throw an error "document is not defined".
+    return {
+      options: {},
+      textOverflow: false,
+      appendTo: document.body,
+      placement: 'top',
+      variation: 'tooltip',
+      disabled: false,
+      allowClose: true
+    };
+  }
+});
 
 export interface HelipopperOptions {
   options: Partial<Props>;
@@ -28,3 +38,10 @@ export interface HelipopperOptions {
   sticky: boolean;
   allowClose: boolean;
 }
+
+// This type exists because it is acceptable to the AOT compiler.
+// The AOT compiler throws:
+// `Could not resolve type Partial`
+// This happens if we use the `Partial` type in constructor, for instance:
+// `@Inject(OPTIONS) options: Partial<Options>`
+export type PartialHelipopperOptions = Partial<HelipopperOptions>;

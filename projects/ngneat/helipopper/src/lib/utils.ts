@@ -1,8 +1,13 @@
 import { fromEvent, Observable } from 'rxjs';
-import { auditTime, distinctUntilChanged, map, take } from 'rxjs/operators';
+import { auditTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { ElementRef, EmbeddedViewRef, TemplateRef } from '@angular/core';
 
-const hasSupport = 'IntersectionObserver' in window;
+let supportsIntersectionObserver = false,
+  supportsResizeObserver = false;
+if (typeof window !== 'undefined') {
+  supportsIntersectionObserver = 'IntersectionObserver' in window;
+  supportsResizeObserver = 'ResizeObserver' in window;
+}
 
 export function inView(
   element: HTMLElement,
@@ -12,9 +17,12 @@ export function inView(
   }
 ) {
   return new Observable(subscriber => {
-    if (!hasSupport) {
+    if (!supportsIntersectionObserver) {
       subscriber.next();
       subscriber.complete();
+      // If the browser doesn't support the `IntersectionObserver` then
+      // we "return" since it will throw `IntersectionObserver is not defined`.
+      return;
     }
 
     const observer = new IntersectionObserver(([entry]) => {
@@ -67,11 +75,10 @@ type ElementDimensions = {
   height: number;
 };
 
-const isSupportResizeObserver = 'ResizeObserver' in window;
 const AUDIT_TIME = 150;
 
 export function dimensionsChanges(target: HTMLElement, options?: ResizeObserverOptions) {
-  return isSupportResizeObserver
+  return supportsResizeObserver
     ? resizeObserverStrategy(target, options).pipe(auditTime(AUDIT_TIME))
     : resizeWindowStrategy(target);
 }
