@@ -363,7 +363,7 @@ export class HelipopperDirective implements OnDestroy {
 
   private destroyComponent() {
     this.innerComponentRef.destroy();
-    this.appRef.attachView(this.innerComponentRef.hostView);
+    this.appRef.detachView(this.innerComponentRef.hostView);
     this.innerComponentRef = null;
   }
 
