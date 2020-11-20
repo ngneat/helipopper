@@ -121,6 +121,9 @@ export class HelipopperDirective implements OnDestroy {
       return;
     }
 
+    // Clear previously created view
+    this.destroyView();
+
     this._content = content;
 
     if (this.instance) {

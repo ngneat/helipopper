@@ -186,7 +186,6 @@ You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/
 | helipopperOptions      | `tippy` options           | `tippy` options                                              | [docs](https://atomiks.github.io/tippyjs/v6/all-props)                 |
 | helipopperTextOverflow | `Boolean`                 | Show the tooltip only when the text overflows its container  | `false`                                                                |
 | helipopperSticky       | `Boolean`                 | Whether the tooltip should be sticky (i.e. always displayed) | `false`                                                                |
-| helipopperTarget       | `ElementRef` \| `Element` | The element(s) that the trigger event listeners are added to | `Host`                                                                 |  | Ex: `{ width: '100%', height: '70px' }` |
 | helipopperInjector     | `Injector` \| `undefined` | The custom injector to be provided                           | `none`                                                                 |
 
 ## Outputs
@@ -254,15 +253,17 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://www.netbasal.com/"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4" width="100px;" alt=""/><br /><sub><b>Netanel Basal</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=NetanelBasal" title="Code">💻</a> <a href="https://github.com/@ngneat/helipopper/commits?author=NetanelBasal" title="Documentation">📖</a> <a href="#ideas-NetanelBasal" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt=""/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=itayod" title="Code">💻</a></td>
-    <td align="center"><a href="https://gerome-dev.netlify.com/"><img src="https://avatars0.githubusercontent.com/u/32737308?v=4" width="100px;" alt=""/><br /><sub><b>Gérôme Grignon</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=geromegrignon" title="Code">💻</a></td>
-    <td align="center"><a href="https://medium.com/@overthesanity"><img src="https://avatars1.githubusercontent.com/u/7337691?v=4" width="100px;" alt=""/><br /><sub><b>Artur Androsovych</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=arturovt" title="Code">💻</a> <a href="https://github.com/@ngneat/helipopper/commits?author=arturovt" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://www.netbasal.com/"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Netanel Basal</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=NetanelBasal" title="Code">💻</a> <a href="https://github.com/@ngneat/helipopper/commits?author=NetanelBasal" title="Documentation">📖</a> <a href="#ideas-NetanelBasal" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=itayod" title="Code">💻</a></td>
+    <td align="center"><a href="https://gerome-dev.netlify.com/"><img src="https://avatars0.githubusercontent.com/u/32737308?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Gérôme Grignon</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=geromegrignon" title="Code">💻</a></td>
+    <td align="center"><a href="https://medium.com/@overthesanity"><img src="https://avatars1.githubusercontent.com/u/7337691?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Artur Androsovych</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=arturovt" title="Code">💻</a> <a href="https://github.com/@ngneat/helipopper/commits?author=arturovt" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/shaharkazaz"><img src="https://avatars2.githubusercontent.com/u/17194830?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Shahar Kazaz</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=shaharkazaz" title="Code">💻</a> <a href="https://github.com/@ngneat/helipopper/commits?author=shaharkazaz" title="Documentation">📖</a></td>
   </tr>
 </table>
 
-<!-- markdownlint-enable -->
+<!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
