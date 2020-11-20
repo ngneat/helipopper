@@ -22,7 +22,6 @@ export interface HelipopperOptions {
   helipopperOptions: Partial<Props>;
   helipopperTextOverflow: boolean;
   helipopperSticky: boolean;
-  helipopperTarget: Element;
 }
 
 export const HELIPOPPER_CONFIG = new InjectionToken<HelipopperConfig>('HELIPOPPER_CONFIG');
