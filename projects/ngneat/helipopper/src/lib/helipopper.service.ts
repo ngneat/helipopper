@@ -7,9 +7,9 @@ import {
   Injector,
   NgZone,
   PLATFORM_ID,
-  TemplateRef,
-  Type
+  TemplateRef
 } from '@angular/core';
+import { Type } from '@angular/core';
 import { HELIPOPPER_CONFIG, HelipopperConfig } from './helipopper.types';
 import { HelipopperDirective } from './helipopper.directive';
 import { INITIAL_HELIPOPPER_OPTIONS, PartialHelipopperOptions } from './helipopper-options';

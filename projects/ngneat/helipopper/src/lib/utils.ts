@@ -25,7 +25,9 @@ export function inView(
       return;
     }
 
-    const observer = new IntersectionObserver(([entry]) => {
+    const observer = new IntersectionObserver(entries => {
+      // Several changes may occur in the same tick, we want to check the latest entry state.
+      const entry = last(entries);
       if (entry.isIntersecting) {
         subscriber.next();
         subscriber.complete();
@@ -191,4 +193,8 @@ export class TemplatePortal {
 
     this.viewRef.destroy();
   }
+}
+
+function last<T>(arr: T[]): T {
+  return arr[arr.length - 1];
 }
