@@ -1,19 +1,17 @@
 import {
   ApplicationRef,
   ComponentFactoryResolver,
-  ComponentRef,
   Directive,
   ElementRef,
   Inject,
   Injector,
   Input,
   NgZone,
-  OnDestroy,
   Output,
   PLATFORM_ID,
-  TemplateRef,
-  Type
+  TemplateRef
 } from '@angular/core';
+import { ComponentRef, Type, OnDestroy } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import tippy, { Instance, Props } from 'tippy.js';
 import { fromEvent, Subject } from 'rxjs';
