@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.4](https://github.com/ngneat/helipopper/compare/v1.5.3...v1.5.4) (2020-11-22)
+
+
+### Bug Fixes
+
+* 🐛 several intersection events on the same tick ([6eab305](https://github.com/ngneat/helipopper/commit/6eab3056b5960a549932ac5cea0aff9fa1e1035f))
+
 ### [1.5.3](https://github.com/ngneat/helipopper/compare/v1.5.2...v1.5.3) (2020-11-20)
 
 
