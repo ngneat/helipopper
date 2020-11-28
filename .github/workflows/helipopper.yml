@@ -23,8 +23,8 @@ jobs:
           path: |
             node_modules
             ~/.cache
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-npm
+          key: ${{ runner.os }}-v1-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-v1-npm
 
       - uses: actions/setup-node@v1
         with:
