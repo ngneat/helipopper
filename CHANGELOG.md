@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.5](https://github.com/ngneat/helipopper/compare/v1.5.4...v1.5.5) (2020-11-28)
+
+
+### Bug Fixes
+
+* specify module type in `ModuleWithProviders` ([cef0703](https://github.com/ngneat/helipopper/commit/cef07031a121f4f40247f4eb29a152ee12d63896))
+
 ### [1.5.4](https://github.com/ngneat/helipopper/compare/v1.5.3...v1.5.4) (2020-11-22)
 
 
