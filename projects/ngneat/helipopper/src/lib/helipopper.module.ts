@@ -7,7 +7,7 @@ import { HELIPOPPER_CONFIG, HelipopperConfig } from './helipopper.types';
   exports: [HelipopperDirective]
 })
 export class HelipopperModule {
-  static forRoot(config: HelipopperConfig = {}): ModuleWithProviders {
+  static forRoot(config: HelipopperConfig = {}): ModuleWithProviders<HelipopperModule> {
     return {
       ngModule: HelipopperModule,
       providers: [
