@@ -215,6 +215,11 @@ export class AppModule {}
 ```
 
 - `closeIcon` - The svg close icon that'll be used inside the popper.
+- `allowHTML` - Determines if `content` strings are parsed as HTML instead of text.
+- `arrow` - Determines if the tooltip has an arrow.
+- `placement` - The preferred placement of the tootltip
+- `hideOnClick` - Determines if the tooltip hides upon clicking the reference or outside of the tippy.
+- `moveTransition` - Specifies the transition applied to the root positioned popper node.
 
 ## Attach the Popper Manually
 

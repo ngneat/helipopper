@@ -1,7 +1,7 @@
 import { Instance, Props } from 'tippy.js';
 import { Subscription } from 'rxjs';
 import { ElementRef, InjectionToken } from '@angular/core';
-import { Options as PopperOptions } from '@popperjs/core';
+import { Options as PopperOptions, Placement } from '@popperjs/core';
 
 export type Variation = 'popper' | 'tooltip';
 export type InstanceWithClose = Instance & { closeButtonElement: HTMLElement; closeButtonSubscription: Subscription };
@@ -10,6 +10,11 @@ export type Element = HTMLElement | ElementRef | undefined;
 export type HelipopperConfig = {
   beforeRender?(content: string): string;
   closeIcon?: string;
+  allowHTML?: boolean;
+  arrow?: string | boolean | DocumentFragment | SVGElement;
+  placement?: Placement;
+  hideOnClick?: boolean;
+  moveTransition?: string;
 };
 
 export interface HelipopperOptions {
