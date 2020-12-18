@@ -42,23 +42,21 @@ export class HelipopperService {
 
     directive.helipopper = helipopper;
 
-    directive.helipopperOptions = options?.options || this.initialOptions.options;
+    directive.tippyOptions = options?.options || this.initialOptions.options;
     directive.showOnlyOnTextOverflow = isDefined(options?.textOverflow)
       ? options?.textOverflow
       : this.initialOptions.textOverflow;
-    directive.triggerTarget = options?.triggerTarget;
-    directive.helipopperAppendTo = options?.appendTo || this.initialOptions.appendTo;
-    directive.helipopperTrigger = options?.trigger;
-    directive.helipopperClass = options?.class;
-    directive.helipopperOffset = options?.offset;
+    directive.popperTriggerTarget = options?.triggerTarget;
+    directive.popperAppendTo = options?.appendTo || this.initialOptions.appendTo;
+    directive.popperTrigger = options?.trigger;
+    // directive.popperClassName = options?.class;
+    directive.popperOffset = options?.offset;
     directive.injector = options?.injector;
     directive.placement = options?.placement || this.initialOptions.placement;
     directive.variation = options?.variation || this.initialOptions.variation;
     directive.disabled = isDefined(options?.disabled) ? options?.disabled : this.initialOptions.disabled;
     directive.sticky = options?.sticky;
-    directive.helipopperAllowClose = isDefined(options?.allowClose)
-      ? options?.allowClose
-      : this.initialOptions.allowClose;
+    directive.popperAllowClose = isDefined(options?.allowClose) ? options?.allowClose : this.initialOptions.allowClose;
 
     directive.whenStable.subscribe(() => directive.show());
 

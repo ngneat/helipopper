@@ -3,7 +3,6 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { ExampleComponent } from './example/example.component';
 import { interval } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { HelipopperDirective, HelipopperService } from '@ngneat/helipopper';
 import { MenuComponent } from './menu/menu.component';
 
 @Component({
@@ -18,7 +17,9 @@ export class AppComponent implements AfterViewInit {
     { label: 'center', value: '' },
     { label: 'end', value: '-end' }
   ];
+
   tooltipTypes = ['popper', 'tooltip'];
+
   tooltipSettings = this.fb.group({
     type: this.fb.control('tooltip'),
     alignment: this.fb.control(''),
@@ -53,15 +54,15 @@ export class AppComponent implements AfterViewInit {
   menu = MenuComponent;
   formControl = new FormControl();
   formControlWithComp = new FormControl();
-  popper: HelipopperDirective;
-  popperWithComp: HelipopperDirective;
-  popperWithNestedComp: HelipopperDirective;
-
+  popper: any;
+  popperWithComp: any;
+  popperWithNestedComp: any;
+  service: any;
   changeContent() {
     this.text = this.text === `Long Long All Text` ? `Short` : `Long Long All Text`;
   }
 
-  constructor(private fb: FormBuilder, private service: HelipopperService) {}
+  constructor(private fb: FormBuilder) {}
 
   @ViewChild('inputName', { static: true }) inputName: ElementRef;
   @ViewChild('inputNameComp', { static: true }) inputNameComp: ElementRef;

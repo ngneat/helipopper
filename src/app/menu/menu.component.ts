@@ -1,5 +1,4 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
-import { HelipopperService } from '@ngneat/helipopper';
 
 @Component({
   selector: 'app-menu',
@@ -13,11 +12,11 @@ export class MenuComponent {
     this.openPopper();
   }
 
-  constructor(private el: ElementRef, private service: HelipopperService) {}
+  constructor(private el: ElementRef) {}
 
   openPopper() {
-    this.service.open(this.el, this.comp, {
-      variation: 'popper'
-    });
+    // this.service.open(this.el, this.comp, {
+    //   variation: 'popper'
+    // });
   }
 }

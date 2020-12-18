@@ -75,7 +75,8 @@ Now you can use it:
 #### Component:
 
 ```html
-<button [helipopper]="component" (helipopperClose)="onClose()">
+
+<button [helipopper]='component' (popperClose)='onClose()'>
   Click Me
 </button>
 ```
@@ -83,7 +84,8 @@ Now you can use it:
 #### Handle current status as boolean
 
 ```html
-<button helipopper="Helpful Message" (helipopperVisible)="handleStatus($event)">
+
+<button helipopper='Helpful Message' (popperVisible)='handleStatus($event)'>
   Click Me
 </button>
 ```
@@ -109,10 +111,10 @@ handleStatus($event: boolean): void {
 #### Manual Trigger:
 
 ```html
-<span helipopper="Helpful Message" helipopperTrigger="manual" #tooltip="helipopper">Click Open to see me</span>
+<span helipopper='Helpful Message' popperTrigger='manual' #tooltip='helipopper'>Click Open to see me</span>
 
-<button (click)="tooltip.show()">Open</button>
-<button (click)="tooltip.hide()">Close</button>
+<button (click)='tooltip.show()'>Open</button>
+<button (click)='tooltip.hide()'>Close</button>
 ```
 
 You can see more examples in our [playground](https://github.com/ngneat/helipopper/blob/master/src/app/app.component.html), or live [here](https://ngneat.github.io/helipopper/).

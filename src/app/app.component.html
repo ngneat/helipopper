@@ -1,104 +1,115 @@
-<div [formGroup]="tooltipSettings">
-  <div>
-    <div>Tooltip type</div>
-    <div *ngFor="let option of tooltipTypes">
-      <input type="radio" formControlName="type" name="type" [value]="option" />
-      {{ option }}
-    </div>
-  </div>
-  <div>
-    <div>Tooltip placement</div>
-    <div *ngFor="let option of tooltipPositions">
-      <input type="radio" formControlName="position" name="position" [value]="option" />{{ option }}
-    </div>
-  </div>
-  <div>
-    <div>Tooltip alignment</div>
-    <div *ngFor="let option of tooltipAlignments">
-      <input type="radio" formControlName="alignment" name="alignment" [value]="option.value" />{{ option.label }}
-    </div>
+<div [formGroup]="tooltipSettings" style="text-transform: capitalize">
+  <div *ngFor="let option of tooltipTypes" class="flex items-center">
+    <input type="radio" formControlName="type" name="type" [value]="option" class="mr-4" />
+    {{ option }}
   </div>
 
-  <div>
-    <button helipopper="Helpful Message" [helipopperPlacement]="tooltipPosition" [helipopperVariation]="tooltipType">
+  <hr />
+
+  <div *ngFor="let option of tooltipPositions" class="flex items-center">
+    <input type="radio" formControlName="position" name="position" [value]="option" class="mr-4" />{{ option }}
+  </div>
+
+  <hr />
+
+  <div *ngFor="let option of tooltipAlignments" class="flex items-center">
+    <input type="radio" formControlName="alignment" name="alignment" [value]="option.value" class="mr-4" />{{
+      option.label
+    }}
+  </div>
+
+  <div class="btn-container">
+    <button
+      class="btn btn-outline-primary"
+      tippy="Helpful Message"
+      [placement]="tooltipPosition"
+      [variation]="tooltipType"
+    >
       I have a tooltip
     </button>
   </div>
 </div>
 
-<div id="lazy" class="block">
-  <h2>Lazy</h2>
-  <div style="height: 300px; overflow-y: auto">
-    <div *ngFor="let item of items" [helipopper]="item.label">{{ item.label }}</div>
+<hr />
+
+<div id="custom-template">
+  <h6>Custom Template</h6>
+
+  <div class="btn-container">
+    <button [tippy]="tpl" variation="popper" class="btn btn-outline-secondary">Click Me</button>
   </div>
-</div>
 
-<div id="manual-trigger" class="block">
-  <h2>Manual Trigger</h2>
-  <span helipopper="Helpful Message" helipopperTrigger="manual" #tooltip="helipopper">Click open to see me </span>
-
-  <button (click)="tooltip.show()">Open</button>
-  <button (click)="tooltip.hide()">Close</button>
-</div>
-
-<div id="custom-template" class="block">
-  <h2>Custom Template</h2>
-  <button [helipopper]="tpl" helipopperVariation="popper">
-    Click Me
-  </button>
-
-  <ng-template #tpl>
+  <ng-template #tpl let-hide>
     <div>
-      <div [helipopper]="thoughts">
-        {{ interval$ | async }}
+      <div [tippy]="thoughts">
+        <span>{{ interval$ | async }}</span>
         <div *ngFor="let msg of messages">{{ msg }}</div>
       </div>
       <div>
-        <button (click)="talk()">Click to talk ☮️️</button>
+        <button (click)="talk(); hide()">Click to talk️</button>
       </div>
     </div>
   </ng-template>
 </div>
 
-<div id="disabled" class="block">
-  <h2>Disabled</h2>
-  <div>
-    <div>
-      <div [helipopperDisabled]="isDisabled" helipopper="I can't tell you, it's a Secret 🤫">
-        {{ isDisabled ? 'No tooltip' : 'Hover me to read a secret' }}
-      </div>
+<hr />
 
-      <div [helipopperDisabled]="isDisabled" helipopperTrigger="click" helipopper="Disabling me will also hide me">
-        click me to read a secret
-      </div>
-    </div>
+<div id="custom-component">
+  <h6>Custom Component</h6>
 
-    <button (click)="toggle()">Toggle Disable State</button>
+  <div class="btn-container">
+    <button class="btn btn-outline-danger" [tippy]="comp" variation="popper" (visible)="handleStatus($event)">
+      Open component
+    </button>
   </div>
 </div>
 
-<div id="text-overflow" class="block">
-  <h2>Text Overflow</h2>
+<hr />
+
+<div id="manual-trigger" class="block">
+  <h6>Manual Trigger</h6>
+
+  <div class="btn-container items-center">
+    <p tippy="Helpful Message" trigger="manual" #tippy="tippy" class="mr-4">Click open to see me</p>
+
+    <button (click)="tippy.show()" class="btn btn-outline-dark">Open</button>
+    <button (click)="tippy.hide()" class="btn btn-outline-dark">Close</button>
+  </div>
+</div>
+
+<hr />
+
+<div id="lazy">
+  <h6>Lazy</h6>
+  <div style="height: 300px; overflow-y: auto">
+    <div *ngFor="let item of items" [tippy]="item.label" [lazy]="true">{{ item.label }}</div>
+  </div>
+</div>
+
+<hr />
+
+<div id="disabled">
+  <h6>Disabled</h6>
+
+  <div class="btn-container">
+    <button [isEnable]="!isDisabled" tippy="Tooltip" class="btn btn-outline-dark">Element</button>
+  </div>
+
+  <button (click)="toggle()" class="btn btn-outline-primary btn-sm">{{ isDisabled ? 'Enable' : 'Disable' }}</button>
+</div>
+
+<hr />
+
+<div id="text-overflow">
+  <h6>Text Overflow</h6>
   <ul style="max-width: 100px;">
-    <li
-      class="ellipsis"
-      [helipopper]="text"
-      helipopperPlacement="right"
-      [helipopperTextOverflow]="true"
-      style="display: inline-block"
-    >
+    <li class="ellipsis" [tippy]="text" placement="right" [onlyTextOverflow]="true" style="display: inline-block">
       {{ text }}
     </li>
   </ul>
 
   <ul style="max-width: 400px;">
-    <li
-      class="ellipsis"
-      [helipopper]="text"
-      helipopperPlacement="top"
-      [helipopperTextOverflow]="true"
-      style="display: inline-block"
-    >
+    <li class="ellipsis" [tippy]="text" placement="top" [onlyTextOverflow]="true" style="display: inline-block">
       It should work with <b>resize</b>. This tooltip is on 🔥
     </li>
   </ul>
@@ -106,117 +117,50 @@
   <button (click)="changeContent()">Change Content</button>
 </div>
 
-<div id="custom-target" class="block">
-  <h2>Custom Target</h2>
-  <div
-    helipopper="A tooltip for a nested span element"
-    helipopperPlacement="right"
-    [helipopperHost]="nestedTooltipElement"
-  >
-    <div>
-      <span class="inline-block">Hovering my container won't affect me</span>
-      <span class="inline-block">Hovering my container won't affect me</span>
-      <span #nestedTooltipElement class="inline-block">Hovering my container will show my tooltip</span>
-      <span class="inline-block">Hovering my container won't affect me</span>
-    </div>
-  </div>
+<!--<div id="sticky" class="block">-->
+<!--  <h2>Sticky</h2>-->
+<!--  <div class="inline-block">-->
+<!--    <div [helipopperSticky]="isSticky" helipopper="Knock knock. Who’s there? Spell. Spell who? Okay, okay: W. H. O.">-->
+<!--      Hover me to read a joke-->
+<!--    </div>-->
 
-  <hr class="hr" />
+<!--    <button (click)="toggleSticky()">{{ isSticky ? 'Hide sticky tooltip' : 'Make the tooltip sticky' }}</button>-->
+<!--  </div>-->
+<!--</div>-->
 
-  <div #outerTooltipElement>
-    <div>
-      <span class="inline-block">Hovering me won't trigger my container tooltip</span>
-      <span class="inline-block">Hovering me won't trigger my container tooltip</span>
-      <span
-        [helipopperHost]="outerTooltipElement"
-        helipopper="A tooltip for an outer div element"
-        helipopperPlacement="right"
-        class="inline-block"
-      >
-        Hovering me will trigger the tooltip based on the container dims</span
-      >
-    </div>
-  </div>
-</div>
+<!--<div class="block">-->
+<!--  <h2>Attach the popper manually</h2>-->
+<!--  <fieldset>-->
+<!--    <legend>Enter your name</legend>-->
+<!--    <input #inputName type="text" [formControl]="formControl" (keyup.enter)="submit()" />-->
+<!--  </fieldset>-->
+<!--</div>-->
 
-<div id="dynamic-container" class="block">
-  <h2>Dynamic Container</h2>
-  <div class="inline-block">
-    <div helipopper="Knock knock. Who’s there? Cow says. Cow says who? No, a cow says mooooo!">
-      I'll appended to the document by default
-    </div>
+<!--<div class="block">-->
+<!--  <h2>Attach the popper manually (with provided component)</h2>-->
+<!--  <fieldset>-->
+<!--    <legend>Enter your name</legend>-->
+<!--    <input #inputNameComp type="text" [formControl]="formControlWithComp" (keyup.enter)="submitWithComp()" />-->
+<!--  </fieldset>-->
+<!--</div>-->
 
-    <div
-      helipopperAppendTo=".inline-block"
-      helipopper="Knock knock. Who’s there? A little old lady. A little old lady who? All this time, I had no idea you could yodel."
-    >
-      I'll appended to the closest .inline-block I find
-    </div>
+<!--<div class="block">-->
+<!--  <h2>Nested menu</h2>-->
+<!--  <button [helipopper]="menu" helipopperVariation="popper" (helipopperClose)="close()">menu</button>-->
+<!--</div>-->
 
-    <div #someElement>
-      <div [helipopperAppendTo]="someElement" helipopper="Knock knock. Who’s there? Etch. Etch who? Bless you, friend">
-        I'll appended to the the HTML element you've told me.
-      </div>
-    </div>
-  </div>
-</div>
+<!--<div class="block">-->
+<!--  <h2>Multiple child nodes</h2>-->
 
-<div id="sticky" class="block">
-  <h2>Sticky</h2>
-  <div class="inline-block">
-    <div [helipopperSticky]="isSticky" helipopper="Knock knock. Who’s there? Spell. Spell who? Okay, okay: W. H. O.">
-      Hover me to read a joke
-    </div>
+<!--  <button [helipopper]="multipleChildNodes" helipopperVariation="popper">-->
+<!--    Click Me-->
+<!--  </button>-->
 
-    <button (click)="toggleSticky()">{{ isSticky ? 'Hide sticky tooltip' : 'Make the tooltip sticky' }}</button>
-  </div>
-</div>
+<!--  <ng-template #multipleChildNodes>-->
+<!--    <ng-container>-->
+<!--      <div *ngFor="let message of messages">{{ message }}</div>-->
+<!--    </ng-container>-->
 
-<div id="custom-component" class="block">
-  <h2>Custom Component</h2>
-  <button
-    [helipopper]="comp"
-    helipopperVariation="popper"
-    (helipopperClose)="close()"
-    (helipopperVisible)="handleStatus($event)"
-  >
-    Open component
-  </button>
-</div>
-
-<div class="block">
-  <h2>Attach the popper manually</h2>
-  <fieldset>
-    <legend>Enter your name</legend>
-    <input #inputName type="text" [formControl]="formControl" (keyup.enter)="submit()" />
-  </fieldset>
-</div>
-
-<div class="block">
-  <h2>Attach the popper manually (with provided component)</h2>
-  <fieldset>
-    <legend>Enter your name</legend>
-    <input #inputNameComp type="text" [formControl]="formControlWithComp" (keyup.enter)="submitWithComp()" />
-  </fieldset>
-</div>
-
-<div class="block">
-  <h2>Nested menu</h2>
-  <button [helipopper]="menu" helipopperVariation="popper" (helipopperClose)="close()">menu</button>
-</div>
-
-<div class="block">
-  <h2>Multiple child nodes</h2>
-
-  <button [helipopper]="multipleChildNodes" helipopperVariation="popper">
-    Click Me
-  </button>
-
-  <ng-template #multipleChildNodes>
-    <ng-container>
-      <div *ngFor="let message of messages">{{ message }}</div>
-    </ng-container>
-
-    <button (click)="talk()">Click to talk ☮️️</button>
-  </ng-template>
-</div>
+<!--    <button (click)="talk()">Click to talk ☮️️</button>-->
+<!--  </ng-template>-->
+<!--</div>-->
