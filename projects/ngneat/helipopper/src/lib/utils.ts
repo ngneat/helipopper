@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
-import { auditTime } from 'rxjs/operators';
+import { auditTime, map } from 'rxjs/operators';
+import { coerceElement, TippyElement } from './tippy.types';
 
 declare const ResizeObserver: any;
 
@@ -38,6 +39,24 @@ export function inView(
 
     return () => observer.disconnect();
   });
+}
+
+function isElementOverflow(host: HTMLElement) {
+  const parentEl = host.parentElement;
+  const parentTest = host.offsetWidth > parentEl.offsetWidth;
+  const elementTest = host.offsetWidth < host.scrollWidth;
+
+  return parentTest || elementTest;
+}
+
+export function overflowChanges(host: TippyElement) {
+  const element = coerceElement(host);
+
+  return dimensionsChanges(element).pipe(
+    map(() => {
+      return isElementOverflow(element);
+    })
+  );
 }
 
 export function dimensionsChanges(target: HTMLElement) {

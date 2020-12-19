@@ -9,14 +9,16 @@ import {
   OnChanges,
   OnDestroy,
   Output,
+  PLATFORM_ID,
   ViewContainerRef
 } from '@angular/core';
 import tippy from 'tippy.js';
 import { NgChanges, TIPPY_CONFIG, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
-import { dimensionsChanges, inView } from './utils';
+import { inView, overflowChanges } from './utils';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Content, ViewRef, ViewService } from '@ngneat/overview';
+import { isPlatformServer } from '@angular/common';
 
 @Directive({
   selector: '[tippy]',
@@ -56,6 +58,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
   private variationDefined = false;
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: string,
     @Inject(TIPPY_CONFIG) private globalConfig: Partial<TippyConfig>,
     private viewService: ViewService,
     private vcr: ViewContainerRef,
@@ -64,6 +67,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnChanges(changes: NgChanges<TippyDirective>) {
+    if (isPlatformServer(this.platformId)) return;
+
     if (changes.content) {
       this.view = changes.content.currentValue;
     }
@@ -109,10 +114,10 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
           this.createInstance();
         });
     } else if (this.onlyTextOverflow) {
-      dimensionsChanges(this.host.nativeElement)
+      overflowChanges(this.host)
         .pipe(takeUntil(this.destroyed))
-        .subscribe(() => {
-          if (this.isElementOverflow()) {
+        .subscribe(isElementOverflow => {
+          if (isElementOverflow) {
             if (!this.instance) {
               this.createInstance();
             } else {
@@ -195,15 +200,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
     });
 
     return this.viewRef.getElement();
-  }
-
-  private isElementOverflow() {
-    const element = this.host.nativeElement;
-    const parentEl = element.parentElement;
-    const parentTest = element.offsetWidth > parentEl.offsetWidth;
-    const elementTest = element.offsetWidth < element.scrollWidth;
-
-    return parentTest || elementTest;
   }
 }
 

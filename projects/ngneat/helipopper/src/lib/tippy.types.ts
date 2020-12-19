@@ -1,5 +1,5 @@
 import { Instance, Props } from 'tippy.js';
-import { InjectionToken } from '@angular/core';
+import { ElementRef, InjectionToken } from '@angular/core';
 import { ViewOptions } from '@ngneat/overview';
 
 export interface CreateOptions extends Partial<TippyProps>, ViewOptions {
@@ -36,3 +36,9 @@ export interface TippyConfig extends TippyProps {
   variations: Record<string, Partial<TippyProps>>;
   defaultVariation: keyof TippyConfig['variations'];
 }
+
+export function coerceElement(element: TippyElement) {
+  return element instanceof ElementRef ? element.nativeElement : element;
+}
+
+export type TippyElement = ElementRef | Element;
