@@ -32,6 +32,14 @@
 
 <hr />
 
+<h6>Default variation</h6>
+
+<div class="btn-container">
+  <button tippy="Default tooltip" class="btn btn-outline-secondary">Click Me</button>
+</div>
+
+<hr />
+
 <div id="custom-template">
   <h6>Custom Template</h6>
 
@@ -40,15 +48,23 @@
   </div>
 
   <ng-template #tpl let-hide>
-    <div>
-      <div [tippy]="thoughts">
-        <span>{{ interval$ | async }}</span>
-        <div *ngFor="let msg of messages">{{ msg }}</div>
-      </div>
-      <div>
-        <button (click)="talk(); hide()">Click to talk️</button>
-      </div>
+    <div [tippy]="thoughts">
+      <span>{{ interval$ | async }}</span>
+      <button (click)="hide()" class="btn btn-outline-danger btn-sm mt-2">Close</button>
     </div>
+  </ng-template>
+
+  <hr />
+
+  <h6>ng-container</h6>
+  <div class="btn-container">
+    <button [tippy]="tpl2" variation="popper" class="btn btn-outline-secondary">Click Me</button>
+  </div>
+
+  <ng-template #tpl2>
+    <ng-container>
+      <div>Hello</div>
+    </ng-container>
   </ng-template>
 </div>
 
@@ -102,65 +118,35 @@
 
 <div id="text-overflow">
   <h6>Text Overflow</h6>
-  <ul style="max-width: 100px;">
-    <li class="ellipsis" [tippy]="text" placement="right" [onlyTextOverflow]="true" style="display: inline-block">
+
+  <p>Start with overflow and change to not overflow</p>
+  <div style="max-width: 100px;" class="overflow-hidden flex">
+    <p class="ellipsis" [tippy]="text" placement="right" [onlyTextOverflow]="true">
       {{ text }}
-    </li>
-  </ul>
+    </p>
+  </div>
 
-  <ul style="max-width: 400px;">
-    <li class="ellipsis" [tippy]="text" placement="top" [onlyTextOverflow]="true" style="display: inline-block">
-      It should work with <b>resize</b>. This tooltip is on 🔥
-    </li>
-  </ul>
+  <button (click)="changeContent()" class="btn btn-outline-info btn-sm mt-2">Change content</button>
 
-  <button (click)="changeContent()">Change Content</button>
+  <hr />
+
+  <p>Start with not overflow and change to overflow</p>
+  <div [style.maxWidth.px]="maxWidth" class="overflow-hidden flex">
+    <p class="ellipsis" [tippy]="text" placement="right" [onlyTextOverflow]="true">
+      {{ text }}
+    </p>
+  </div>
+
+  <button (click)="maxWidth = 100" class="btn btn-outline-info btn-sm mt-2">Change width</button>
 </div>
 
-<!--<div id="sticky" class="block">-->
-<!--  <h2>Sticky</h2>-->
-<!--  <div class="inline-block">-->
-<!--    <div [helipopperSticky]="isSticky" helipopper="Knock knock. Who’s there? Spell. Spell who? Okay, okay: W. H. O.">-->
-<!--      Hover me to read a joke-->
-<!--    </div>-->
+<hr />
 
-<!--    <button (click)="toggleSticky()">{{ isSticky ? 'Hide sticky tooltip' : 'Make the tooltip sticky' }}</button>-->
-<!--  </div>-->
-<!--</div>-->
+<div id="service">
+  <h6>Using the Service</h6>
 
-<!--<div class="block">-->
-<!--  <h2>Attach the popper manually</h2>-->
-<!--  <fieldset>-->
-<!--    <legend>Enter your name</legend>-->
-<!--    <input #inputName type="text" [formControl]="formControl" (keyup.enter)="submit()" />-->
-<!--  </fieldset>-->
-<!--</div>-->
-
-<!--<div class="block">-->
-<!--  <h2>Attach the popper manually (with provided component)</h2>-->
-<!--  <fieldset>-->
-<!--    <legend>Enter your name</legend>-->
-<!--    <input #inputNameComp type="text" [formControl]="formControlWithComp" (keyup.enter)="submitWithComp()" />-->
-<!--  </fieldset>-->
-<!--</div>-->
-
-<!--<div class="block">-->
-<!--  <h2>Nested menu</h2>-->
-<!--  <button [helipopper]="menu" helipopperVariation="popper" (helipopperClose)="close()">menu</button>-->
-<!--</div>-->
-
-<!--<div class="block">-->
-<!--  <h2>Multiple child nodes</h2>-->
-
-<!--  <button [helipopper]="multipleChildNodes" helipopperVariation="popper">-->
-<!--    Click Me-->
-<!--  </button>-->
-
-<!--  <ng-template #multipleChildNodes>-->
-<!--    <ng-container>-->
-<!--      <div *ngFor="let message of messages">{{ message }}</div>-->
-<!--    </ng-container>-->
-
-<!--    <button (click)="talk()">Click to talk ☮️️</button>-->
-<!--  </ng-template>-->
-<!--</div>-->
+  <div class="btn-container">
+    <button class="btn btn-outline-dark" (click)="useService(host)" #host>Text</button>
+    <button class="btn btn-outline-dark" (click)="useServiceComponent(host2)" #host2>Component</button>
+  </div>
+</div>

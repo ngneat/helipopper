@@ -5,7 +5,8 @@
   "schematics": "./schematics/collection.json",
   "dependencies": {
     "tslib": "^1.10.0",
-    "tippy.js": "^6.2.3"
+    "tippy.js": "^6.2.3",
+    "@ngneat/overview": "^1.0.0-beta.0"
   },
   "keywords": [
     "angular",

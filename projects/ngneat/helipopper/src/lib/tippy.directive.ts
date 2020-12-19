@@ -1,9 +1,7 @@
 import {
   AfterViewInit,
-  ComponentFactoryResolver,
   Directive,
   ElementRef,
-  EmbeddedViewRef,
   EventEmitter,
   Inject,
   Input,
@@ -11,54 +9,55 @@ import {
   OnChanges,
   OnDestroy,
   Output,
-  TemplateRef,
-  ViewContainerRef,
-  ViewRef
+  ViewContainerRef
 } from '@angular/core';
-import tippy, { Instance, Props } from 'tippy.js';
-import { Content, NgChanges, TIPPY_CONFIG, TippyConfig } from './tippy.types';
-import { dimensionsChanges } from './utils';
+import tippy from 'tippy.js';
+import { NgChanges, TIPPY_CONFIG, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
+import { dimensionsChanges, inView } from './utils';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Content, ViewRef, ViewService } from '@ngneat/overview';
 
 @Directive({
   selector: '[tippy]',
   exportAs: 'tippy'
 })
 export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
-  @Input() appendTo: Props['appendTo'];
-  @Input() delay: Props['delay'];
-  @Input() duration: Props['duration'];
-  @Input() hideOnClick: Props['hideOnClick'];
-  @Input() interactive: Props['interactive'];
-  @Input() interactiveBorder: Props['interactiveBorder'];
-  @Input() maxWidth: Props['maxWidth'];
-  @Input() offset: Props['offset'];
-  @Input() placement: Props['placement'];
-  @Input() popperOptions: Props['popperOptions'];
-  @Input() showOnCreate: Props['showOnCreate'];
-  @Input() trigger: Props['trigger'];
-  @Input() triggerTarget: Props['triggerTarget'];
-  @Input() zIndex: Props['zIndex'];
+  @Input() appendTo: TippyProps['appendTo'];
+  @Input() delay: TippyProps['delay'];
+  @Input() duration: TippyProps['duration'];
+  @Input() hideOnClick: TippyProps['hideOnClick'];
+  @Input() interactive: TippyProps['interactive'];
+  @Input() interactiveBorder: TippyProps['interactiveBorder'];
+  @Input() maxWidth: TippyProps['maxWidth'];
+  @Input() offset: TippyProps['offset'];
+  @Input() placement: TippyProps['placement'];
+  @Input() popperOptions: TippyProps['popperOptions'];
+  @Input() showOnCreate: TippyProps['showOnCreate'];
+  @Input() trigger: TippyProps['trigger'];
+  @Input() triggerTarget: TippyProps['triggerTarget'];
+  @Input() zIndex: TippyProps['zIndex'];
 
   @Input() lazy: boolean;
   @Input() variation: string;
   @Input() isEnable: boolean;
   @Input() className: string;
   @Input() onlyTextOverflow = false;
-
   @Input('tippy') content: Content;
 
   @Output() visible = new EventEmitter<boolean>();
 
-  private instance: Instance;
+  private instance: TippyInstance;
   private view: Content;
   private viewRef: ViewRef;
   private destroyed = new Subject();
+  private props: Partial<TippyConfig>;
+  private enabled = true;
+  private variationDefined = false;
 
   constructor(
-    @Inject(TIPPY_CONFIG) private config: Partial<TippyConfig>,
-    private resolver: ComponentFactoryResolver,
+    @Inject(TIPPY_CONFIG) private globalConfig: Partial<TippyConfig>,
+    private viewService: ViewService,
     private vcr: ViewContainerRef,
     private zone: NgZone,
     private host: ElementRef
@@ -69,102 +68,63 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
       this.view = changes.content.currentValue;
     }
 
-    if (!this.instance) {
-      const variation = changes.variation?.currentValue || this.config.defaultVariation;
+    let props: Partial<TippyConfig> = Object.keys(changes).reduce((acc, change) => {
+      acc[change] = changes[change].currentValue;
 
-      this.instance = tippy(
-        this.host.nativeElement as HTMLElement,
-        mergeVariation(this.config.variations[variation], {
-          content: undefined,
-          allowHTML: true,
-          appendTo: this.resolveValue('appendTo'),
-          delay: this.resolveValue('delay'),
-          duration: this.resolveValue('duration'),
-          hideOnClick: this.resolveValue('hideOnClick'),
-          interactive: this.resolveValue('interactive'),
-          interactiveBorder: this.resolveValue('interactiveBorder'),
-          maxWidth: this.resolveValue('maxWidth'),
-          offset: this.resolveValue('offset'),
-          placement: this.resolveValue('placement'),
-          popperOptions: this.resolveValue('popperOptions'),
-          showOnCreate: this.resolveValue('showOnCreate'),
-          trigger: this.resolveValue('trigger'),
-          triggerTarget: this.resolveValue('triggerTarget'),
-          zIndex: this.resolveValue('zIndex'),
-          onCreate: instance => {
-            this.className && instance.popper.classList.add(this.className);
-            this.config.onCreate?.(instance);
-          },
-          onShow: instance => {
-            this.zone.run(() => this.instance.setContent(this.resolveContent()));
-            this.visible.next(true);
-            this.config.onShow?.(instance);
-          },
-          onHidden: instance => {
-            this.destroyView();
-            this.visible.next(false);
-            this.config.onHidden?.(instance);
-          }
-        })
-      );
-    } else {
-      let props: Partial<TippyConfig> = Object.keys(changes).reduce((acc, change) => {
-        acc[change] = changes[change].currentValue;
+      return acc;
+    }, {});
 
-        return acc;
-      }, {});
+    let variation: string;
 
-      if (isChanged<NgChanges<TippyDirective>>('variation', changes)) {
-        props = {
-          ...this.config.variations?.[changes.variation.currentValue],
-          ...props
-        };
-      }
+    if (isChanged<NgChanges<TippyDirective>>('variation', changes)) {
+      variation = changes.variation.currentValue;
+    } else if (!this.variationDefined) {
+      variation = this.globalConfig.defaultVariation;
+      this.variationDefined = true;
+    }
 
-      this.instance.setProps(props);
+    if (variation) {
+      props = {
+        ...this.globalConfig.variations[variation],
+        ...props
+      };
     }
 
     if (isChanged<NgChanges<TippyDirective>>('isEnable', changes)) {
-      changes.isEnable.currentValue ? this.enable() : this.disable();
+      this.enabled = changes.isEnable.currentValue;
+      this.setStatus();
     }
+
+    // We don't want to save the content, we control it manually
+    delete props.content;
+
+    this.setProps(props);
   }
 
   ngAfterViewInit() {
-    if (this.onlyTextOverflow) {
+    if (this.lazy) {
+      inView(this.host.nativeElement)
+        .pipe(takeUntil(this.destroyed))
+        .subscribe(() => {
+          this.createInstance();
+        });
+    } else if (this.onlyTextOverflow) {
       dimensionsChanges(this.host.nativeElement)
         .pipe(takeUntil(this.destroyed))
         .subscribe(() => {
-          this.isElementOverflow() ? this.enable() : this.disable();
+          if (this.isElementOverflow()) {
+            if (!this.instance) {
+              this.createInstance();
+            } else {
+              this.instance.enable();
+            }
+          } else {
+            this.instance?.disable();
+          }
         });
-    }
-  }
-
-  private resolveContent() {
-    if (typeof this.view === 'string') {
-      return this.view;
-    }
-
-    if (this.view instanceof TemplateRef) {
-      this.viewRef = this.vcr.createEmbeddedView(this.view, {
-        $implicit: this.hide.bind(this)
-      });
-      return (this.viewRef as EmbeddedViewRef<any>).rootNodes[0];
     } else {
-      const factory = this.resolver.resolveComponentFactory(this.view);
-      const ref = this.vcr.createComponent(factory);
-      this.viewRef = ref.hostView;
-
-      return ref.location.nativeElement;
+      this.createInstance();
     }
-  }
-
-  private isElementOverflow() {
-    const element = this.host.nativeElement;
-    const parentEl = element.parentElement;
-    const parentTest = element.offsetWidth > parentEl.offsetWidth;
-    const elementTest = element.offsetWidth < element.scrollWidth;
-
-    return parentTest || elementTest;
   }
 
   ngOnDestroy() {
@@ -195,21 +155,58 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
     this.instance?.destroy();
   }
 
-  private resolveValue(key: keyof this) {
-    return this[key] !== undefined ? this[key] : this.config[key as any];
+  private setProps(props: Partial<TippyConfig>) {
+    this.props = props;
+    this.instance?.setProps(props);
+  }
+
+  private setStatus() {
+    this.enabled ? this.instance?.enable() : this.instance?.disable();
+  }
+
+  private createInstance() {
+    this.instance = tippy(this.host.nativeElement as HTMLElement, {
+      allowHTML: true,
+      ...this.globalConfig,
+      ...this.props,
+      onCreate: instance => {
+        this.className && instance.popper.classList.add(this.className);
+        this.globalConfig.onCreate?.(instance);
+      },
+      onShow: instance => {
+        this.zone.run(() => this.instance.setContent(this.resolveContent()));
+        this.visible.next(true);
+        this.globalConfig.onShow?.(instance);
+      },
+      onHidden: instance => {
+        this.destroyView();
+        this.visible.next(false);
+        this.globalConfig.onHidden?.(instance);
+      }
+    });
+
+    this.setStatus();
+    this.setProps(this.props);
+  }
+
+  private resolveContent() {
+    this.viewRef = this.viewService.createView(this.content, {
+      vcr: this.vcr
+    });
+
+    return this.viewRef.getElement();
+  }
+
+  private isElementOverflow() {
+    const element = this.host.nativeElement;
+    const parentEl = element.parentElement;
+    const parentTest = element.offsetWidth > parentEl.offsetWidth;
+    const elementTest = element.offsetWidth < element.scrollWidth;
+
+    return parentTest || elementTest;
   }
 }
 
 function isChanged<T>(key: keyof T, changes: T) {
   return key in changes;
-}
-
-function mergeVariation(variation: TippyConfig['variations'][0], options: Partial<TippyConfig>) {
-  return Object.keys(variation).reduce((acc, variationOption) => {
-    if (options[variationOption] === undefined) {
-      acc[variationOption] = variation[variationOption];
-    }
-
-    return acc;
-  }, options);
 }

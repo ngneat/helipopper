@@ -1,9 +1,14 @@
 import { Observable } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
+declare const ResizeObserver: any;
+
 let supportsIntersectionObserver = false;
+let supportsResizeObserver = false;
+
 if (typeof window !== 'undefined') {
   supportsIntersectionObserver = 'IntersectionObserver' in window;
+  supportsResizeObserver = 'ResizeObserver' in window;
 }
 
 export function inView(
@@ -17,8 +22,6 @@ export function inView(
     if (!supportsIntersectionObserver) {
       subscriber.next();
       subscriber.complete();
-      // If the browser doesn't support the `IntersectionObserver` then
-      // we "return" since it will throw `IntersectionObserver is not defined`.
       return;
     }
 
@@ -37,50 +40,21 @@ export function inView(
   });
 }
 
-interface Window {
-  ResizeObserver: typeof ResizeObserver;
+export function dimensionsChanges(target: HTMLElement) {
+  return resizeObserverStrategy(target).pipe(auditTime(150));
 }
 
-interface ResizeObserverOptions {
-  box?: 'content-box' | 'border-box';
-}
-
-interface ResizeObserverSize {
-  inlineSize: number;
-  blockSize: number;
-}
-
-declare class ResizeObserver {
-  constructor(callback: ResizeObserverCallback);
-
-  disconnect(): void;
-
-  observe(target: Element, options?: ResizeObserverOptions): void;
-
-  unobserve(target: Element): void;
-}
-
-type ResizeObserverCallback = (entries: ReadonlyArray<ResizeObserverEntry>, observer: ResizeObserver) => void;
-
-interface ResizeObserverEntry {
-  readonly target: Element;
-  readonly contentRect: DOMRectReadOnly;
-  readonly borderBoxSize: ResizeObserverSize;
-  readonly contentBoxSize: ResizeObserverSize;
-}
-
-export function dimensionsChanges(target: HTMLElement, options?: ResizeObserverOptions) {
-  return resizeObserverStrategy(target, options).pipe(auditTime(150));
-}
-
-function resizeObserverStrategy(
-  target: HTMLElement,
-  options: ResizeObserverOptions = { box: 'border-box' }
-): Observable<boolean> {
+function resizeObserverStrategy(target: HTMLElement): Observable<boolean> {
   return new Observable(subscriber => {
+    if (!supportsResizeObserver) {
+      subscriber.next();
+      subscriber.complete();
+      return;
+    }
+
     const observer = new ResizeObserver(() => subscriber.next(true));
 
-    observer.observe(target, options);
+    observer.observe(target);
 
     return () => observer.disconnect();
   });

@@ -1,5 +1,10 @@
-import { Props } from 'tippy.js';
-import { InjectionToken, TemplateRef, Type } from '@angular/core';
+import { Instance, Props } from 'tippy.js';
+import { InjectionToken } from '@angular/core';
+import { ViewOptions } from '@ngneat/overview';
+
+export interface CreateOptions extends Partial<TippyProps>, ViewOptions {
+  variation: string;
+}
 
 export type NgChanges<Component extends object, Props = ExcludeFunctions<Component>> = {
   [Key in keyof Props]: {
@@ -16,16 +21,18 @@ type MarkFunctionPropertyNames<Component> = {
 
 type ExcludeFunctions<T extends object> = Pick<T, MarkFunctionPropertyNames<T>>;
 
-export type Content = TemplateRef<any> | Type<any> | string;
-
 export const TIPPY_CONFIG = new InjectionToken<Partial<TippyConfig>>('Tippy config', {
   providedIn: 'root',
   factory() {
     return {};
   }
 });
+export const TIPPY_REF = new InjectionToken('TIPPY_REF');
 
-export interface TippyConfig extends Props {
-  variations: Record<string, Partial<Props>>;
+export type TippyInstance = Instance;
+export type TippyProps = Props;
+
+export interface TippyConfig extends TippyProps {
+  variations: Record<string, Partial<TippyProps>>;
   defaultVariation: keyof TippyConfig['variations'];
 }
