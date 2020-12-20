@@ -5,11 +5,26 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ExampleComponent } from './example/example.component';
-import { defaultVariations, TippyModule } from '@ngneat/helipopper';
+import { popperVariation, TippyModule, tooltipVariation } from '@ngneat/helipopper';
 
 @NgModule({
   declarations: [AppComponent, ExampleComponent],
-  imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule, TippyModule.forRoot(defaultVariations())],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    ReactiveFormsModule,
+    TippyModule.forRoot({
+      defaultVariation: 'tooltip',
+      variations: {
+        tooltip: tooltipVariation,
+        popper: popperVariation,
+        popperBorder: {
+          ...popperVariation,
+          theme: 'light-border'
+        }
+      }
+    })
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

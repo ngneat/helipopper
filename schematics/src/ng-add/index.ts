@@ -61,8 +61,8 @@ export default function(options: SchemaOptions): Rule {
     options.module = findRootModule(host, options.module, sourceRoot) as string;
 
     return chain([
-      addImportsToModuleFile(options, ['HelipopperModule']),
-      addImportsToModuleDeclaration(options, ['HelipopperModule.forRoot()'])
+      addImportsToModuleFile(options, ['TippyModule']),
+      addImportsToModuleDeclaration(options, ['TippyModule.forRoot()'])
     ])(host, context);
   };
 }

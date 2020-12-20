@@ -18,7 +18,7 @@ export class AppComponent {
     { label: 'end', value: '-end' }
   ];
 
-  tooltipTypes = ['popper', 'tooltip'];
+  tooltipTypes = ['popper', 'tooltip', 'popperBorder'];
 
   tooltipSettings = this.fb.group({
     type: this.fb.control('tooltip'),
