@@ -107,8 +107,17 @@ export const tooltipVariation = {
 
 ### Use `Component` as content
 
-```html
+```ts
+import { TIPPY_REF, TippyInstance } from '@ngneat/helipopper';
 
+@Component()
+class MyComponent {
+  constructor(@Inject(TIPPY_REF) tippy: TippyInstance) {
+  }
+}
+```
+
+```html
 <button [tippy]="MyComponent">
   Click Me
 </button>
@@ -189,34 +198,33 @@ live [here](https://ngneat.github.io/helipopper/).
 ### Inputs
 
 ```ts
-@Input() appendTo: TippyProps['appendTo'];
-@Input() delay: TippyProps['delay'];
-@Input() duration: TippyProps['duration'];
-@Input() hideOnClick: TippyProps['hideOnClick'];
-@Input() interactive: TippyProps['interactive'];
-@Input() interactiveBorder: TippyProps['interactiveBorder'];
-@Input() maxWidth: TippyProps['maxWidth'];
-@Input() offset: TippyProps['offset'];
-@Input() placement: TippyProps['placement'];
-@Input() popperOptions: TippyProps['popperOptions'];
-@Input() showOnCreate: TippyProps['showOnCreate'];
-@Input() trigger: TippyProps['trigger'];
-@Input() triggerTarget: TippyProps['triggerTarget'];
-@Input() zIndex: TippyProps['zIndex'];
+appendTo: TippyProps['appendTo'];
+delay: TippyProps['delay'];
+duration: TippyProps['duration'];
+hideOnClick: TippyProps['hideOnClick'];
+interactive: TippyProps['interactive'];
+interactiveBorder: TippyProps['interactiveBorder'];
+maxWidth: TippyProps['maxWidth'];
+offset: TippyProps['offset'];
+placement: TippyProps['placement'];
+popperOptions: TippyProps['popperOptions'];
+showOnCreate: TippyProps['showOnCreate'];
+trigger: TippyProps['trigger'];
+triggerTarget: TippyProps['triggerTarget'];
+zIndex: TippyProps['zIndex'];
 
-@Input() lazy: boolean;
-@Input() variation: string;
-@Input() isEnable: boolean;
-@Input() className: string;
-@Input() onlyTextOverflow = false;
-@Input() data: any;
-@Input('tippy') content: Content;
+lazy: boolean;
+variation: string;
+isEnable: boolean;
+className: string;
+onlyTextOverflow = false;
+data: any;
 ```
 
 ### Outputs
 
 ```ts
-@Output() visible = new EventEmitter<boolean>();
+visible = new EventEmitter<boolean>();
 ```
 
 ### Global Config

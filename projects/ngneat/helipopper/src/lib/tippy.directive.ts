@@ -4,6 +4,7 @@ import {
   ElementRef,
   EventEmitter,
   Inject,
+  Injector,
   Input,
   NgZone,
   OnChanges,
@@ -13,11 +14,11 @@ import {
   ViewContainerRef
 } from "@angular/core";
 import tippy from "tippy.js";
-import { NgChanges, TIPPY_CONFIG, TippyConfig, TippyInstance, TippyProps } from "./tippy.types";
+import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from "./tippy.types";
 import { inView, overflowChanges } from "./utils";
 import { fromEvent, Subject } from "rxjs";
 import { switchMap, takeUntil } from "rxjs/operators";
-import { Content, isString, ViewRef, ViewService } from "@ngneat/overview";
+import { Content, isComponent, isString, isTemplateRef, ViewOptions, ViewRef, ViewService } from "@ngneat/overview";
 import { isPlatformServer } from "@angular/common";
 
 @Directive({
@@ -57,10 +58,12 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
   private props: Partial<TippyConfig>;
   private enabled = true;
   private variationDefined = false;
+  private viewOptions$: ViewOptions;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: string,
     @Inject(TIPPY_CONFIG) private globalConfig: Partial<TippyConfig>,
+    private injector: Injector,
     private viewService: ViewService,
     private vcr: ViewContainerRef,
     private zone: NgZone,
@@ -138,7 +141,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroyed.next();
-    this.destroy();
+    this.instance?.destroy();
+    this.destroyView();
   }
 
   destroyView() {
@@ -160,10 +164,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
 
   disable() {
     this.instance?.disable();
-  }
-
-  destroy() {
-    this.instance?.destroy();
   }
 
   private setProps(props: Partial<TippyConfig>) {
@@ -203,12 +203,27 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   private resolveContent() {
+    if (!this.viewOptions$ && !isString(this.content)) {
+      if (isComponent(this.content)) {
+        this.viewOptions$ = {
+          injector: Injector.create({
+            providers: [{ provide: TIPPY_REF, useValue: this.instance }],
+            parent: this.injector
+          })
+        };
+      } else if (isTemplateRef(this.content)) {
+        this.viewOptions$ = {
+          context: {
+            $implicit: this.hide.bind(this),
+            data: this.data
+          }
+        };
+      }
+    }
+
     this.viewRef = this.viewService.createView(this.content, {
       vcr: this.vcr,
-      context: {
-        $implicit: this.hide.bind(this),
-        data: this.data
-      }
+      ...this.viewOptions$
     });
 
     let content = this.viewRef.getElement();
