@@ -11,34 +11,34 @@ import {
   Output,
   PLATFORM_ID,
   ViewContainerRef
-} from '@angular/core';
-import tippy from 'tippy.js';
-import { NgChanges, TIPPY_CONFIG, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
-import { inView, overflowChanges } from './utils';
-import { fromEvent, Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { Content, ViewRef, ViewService } from '@ngneat/overview';
-import { isPlatformServer } from '@angular/common';
+} from "@angular/core";
+import tippy from "tippy.js";
+import { NgChanges, TIPPY_CONFIG, TippyConfig, TippyInstance, TippyProps } from "./tippy.types";
+import { inView, overflowChanges } from "./utils";
+import { fromEvent, Subject } from "rxjs";
+import { switchMap, takeUntil } from "rxjs/operators";
+import { Content, isString, ViewRef, ViewService } from "@ngneat/overview";
+import { isPlatformServer } from "@angular/common";
 
 @Directive({
-  selector: '[tippy]',
-  exportAs: 'tippy'
+  selector: "[tippy]",
+  exportAs: "tippy"
 })
 export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
-  @Input() appendTo: TippyProps['appendTo'];
-  @Input() delay: TippyProps['delay'];
-  @Input() duration: TippyProps['duration'];
-  @Input() hideOnClick: TippyProps['hideOnClick'];
-  @Input() interactive: TippyProps['interactive'];
-  @Input() interactiveBorder: TippyProps['interactiveBorder'];
-  @Input() maxWidth: TippyProps['maxWidth'];
-  @Input() offset: TippyProps['offset'];
-  @Input() placement: TippyProps['placement'];
-  @Input() popperOptions: TippyProps['popperOptions'];
-  @Input() showOnCreate: TippyProps['showOnCreate'];
-  @Input() trigger: TippyProps['trigger'];
-  @Input() triggerTarget: TippyProps['triggerTarget'];
-  @Input() zIndex: TippyProps['zIndex'];
+  @Input() appendTo: TippyProps["appendTo"];
+  @Input() delay: TippyProps["delay"];
+  @Input() duration: TippyProps["duration"];
+  @Input() hideOnClick: TippyProps["hideOnClick"];
+  @Input() interactive: TippyProps["interactive"];
+  @Input() interactiveBorder: TippyProps["interactiveBorder"];
+  @Input() maxWidth: TippyProps["maxWidth"];
+  @Input() offset: TippyProps["offset"];
+  @Input() placement: TippyProps["placement"];
+  @Input() popperOptions: TippyProps["popperOptions"];
+  @Input() showOnCreate: TippyProps["showOnCreate"];
+  @Input() trigger: TippyProps["trigger"];
+  @Input() triggerTarget: TippyProps["triggerTarget"];
+  @Input() zIndex: TippyProps["zIndex"];
 
   @Input() lazy: boolean;
   @Input() variation: string;
@@ -46,7 +46,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
   @Input() className: string;
   @Input() onlyTextOverflow = false;
   @Input() data: any;
-  @Input('tippy') content: Content;
+  @Input("tippy") content: Content;
 
   @Output() visible = new EventEmitter<boolean>();
 
@@ -82,7 +82,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
 
     let variation: string;
 
-    if (isChanged<NgChanges<TippyDirective>>('variation', changes)) {
+    if (isChanged<NgChanges<TippyDirective>>("variation", changes)) {
       variation = changes.variation.currentValue;
     } else if (!this.variationDefined) {
       variation = this.globalConfig.defaultVariation;
@@ -96,7 +96,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
       };
     }
 
-    if (isChanged<NgChanges<TippyDirective>>('isEnable', changes)) {
+    if (isChanged<NgChanges<TippyDirective>>("isEnable", changes)) {
       this.enabled = changes.isEnable.currentValue;
       this.setStatus();
     }
@@ -199,7 +199,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
     this.setStatus();
     this.setProps(this.props);
 
-    this.variation === 'contextMenu' && this.handleContextMenu();
+    this.variation === "contextMenu" && this.handleContextMenu();
   }
 
   private resolveContent() {
@@ -211,11 +211,17 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
       }
     });
 
-    return this.viewRef.getElement();
+    let content = this.viewRef.getElement();
+
+    if (isString(content) && this.globalConfig.beforeRender) {
+      content = this.globalConfig.beforeRender(content);
+    }
+
+    return content;
   }
 
   private handleContextMenu() {
-    fromEvent(this.host.nativeElement, 'contextmenu')
+    fromEvent(this.host.nativeElement, "contextmenu")
       .pipe(takeUntil(this.destroyed))
       .subscribe((event: MouseEvent) => {
         event.preventDefault();
