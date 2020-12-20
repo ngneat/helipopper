@@ -43,6 +43,11 @@ export class AppComponent {
     label: `Value ${i + 1}`
   }));
 
+  list = Array.from({ length: 5 }, (_, i) => ({
+    id: i,
+    label: `Value ${i + 1}`
+  }));
+
   thoughts = 'We just need someone to talk to 🥺';
   isDisabled = false;
   text = `Long Long All Text`;
@@ -74,5 +79,13 @@ export class AppComponent {
     this.service.create(host2, ExampleComponent, {
       variation: 'popper'
     });
+  }
+
+  duplicate(item: any) {
+    console.log('duplicate', item);
+  }
+
+  copy(item: any) {
+    console.log('copy', item);
   }
 }

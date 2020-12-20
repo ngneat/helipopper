@@ -15,8 +15,8 @@ import {
 import tippy from 'tippy.js';
 import { NgChanges, TIPPY_CONFIG, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
 import { inView, overflowChanges } from './utils';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { fromEvent, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { Content, ViewRef, ViewService } from '@ngneat/overview';
 import { isPlatformServer } from '@angular/common';
 
@@ -45,6 +45,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
   @Input() isEnable: boolean;
   @Input() className: string;
   @Input() onlyTextOverflow = false;
+  @Input() data: any;
   @Input('tippy') content: Content;
 
   @Output() visible = new EventEmitter<boolean>();
@@ -108,24 +109,27 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     if (this.lazy) {
-      inView(this.host.nativeElement)
-        .pipe(takeUntil(this.destroyed))
-        .subscribe(() => {
-          this.createInstance();
-        });
+      if (this.onlyTextOverflow) {
+        inView(this.host)
+          .pipe(
+            switchMap(() => overflowChanges(this.host)),
+            takeUntil(this.destroyed)
+          )
+          .subscribe(isElementOverflow => {
+            this.checkOverflow(isElementOverflow);
+          });
+      } else {
+        inView(this.host)
+          .pipe(takeUntil(this.destroyed))
+          .subscribe(() => {
+            this.createInstance();
+          });
+      }
     } else if (this.onlyTextOverflow) {
       overflowChanges(this.host)
         .pipe(takeUntil(this.destroyed))
         .subscribe(isElementOverflow => {
-          if (isElementOverflow) {
-            if (!this.instance) {
-              this.createInstance();
-            } else {
-              this.instance.enable();
-            }
-          } else {
-            this.instance?.disable();
-          }
+          this.checkOverflow(isElementOverflow);
         });
     } else {
       this.createInstance();
@@ -134,10 +138,12 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroyed.next();
+    this.destroy();
   }
 
   destroyView() {
     this.viewRef?.destroy();
+    this.viewRef = null;
   }
 
   show() {
@@ -192,14 +198,53 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
 
     this.setStatus();
     this.setProps(this.props);
+
+    this.variation === 'contextMenu' && this.handleContextMenu();
   }
 
   private resolveContent() {
     this.viewRef = this.viewService.createView(this.content, {
-      vcr: this.vcr
+      vcr: this.vcr,
+      context: {
+        $implicit: this.hide.bind(this),
+        data: this.data
+      }
     });
 
     return this.viewRef.getElement();
+  }
+
+  private handleContextMenu() {
+    fromEvent(this.host.nativeElement, 'contextmenu')
+      .pipe(takeUntil(this.destroyed))
+      .subscribe((event: MouseEvent) => {
+        event.preventDefault();
+
+        this.instance.setProps({
+          getReferenceClientRect: () => ({
+            width: 0,
+            height: 0,
+            top: event.clientY,
+            bottom: event.clientY,
+            left: event.clientX,
+            right: event.clientX
+          })
+        });
+
+        this.instance.show();
+      });
+  }
+
+  private checkOverflow(isElementOverflow: boolean) {
+    if (isElementOverflow) {
+      if (!this.instance) {
+        this.createInstance();
+      } else {
+        this.instance.enable();
+      }
+    } else {
+      this.instance?.disable();
+    }
   }
 }
 

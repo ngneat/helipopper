@@ -150,3 +150,20 @@
     <button class="btn btn-outline-dark" (click)="useServiceComponent(host2)" #host2>Component</button>
   </div>
 </div>
+
+<ng-template #contextMenu let-hide let-item="data">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item" (click)="copy(item); hide()">Copy</li>
+    <li class="list-group-item" (click)="duplicate(item); hide()">Duplicate</li>
+  </ul>
+</ng-template>
+
+<div id="context-menu">
+  <h6>Context menu</h6>
+
+  <ul class="list-group">
+    <li class="list-group-item" *ngFor="let item of list" [tippy]="contextMenu" [data]="item" variation="contextMenu">
+      {{ item.label }}
+    </li>
+  </ul>
+</div>

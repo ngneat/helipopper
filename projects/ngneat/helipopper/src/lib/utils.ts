@@ -13,12 +13,14 @@ if (typeof window !== 'undefined') {
 }
 
 export function inView(
-  element: HTMLElement,
+  host: TippyElement,
   options: IntersectionObserverInit = {
     root: null,
     threshold: 0.3
   }
 ) {
+  const element = coerceElement(host);
+
   return new Observable(subscriber => {
     if (!supportsIntersectionObserver) {
       subscriber.next();
