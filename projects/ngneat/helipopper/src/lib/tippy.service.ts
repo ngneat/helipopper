@@ -1,12 +1,13 @@
-import { Inject, Injectable, Injector } from '@angular/core';
-import tippy from 'tippy.js';
-import { Content, isComponent, isTemplateRef, ViewRef, ViewService } from '@ngneat/overview';
-import { CreateOptions, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance } from './tippy.types';
+import { Inject, Injectable, Injector } from "@angular/core";
+import tippy from "tippy.js";
+import { isComponent, isTemplateRef, ViewService } from "@ngneat/overview";
+import { Content, ViewRef } from "@ngneat/overview";
+import { CreateOptions, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance } from "./tippy.types";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class TippyService {
   constructor(
-    @Inject(TIPPY_CONFIG) private globalConfig: Partial<TippyConfig>,
+    @Inject(TIPPY_CONFIG) private globalConfig: TippyConfig,
     private view: ViewService,
     private injector: Injector
   ) {}

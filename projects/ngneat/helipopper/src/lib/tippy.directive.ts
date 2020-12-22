@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Directive,
   ElementRef,
   EventEmitter,
@@ -7,19 +6,18 @@ import {
   Injector,
   Input,
   NgZone,
-  OnChanges,
-  OnDestroy,
-  OnInit,
   Output,
   PLATFORM_ID,
   ViewContainerRef
 } from "@angular/core";
+import { AfterViewInit, OnChanges, OnDestroy, OnInit } from "@angular/core";
 import tippy from "tippy.js";
 import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from "./tippy.types";
 import { inView, overflowChanges } from "./utils";
 import { fromEvent, Subject } from "rxjs";
 import { switchMap, takeUntil } from "rxjs/operators";
-import { Content, isComponent, isString, isTemplateRef, ViewOptions, ViewRef, ViewService } from "@ngneat/overview";
+import { isComponent, isString, isTemplateRef, ViewService } from "@ngneat/overview";
+import { Content, ViewOptions, ViewRef } from "@ngneat/overview";
 import { isPlatformServer } from "@angular/common";
 
 @Directive({
@@ -65,7 +63,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: string,
-    @Inject(TIPPY_CONFIG) private globalConfig: Partial<TippyConfig>,
+    @Inject(TIPPY_CONFIG) private globalConfig: TippyConfig,
     private injector: Injector,
     private viewService: ViewService,
     private vcr: ViewContainerRef,
