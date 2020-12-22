@@ -47,9 +47,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
   @Input() className: string;
   @Input() onlyTextOverflow = false;
   @Input() data: any;
+  @Input() useHostWidth = false;
   @Input("tippy") content: Content;
 
   @Output() visible = new EventEmitter<boolean>();
+  public isVisible = false;
 
   private instance: TippyInstance;
   private view: Content;
@@ -102,6 +104,10 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
     if (isChanged<NgChanges<TippyDirective>>("isEnable", changes)) {
       this.enabled = changes.isEnable.currentValue;
       this.setStatus();
+    }
+
+    if (this.useHostWidth) {
+      props.maxWidth = this.hostWidth;
     }
 
     // We don't want to save the content, we control it manually
@@ -175,22 +181,33 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
     this.enabled ? this.instance?.enable() : this.instance?.disable();
   }
 
+  private get hostWidth(): string {
+    return `${this.host.nativeElement.getBoundingClientRect().width}px`;
+  }
+
   private createInstance() {
     this.instance = tippy(this.host.nativeElement as HTMLElement, {
       allowHTML: true,
       ...this.globalConfig,
       ...this.props,
+      onMount: () => {
+        this.isVisible = true;
+        this.visible.next(true);
+      },
       onCreate: instance => {
         this.className && instance.popper.classList.add(this.className);
+        if (this.useHostWidth) {
+          instance.popper.style.width = this.hostWidth;
+        }
         this.globalConfig.onCreate?.(instance);
       },
       onShow: instance => {
         this.zone.run(() => this.instance.setContent(this.resolveContent()));
-        this.visible.next(true);
         this.globalConfig.onShow?.(instance);
       },
       onHidden: instance => {
         this.destroyView();
+        this.isVisible = false;
         this.visible.next(false);
         this.globalConfig.onHidden?.(instance);
       }
