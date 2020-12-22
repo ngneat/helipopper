@@ -193,9 +193,10 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       allowHTML: true,
       ...this.globalConfig,
       ...this.props,
-      onMount: () => {
+      onMount: instance => {
         this.isVisible = true;
         this.visible.next(true);
+        this.globalConfig.onMount?.(instance);
       },
       onCreate: instance => {
         this.className && instance.popper.classList.add(this.className);
