@@ -182,6 +182,7 @@ You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/
 | helipopperOffset       | `[number, number]`        | Set tooltip offset position                                  | `[0, 10]`                                                              |
 | helipopperDisabled     | `Boolean`                 | Whether to disabled the tooltip                              | `false`                                                                |
 | helipopperHost         | `ElementRef` \| `Element` | The target element                                           | `Host`                                                                 |
+| helipopperUseHostWidth | `Boolean`                 | Set the tooltip's width & maxWidth according to the host     | `false`                                                                 |
 | helipopperAppendTo     | `string`\| `Element`      | The element to append the tooltip to                         | [`appendTo`](https://atomiks.github.io/tippyjs/v6/all-props/#appendto) |
 | helipopperOptions      | `tippy` options           | `tippy` options                                              | [docs](https://atomiks.github.io/tippyjs/v6/all-props)                 |
 | helipopperTextOverflow | `Boolean`                 | Show the tooltip only when the text overflows its container  | `false`                                                                |
