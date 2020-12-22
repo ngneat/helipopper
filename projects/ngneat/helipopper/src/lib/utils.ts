@@ -141,6 +141,10 @@ export function addClass(element, className: string | string[]): void {
   }
 }
 
+export function addStyle(element, prop: string, value: string) {
+  element.style[prop] = value;
+}
+
 export function createElement(tagName: string) {
   return document.createElement(tagName);
 }

@@ -18,6 +18,7 @@ import { fromEvent, Subject } from 'rxjs';
 import { Options as PopperOptions } from '@popperjs/core';
 import {
   addClass,
+  addStyle,
   closest,
   coerceElement,
   createElement,
@@ -61,6 +62,9 @@ export class HelipopperDirective implements OnDestroy {
 
   @Input()
   helipopperMaxWidth: 'none' | number;
+
+  @Input()
+  helipopperUseHostWidth = false;
 
   @Input()
   helipopperAllowClose: boolean = this.initialOptions.allowClose;
@@ -148,6 +152,7 @@ export class HelipopperDirective implements OnDestroy {
   private mergedConfig: HelipopperConfig;
   private innerComponentRef: ComponentRef<any>;
   public whenStable: Subject<boolean> = new Subject<boolean>();
+  public isVisible = false;
 
   constructor(
     private host: ElementRef,
@@ -201,6 +206,10 @@ export class HelipopperDirective implements OnDestroy {
     this.ngOnDestroy();
   }
 
+  private get hostWidth(): string {
+    return `${this._tooltipHost.getBoundingClientRect().width}px`;
+  }
+
   private destroyView() {
     this.tplPortal && this.destroyTemplate();
     this.innerComponentRef && this.destroyComponent();
@@ -220,6 +229,7 @@ export class HelipopperDirective implements OnDestroy {
     }
 
     this.helipopperTrigger = this.resolveTrigger();
+    const maxWidth = this.helipopperUseHostWidth ? this.hostWidth : this.helipopperMaxWidth;
 
     this.instance = tippy(this._tooltipHost, {
       content: undefined,
@@ -230,20 +240,25 @@ export class HelipopperDirective implements OnDestroy {
       trigger: this.helipopperTrigger,
       placement: this._placement,
       triggerTarget: this._tooltipTarget,
-      maxWidth: this.helipopperMaxWidth,
+      maxWidth,
       hideOnClick: this.helipopperAllowClose,
       // TODO: Merge the following methods with the passed config
+      onMount: () => {
+        this.isVisible = true;
+        this.helipopperVisible.next(true);
+      },
       onCreate: instance => {
         this.helipopperClass && addClass(instance.popper, this.helipopperClass);
+        this.helipopperUseHostWidth && addStyle(instance.popper, 'width', this.hostWidth);
       },
       onShow: instance => {
         this.zone.run(() => this.instance.setContent(this.resolveContent()));
         this.helipopperAllowClose && this.isPopper && this.addCloseButton(instance as InstanceWithClose);
-        this.helipopperVisible.next(true);
       },
       onHidden: instance => {
         this.helipopperAllowClose && this.isPopper && this.removeCloseButton(instance as InstanceWithClose);
         this.destroyView();
+        this.isVisible = false;
         this.helipopperClose.next();
         this.helipopperVisible.next(false);
       },
