@@ -1,4 +1,4 @@
-<button (click)="show = !show">Toggle All</button>
+<!--<button (click)="show = !show">Toggle All</button>-->
 
 <ng-container *ngIf="show">
   <div [formGroup]="tooltipSettings" style="text-transform: capitalize">
@@ -43,15 +43,18 @@
 
   <hr />
 
-  <div id="custom-template">
+  <div>
     <h6>Custom Template</h6>
 
-    <div class="btn-container">
+    <div class="btn-container" id="custom-template">
       <button [tippy]="tpl" variation="popper" class="btn btn-outline-secondary">Click Me</button>
     </div>
 
     <ng-template #tpl let-hide>
       <div [tippy]="thoughts">
+        <p>
+          And here's some amazing content. It's very engaging. Right?
+        </p>
         <span>{{ interval$ | async }}</span>
         <button (click)="hide()" class="btn btn-outline-danger btn-sm mt-2">Close</button>
       </div>
