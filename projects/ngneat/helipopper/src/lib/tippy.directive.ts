@@ -9,6 +9,7 @@ import {
   NgZone,
   OnChanges,
   OnDestroy,
+  OnInit,
   Output,
   PLATFORM_ID,
   ViewContainerRef
@@ -25,7 +26,7 @@ import { isPlatformServer } from "@angular/common";
   selector: "[tippy]",
   exportAs: "tippy"
 })
-export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
+export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnInit {
   @Input() appendTo: TippyProps["appendTo"];
   @Input() delay: TippyProps["delay"];
   @Input() duration: TippyProps["duration"];
@@ -47,9 +48,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
   @Input() className: string;
   @Input() onlyTextOverflow = false;
   @Input() data: any;
+  @Input() useHostWidth = false;
   @Input("tippy") content: Content;
 
   @Output() visible = new EventEmitter<boolean>();
+  public isVisible = false;
 
   private instance: TippyInstance;
   private view: Content;
@@ -108,6 +111,12 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
     delete props.content;
 
     this.setProps(props);
+  }
+
+  ngOnInit() {
+    if (this.useHostWidth) {
+      this.props.maxWidth = this.hostWidth;
+    }
   }
 
   ngAfterViewInit() {
@@ -175,22 +184,34 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
     this.enabled ? this.instance?.enable() : this.instance?.disable();
   }
 
+  private get hostWidth(): string {
+    return `${this.host.nativeElement.getBoundingClientRect().width}px`;
+  }
+
   private createInstance() {
     this.instance = tippy(this.host.nativeElement as HTMLElement, {
       allowHTML: true,
       ...this.globalConfig,
       ...this.props,
+      onMount: instance => {
+        this.isVisible = true;
+        this.visible.next(true);
+        this.globalConfig.onMount?.(instance);
+      },
       onCreate: instance => {
         this.className && instance.popper.classList.add(this.className);
+        if (this.useHostWidth) {
+          instance.popper.style.width = this.hostWidth;
+        }
         this.globalConfig.onCreate?.(instance);
       },
       onShow: instance => {
         this.zone.run(() => this.instance.setContent(this.resolveContent()));
-        this.visible.next(true);
         this.globalConfig.onShow?.(instance);
       },
       onHidden: instance => {
         this.destroyView();
+        this.isVisible = false;
         this.visible.next(false);
         this.globalConfig.onHidden?.(instance);
       }
