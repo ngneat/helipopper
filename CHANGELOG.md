@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/ngneat/helipopper/compare/v1.5.5...v1.6.0) (2020-12-22)
+
+
+### Features
+
+* 🎸 add use host width property ([922ce01](https://github.com/ngneat/helipopper/commit/922ce0163984a16ccc202e3faab3eb3da68a1815))
+
 ### [1.5.5](https://github.com/ngneat/helipopper/compare/v1.5.4...v1.5.5) (2020-11-28)
 
 
