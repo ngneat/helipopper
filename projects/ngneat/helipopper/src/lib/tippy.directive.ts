@@ -9,6 +9,7 @@ import {
   NgZone,
   OnChanges,
   OnDestroy,
+  OnInit,
   Output,
   PLATFORM_ID,
   ViewContainerRef
@@ -25,7 +26,7 @@ import { isPlatformServer } from "@angular/common";
   selector: "[tippy]",
   exportAs: "tippy"
 })
-export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
+export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnInit {
   @Input() appendTo: TippyProps["appendTo"];
   @Input() delay: TippyProps["delay"];
   @Input() duration: TippyProps["duration"];
@@ -106,14 +107,16 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy {
       this.setStatus();
     }
 
-    if (this.useHostWidth) {
-      props.maxWidth = this.hostWidth;
-    }
-
     // We don't want to save the content, we control it manually
     delete props.content;
 
     this.setProps(props);
+  }
+
+  ngOnInit() {
+    if (this.useHostWidth) {
+      this.props.maxWidth = this.hostWidth;
+    }
   }
 
   ngAfterViewInit() {
