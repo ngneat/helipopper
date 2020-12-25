@@ -188,4 +188,44 @@
       useHostWidth="true"
     />
   </div>
+
+  <hr />
+
+  <div>
+    <h6>Menu</h6>
+
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" [tippy]="one" variation="menu">
+        Dropdown button
+      </button>
+
+      <ng-template #one>
+        <div>
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#" [tippy]="two" placement="right" variation="menu" trigger="mouseenter"
+            >Another action</a
+          >
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </ng-template>
+
+      <ng-template #two>
+        <div>
+          <a class="dropdown-item" href="#">Action 2</a>
+          <a class="dropdown-item" href="#">Another action 2</a>
+          <a class="dropdown-item" href="#" [tippy]="three" placement="right" variation="menu" trigger="mouseenter"
+            >Something else here 2</a
+          >
+        </div>
+      </ng-template>
+
+      <ng-template #three>
+        <div>
+          <a class="dropdown-item" href="#">Action 3</a>
+          <a class="dropdown-item" href="#">Another action 3</a>
+          <a class="dropdown-item" href="#">Something else here 3</a>
+        </div>
+      </ng-template>
+    </div>
+  </div>
 </ng-container>

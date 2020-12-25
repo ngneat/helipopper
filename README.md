@@ -26,6 +26,7 @@ virtually no restrictions over Popper and gives you limitless control while prov
 
 ## Features
 
+✅ Position Tooltips, Menus, Dropdowns, and Popovers <br>
 ✅ Predefined Variations <br>
 ✅ TemplateRef/Component Support<br>
 ✅ Lazy Registration<br>
