@@ -217,7 +217,8 @@ lazy: boolean;
 variation: string;
 isEnable: boolean;
 className: string;
-onlyTextOverflow = false;
+onlyTextOverflow: boolean;
+useHostWidth: boolean;
 data: any;
 ```
 

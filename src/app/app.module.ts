@@ -1,11 +1,11 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ExampleComponent } from './example/example.component';
-import { popperVariation, TippyModule, tooltipVariation, withContextMenuVariation } from '@ngneat/helipopper';
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { ReactiveFormsModule } from "@angular/forms";
+import { ExampleComponent } from "./example/example.component";
+import { popperVariation, TippyModule, tooltipVariation, withContextMenuVariation } from "@ngneat/helipopper";
 
 @NgModule({
   declarations: [AppComponent, ExampleComponent],
@@ -14,14 +14,19 @@ import { popperVariation, TippyModule, tooltipVariation, withContextMenuVariatio
     AppRoutingModule,
     ReactiveFormsModule,
     TippyModule.forRoot({
-      defaultVariation: 'tooltip',
+      defaultVariation: "tooltip",
       variations: {
         tooltip: tooltipVariation,
         popper: popperVariation,
+        menu: {
+          ...popperVariation,
+          arrow: false,
+          offset: [0, 0]
+        },
         contextMenu: withContextMenuVariation(popperVariation),
         popperBorder: {
           ...popperVariation,
-          theme: 'light-border'
+          theme: "light-border"
         }
       }
     })
