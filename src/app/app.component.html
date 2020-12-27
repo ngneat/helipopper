@@ -114,7 +114,7 @@
     <h6>Disabled</h6>
 
     <div class="btn-container">
-      <button [isEnable]="!isDisabled" tippy="Tooltip" class="btn btn-outline-dark">Element</button>
+      <button [isEnabled]="!isDisabled" tippy="Tooltip" class="btn btn-outline-dark">Element</button>
     </div>
 
     <button (click)="toggle()" class="btn btn-outline-primary btn-sm">{{ isDisabled ? "Enable" : "Disable" }}</button>

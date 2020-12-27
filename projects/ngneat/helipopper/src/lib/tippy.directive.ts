@@ -42,7 +42,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   @Input() lazy: boolean;
   @Input() variation: string;
-  @Input() isEnable: boolean;
+  @Input() isEnabled: boolean;
   @Input() className: string;
   @Input() onlyTextOverflow = false;
   @Input() data: any;
@@ -100,8 +100,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       };
     }
 
-    if (isChanged<NgChanges<TippyDirective>>("isEnable", changes)) {
-      this.enabled = changes.isEnable.currentValue;
+    if (isChanged<NgChanges<TippyDirective>>("isEnabled", changes)) {
+      this.enabled = changes.isEnabled.currentValue;
       this.setStatus();
     }
 
