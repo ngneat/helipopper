@@ -51,12 +51,8 @@
     </div>
 
     <ng-template #tpl let-hide>
-      <div [tippy]="thoughts">
-        <p>
-          And here's some amazing content. It's very engaging. Right?
-        </p>
-        <span>{{ interval$ | async }}</span>
-        <button (click)="hide()" class="btn btn-outline-danger btn-sm mt-2">Close</button>
+      <div *ngFor="let item of tooltipPositions">
+        {{ item }}
       </div>
     </ng-template>
 
