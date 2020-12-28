@@ -189,6 +189,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   private createInstance() {
     this.instance = tippy(this.host.nativeElement as HTMLElement, {
       allowHTML: true,
+      appendTo: document.body,
       ...this.globalConfig,
       ...this.props,
       onMount: instance => {
