@@ -30,8 +30,8 @@ describe("@ngneat/helipopper", () => {
     it("should create tooltip with a custom template", () => {
       cy.get("#custom-template button")
         .click()
-        .get("p")
-        .contains("Right?")
+        .get(".positions")
+        .contains("top")
         .should("exist");
     });
   });
