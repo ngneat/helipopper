@@ -24,7 +24,7 @@ that pop out from the flow of the document and get overlaid on top of the UI, po
 This is a lightweight wrapper with additional features that lets you use it declaratively in Angular. Tippy has
 virtually no restrictions over Popper and gives you limitless control while providing useful behavior and defaults.
 
-You can find version 1 [here]().
+If you're using v1 and don't want to migrate, you can find it [here](https://github.com/ngneat/helipopper/tree/v1).
 
 ## Features
 
