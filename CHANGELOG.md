@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/ngneat/helipopper/compare/v1.5.5...v2.0.0) (2020-12-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* the api is simpler now checkout the readme
+
+### Features
+
+* 🎸 add context menu ([88fbf4b](https://github.com/ngneat/helipopper/commit/88fbf4b48e9e3d5942094aba0f592cff184f2773))
+* 🎸 add host width option ([b412793](https://github.com/ngneat/helipopper/commit/b4127939270038c3d0feb7a9fdd19c6da2a85558))
+* 🎸 add use host width input ([64bc855](https://github.com/ngneat/helipopper/commit/64bc85593c54e7811a2fe5a001029ac0f523755f))
+* 🎸 export inview and dimchanges ([6349609](https://github.com/ngneat/helipopper/commit/634960970b143a9390393310cf1690be04247ea6))
+* 🎸 release v2 ([c42d94e](https://github.com/ngneat/helipopper/commit/c42d94e377aabcaf8bb4b7e8334b50e431cbc8a0))
+* 🎸 version two ([ac44bb6](https://github.com/ngneat/helipopper/commit/ac44bb6f7aaf8c66338a2e2bbbeb47c59b9a15c7))
+
+
+### Tests
+
+* 💍 fix tests ([bbfacee](https://github.com/ngneat/helipopper/commit/bbfacee9d1ba36bd8b35b316ce8dfe14228ac5be))
+
 ### [1.5.5](https://github.com/ngneat/helipopper/compare/v1.5.4...v1.5.5) (2020-11-28)
 
 
