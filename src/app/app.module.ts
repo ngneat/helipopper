@@ -20,6 +20,7 @@ import { popperVariation, TippyModule, tooltipVariation, withContextMenuVariatio
         popper: popperVariation,
         menu: {
           ...popperVariation,
+          appendTo: "parent",
           arrow: false,
           offset: [0, 0]
         },

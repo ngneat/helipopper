@@ -39,9 +39,6 @@ jobs:
           HUSKY_SKIP_INSTALL: 'true'
         run: npm ci
 
-      - name: Run playground tests
-        run: npm run test:playground:ci
-
       - name: Build library
         run: npm run build:lib
 
