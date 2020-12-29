@@ -24,6 +24,8 @@ that pop out from the flow of the document and get overlaid on top of the UI, po
 This is a lightweight wrapper with additional features that lets you use it declaratively in Angular. Tippy has
 virtually no restrictions over Popper and gives you limitless control while providing useful behavior and defaults.
 
+You can find version 1 [here]().
+
 ## Features
 
 ✅ Position Tooltips, Menus, Dropdowns, and Popovers <br>

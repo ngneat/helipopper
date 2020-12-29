@@ -47,7 +47,8 @@
     <h6>Custom Template</h6>
 
     <div class="btn-container" id="custom-template">
-      <button [tippy]="tpl" variation="popper" class="btn btn-outline-secondary">Click Me</button>
+      <button [tippy]="tpl" variation="popper" class="btn btn-outline-secondary" #tippy="tippy">Click Me</button>
+      Visible: {{ tippy.isVisible }}
     </div>
 
     <ng-template #tpl let-hide>
