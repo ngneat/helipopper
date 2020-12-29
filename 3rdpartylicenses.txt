@@ -41,6 +41,9 @@ MIT
 @ngneat/helipopper
 MIT
 
+@ngneat/overview
+MIT
+
 @popperjs/core
 MIT
 The MIT License (MIT)
