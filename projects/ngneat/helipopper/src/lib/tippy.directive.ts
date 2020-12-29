@@ -88,6 +88,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
     if (isChanged<NgChanges<TippyDirective>>("variation", changes)) {
       variation = changes.variation.currentValue;
+      this.variationDefined = true;
     } else if (!this.variationDefined) {
       variation = this.globalConfig.defaultVariation;
       this.variationDefined = true;
