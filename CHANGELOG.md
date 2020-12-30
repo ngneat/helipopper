@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/ngneat/helipopper/compare/v2.0.0...v2.1.0) (2020-12-30)
+
+
+### Bug Fixes
+
+* 🐛 fix variation and warnings ([c6eec8b](https://github.com/ngneat/helipopper/commit/c6eec8bf268a1b0d2211a66f9a8d9e078cbeb349))
+
+
+### Tests
+
+* 💍 fix ([f68c0b5](https://github.com/ngneat/helipopper/commit/f68c0b5378c4133ae9949c1d5d2f2dedff307a2c))
+* 💍 remove redundant spec ([d337a3c](https://github.com/ngneat/helipopper/commit/d337a3cba56e13804dea0f20a1c3cff0d83a39ae))
+
+## [1.6.0](https://github.com/ngneat/helipopper/compare/v1.5.5...v1.6.0) (2020-12-22)
+
+
+### Features
+
+* 🎸 add use host width property ([922ce01](https://github.com/ngneat/helipopper/commit/922ce0163984a16ccc202e3faab3eb3da68a1815))
+
 ## [2.0.0](https://github.com/ngneat/helipopper/compare/v1.5.5...v2.0.0) (2020-12-29)
 
 
