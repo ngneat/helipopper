@@ -1,8 +1,8 @@
 import { Inject, Injectable, Injector } from "@angular/core";
 import tippy from "tippy.js";
-import { isComponent, isTemplateRef, ViewService } from "@ngneat/overview";
-import { Content, ViewRef } from "@ngneat/overview";
+import { Content, isComponent, isTemplateRef, ViewService } from "@ngneat/overview";
 import { CreateOptions, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance } from "./tippy.types";
+import { onlyTippyProps } from "./utils";
 
 @Injectable({ providedIn: "root" })
 export class TippyService {
@@ -13,49 +13,36 @@ export class TippyService {
   ) {}
 
   create(host: Element, content: Content, options: Partial<CreateOptions> = {}): TippyInstance {
-    let view: ViewRef;
-
     const config = {
-      $viewOptions: undefined,
       onShow: instance => {
-        if (!config.$viewOptions) {
-          config.$viewOptions = {};
+        if (!instance.$viewOptions) {
+          instance.$viewOptions = {};
 
           if (isTemplateRef(content)) {
-            config.$viewOptions.context = {
+            instance.$viewOptions.context = {
               $implicit: instance.hide.bind(instance)
             };
           } else if (isComponent(content)) {
-            config.$viewOptions.injector = Injector.create({
+            instance.$viewOptions.injector = Injector.create({
               providers: [{ provide: TIPPY_REF, useValue: instance }],
               parent: options.injector || this.injector
             });
           }
         }
-        view = this.view.createView(content, { ...options, ...config.$viewOptions });
-        instance.setContent(view.getElement());
+        instance.view = this.view.createView(content, { ...options, ...instance.$viewOptions });
+        instance.setContent(instance.view.getElement());
         options?.onShow?.(instance);
       },
       onHidden: instance => {
-        view.destroy();
+        instance.view.destroy();
         options?.onHidden?.(instance);
-        view = null;
+        instance.view = null;
       },
-      ...this.globalConfig,
+      ...onlyTippyProps(this.globalConfig),
       ...this.globalConfig.variations[options.variation || this.globalConfig.defaultVariation],
-      ...options
+      ...onlyTippyProps(options)
     };
 
-    const instance = tippy(host, config);
-
-    const original = instance.destroy;
-
-    instance.destroy = () => {
-      original.call(tippy);
-      view?.destroy();
-      view = null;
-    };
-
-    return instance;
+    return tippy(host, config);
   }
 }

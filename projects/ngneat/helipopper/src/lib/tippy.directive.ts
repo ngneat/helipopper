@@ -13,7 +13,7 @@ import {
 import { AfterViewInit, OnChanges, OnDestroy, OnInit } from "@angular/core";
 import tippy from "tippy.js";
 import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from "./tippy.types";
-import { inView, overflowChanges } from "./utils";
+import { inView, onlyTippyProps, overflowChanges } from "./utils";
 import { fromEvent, Subject } from "rxjs";
 import { switchMap, takeUntil } from "rxjs/operators";
 import { isComponent, isString, isTemplateRef, ViewService } from "@ngneat/overview";
@@ -88,6 +88,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
     if (isChanged<NgChanges<TippyDirective>>("variation", changes)) {
       variation = changes.variation.currentValue;
+      this.variationDefined = true;
     } else if (!this.variationDefined) {
       variation = this.globalConfig.defaultVariation;
       this.variationDefined = true;
@@ -104,9 +105,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       this.enabled = changes.isEnabled.currentValue;
       this.setStatus();
     }
-
-    // We don't want to save the content, we control it manually
-    delete props.content;
 
     this.setProps(props);
   }
@@ -175,7 +173,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   private setProps(props: Partial<TippyConfig>) {
     this.props = props;
-    this.instance?.setProps(props);
+    this.instance?.setProps(onlyTippyProps(props));
   }
 
   private setStatus() {
@@ -190,8 +188,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     this.instance = tippy(this.host.nativeElement as HTMLElement, {
       allowHTML: true,
       appendTo: document.body,
-      ...this.globalConfig,
-      ...this.props,
+      ...onlyTippyProps(this.globalConfig),
+      ...onlyTippyProps(this.props),
       onMount: instance => {
         this.isVisible = true;
         this.visible.next(true);

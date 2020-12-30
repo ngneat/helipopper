@@ -3,7 +3,7 @@ import { FormBuilder } from "@angular/forms";
 import { ExampleComponent } from "./example/example.component";
 import { interval } from "rxjs";
 import { finalize } from "rxjs/operators";
-import { TippyService } from "@ngneat/helipopper";
+import { TippyInstance, TippyService } from "@ngneat/helipopper";
 
 @Component({
   selector: "app-root",
@@ -72,14 +72,22 @@ export class AppComponent {
     console.log("show tooltip", $event);
   }
 
+  instance2: TippyInstance;
+
   useService(host: HTMLButtonElement) {
-    this.service.create(host, "Created");
+    if (!this.instance2) {
+      this.instance2 = this.service.create(host, "Created");
+    }
   }
 
+  instance: TippyInstance;
+
   useServiceComponent(host2: HTMLButtonElement) {
-    this.service.create(host2, ExampleComponent, {
-      variation: "popper"
-    });
+    if (!this.instance) {
+      this.instance = this.service.create(host2, ExampleComponent, {
+        variation: "popper"
+      });
+    }
   }
 
   duplicate(item: any) {

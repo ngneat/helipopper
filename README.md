@@ -138,6 +138,22 @@ You can pass the `onlyTextOverflow` input to show the tooltip only when the host
 </div>
 ```
 
+Note that it's using [`ResizeObserver`](https://caniuse.com/resizeobserver) api.
+
+
+### Lazy
+
+You can pass the `lazy` input when you want to defer the creation of tippy only when the element is in the view:
+
+```html
+<div *ngFor="let item of items" 
+     [tippy]="item.label" 
+     [lazy]="true">{{ item.label }}
+</div>
+```
+
+Note that it's using [`IntersectionObserver`](https://caniuse.com/intersectionobserver) api.
+
 ### Context Menu
 First, define the `contextMenu` variation:
 ```ts
