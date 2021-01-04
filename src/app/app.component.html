@@ -52,7 +52,7 @@
     </div>
 
     <ng-template #tpl let-hide>
-      <div *ngFor="let item of tooltipPositions" class='positions'>
+      <div *ngFor="let item of tooltipPositions" class="positions">
         {{ item }}
       </div>
     </ng-template>
@@ -175,15 +175,16 @@
 
   <div>
     <h6>Use host width</h6>
-
-    <input
-      type="text"
-      style="width: 300px;"
-      placeholder="host width"
-      tippy="hello world"
-      variation="menu"
-      useHostWidth="true"
-    />
+    <div class="flex">
+      <input
+        style="flex: 1; max-width: 600px"
+        type="text"
+        placeholder="host width"
+        tippy="hello world"
+        variation="menu"
+        useHostWidth="true"
+      />
+    </div>
   </div>
 
   <hr />

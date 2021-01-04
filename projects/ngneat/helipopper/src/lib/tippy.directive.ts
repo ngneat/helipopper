@@ -13,11 +13,12 @@ import {
 import { AfterViewInit, OnChanges, OnDestroy, OnInit } from "@angular/core";
 import tippy from "tippy.js";
 import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from "./tippy.types";
-import { inView, onlyTippyProps, overflowChanges } from "./utils";
-import { fromEvent, Subject } from "rxjs";
+import { dimensionsChanges, inView, onlyTippyProps, overflowChanges } from "./utils";
+import { fromEvent, merge, Subject } from "rxjs";
 import { switchMap, takeUntil } from "rxjs/operators";
 import { isComponent, isString, isTemplateRef, ViewService } from "@ngneat/overview";
-import { Content, ViewOptions, ViewRef } from "@ngneat/overview";
+import { ViewOptions, ViewRef } from "@ngneat/overview";
+import { Content } from "@ngneat/overview";
 import { isPlatformServer } from "@angular/common";
 
 @Directive({
@@ -193,17 +194,18 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       onMount: instance => {
         this.isVisible = true;
         this.visible.next(true);
+        this.useHostWidth && this.listenToHostResize();
         this.globalConfig.onMount?.(instance);
       },
       onCreate: instance => {
         this.className && instance.popper.classList.add(this.className);
-        if (this.useHostWidth) {
-          instance.popper.style.width = this.hostWidth;
-        }
         this.globalConfig.onCreate?.(instance);
       },
       onShow: instance => {
         this.zone.run(() => this.instance.setContent(this.resolveContent()));
+        if (this.useHostWidth) {
+          instance.popper.style.width = this.hostWidth;
+        }
         this.globalConfig.onShow?.(instance);
       },
       onHidden: instance => {
@@ -284,6 +286,14 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     } else {
       this.instance?.disable();
     }
+  }
+
+  private listenToHostResize() {
+    dimensionsChanges(this.host.nativeElement)
+      .pipe(takeUntil(merge(this.destroyed, this.visible)))
+      .subscribe(() => {
+        this.instance.popper.style.width = this.hostWidth;
+      });
   }
 }
 

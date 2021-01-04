@@ -55,6 +55,7 @@ export function overflowChanges(host: TippyElement) {
   const element = coerceElement(host);
 
   return dimensionsChanges(element).pipe(
+    auditTime(150),
     map(() => {
       return isElementOverflow(element);
     })
@@ -62,7 +63,7 @@ export function overflowChanges(host: TippyElement) {
 }
 
 export function dimensionsChanges(target: HTMLElement) {
-  return resizeObserverStrategy(target).pipe(auditTime(150));
+  return resizeObserverStrategy(target);
 }
 
 function resizeObserverStrategy(target: HTMLElement): Observable<boolean> {
