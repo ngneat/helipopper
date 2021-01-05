@@ -1,6 +1,7 @@
 import { Inject, Injectable, Injector } from "@angular/core";
 import tippy from "tippy.js";
-import { Content, isComponent, isTemplateRef, ViewService } from "@ngneat/overview";
+import { isComponent, isTemplateRef, ViewService } from "@ngneat/overview";
+import { Content } from "@ngneat/overview";
 import { CreateOptions, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance } from "./tippy.types";
 import { onlyTippyProps } from "./utils";
 
