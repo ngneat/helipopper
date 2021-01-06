@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { ExampleComponent } from "./example/example.component";
 import { interval } from "rxjs";
@@ -61,6 +61,7 @@ export class AppComponent {
 
   @ViewChild("inputName", { static: true }) inputName: ElementRef;
   @ViewChild("inputNameComp", { static: true }) inputNameComp: ElementRef;
+  @ViewChild("indicator", { static: true, read: ViewContainerRef }) indicator: ViewContainerRef;
   maxWidth = 300;
   show = true;
 
@@ -96,5 +97,11 @@ export class AppComponent {
 
   copy(item: any) {
     console.log("copy", item);
+  }
+
+  removeOption(item: string) {
+    const ref = this.indicator.detach();
+    this.tooltipPositions = this.tooltipPositions.filter(i => i !== item);
+    this.indicator.insert(ref);
   }
 }
