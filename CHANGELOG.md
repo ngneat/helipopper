@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/ngneat/helipopper/compare/v2.1.1...v3.0.0) (2021-01-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* ngneat/overview is external dep
+
+### Features
+
+* 🎸 remove ngneat overview from deps ([ea8212e](https://github.com/ngneat/helipopper/commit/ea8212ef56156db574d8e404447830a6d9f81125))
+
 ### [2.1.1](https://github.com/ngneat/helipopper/compare/v2.1.0...v2.1.1) (2021-01-05)
 
 
