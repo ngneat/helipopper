@@ -39,7 +39,7 @@ If you're using v1 and don't want to migrate, you can find it [here](https://git
 ### Installation
 
 ```
-ng add @ngneat/helipopper
+npm i @ngneat/{overview,helipopper}
 ```
 
 Add the `TippyModule` to your `AppModule`:
