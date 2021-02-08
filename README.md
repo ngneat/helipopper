@@ -39,10 +39,10 @@ If you're using v1 and don't want to migrate, you can find it [here](https://git
 ### Installation
 
 ```
-npm i @ngneat/{overview,helipopper}
+ng add @ngneat/helipopper
 ```
 
-Add the `TippyModule` to your `AppModule`:
+It will automatically add the `TippyModule` to your `AppModule`. You can configure it as shown below:
 
 ```ts
 import { TippyModule, tooltipVariation, popperVariation } from '@ngneat/helipopper';
