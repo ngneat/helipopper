@@ -58,6 +58,15 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "stefanoww",
+      "name": "stefanoww",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55434796?v=4",
+      "profile": "https://houseofangular.io/team/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7

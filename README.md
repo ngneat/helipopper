@@ -291,6 +291,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://gerome-dev.netlify.com/"><img src="https://avatars0.githubusercontent.com/u/32737308?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Gérôme Grignon</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=geromegrignon" title="Code">💻</a></td>
     <td align="center"><a href="https://medium.com/@overthesanity"><img src="https://avatars1.githubusercontent.com/u/7337691?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Artur Androsovych</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=arturovt" title="Code">💻</a> <a href="https://github.com/@ngneat/helipopper/commits?author=arturovt" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/shaharkazaz"><img src="https://avatars2.githubusercontent.com/u/17194830?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Shahar Kazaz</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=shaharkazaz" title="Code">💻</a> <a href="https://github.com/@ngneat/helipopper/commits?author=shaharkazaz" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://houseofangular.io/team/"><img src="https://avatars.githubusercontent.com/u/55434796?v=4?s=100" width="100px;" alt=""/><br /><sub><b>stefanoww</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=stefanoww" title="Code">💻</a></td>
   </tr>
 </table>
 
