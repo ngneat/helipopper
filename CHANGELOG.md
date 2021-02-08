@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/ngneat/helipopper/compare/v3.0.0...v3.1.0) (2021-02-08)
+
+
+### Features
+
+* add ngneat/overview to package.json by schematics ([54d0998](https://github.com/ngneat/helipopper/commit/54d0998a65e346aa30e90b104b57562f3d69b275))
+
 ## [3.0.0](https://github.com/ngneat/helipopper/compare/v2.1.1...v3.0.0) (2021-01-28)
 
 
