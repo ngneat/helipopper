@@ -205,6 +205,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         this.zone.run(() => this.instance.setContent(this.resolveContent()));
         if (this.useHostWidth) {
           instance.popper.style.width = this.hostWidth;
+          instance.popper.style.maxWidth = this.hostWidth;
+          (instance.popper.firstElementChild as HTMLElement).style.maxWidth = this.hostWidth;
         }
         this.globalConfig.onShow?.(instance);
       },
