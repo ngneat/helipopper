@@ -29,7 +29,8 @@ import { popperVariation, TippyModule, tooltipVariation, withContextMenuVariatio
           ...popperVariation,
           theme: "light-border"
         }
-      }
+      },
+      disableOnNilValue: true
     })
   ],
   providers: [],
