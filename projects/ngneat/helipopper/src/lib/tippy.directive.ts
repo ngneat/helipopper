@@ -131,7 +131,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         inView(this.host)
           .pipe(takeUntil(this.destroyed))
           .subscribe(() => {
-            this.createInstance();
+            this.createInstanceOnNonNilValue();
           });
       }
     } else if (this.onlyTextOverflow) {
@@ -141,7 +141,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
           this.checkOverflow(isElementOverflow);
         });
     } else {
-      this.createInstance();
+      this.createInstanceOnNonNilValue();
     }
   }
 
@@ -185,6 +185,12 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     return `${this.host.nativeElement.getBoundingClientRect().width}px`;
   }
 
+  private createInstanceOnNonNilValue() {
+    if (this.globalConfig.disableOnNilValue && this.content !== null && this.content !== undefined) {
+      this.createInstance();
+    }
+  }
+
   private createInstance() {
     this.instance = tippy(this.host.nativeElement as HTMLElement, {
       allowHTML: true,
@@ -202,15 +208,9 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         this.globalConfig.onCreate?.(instance);
       },
       onShow: instance => {
-        let resolvedContent = null;
         this.zone.run(() => {
-          resolvedContent = this.resolveContent();
-          this.instance.setContent(resolvedContent);
+          this.instance.setContent(this.resolveContent());
         });
-
-        if (this.globalConfig.disableOnNilValue && resolvedContent === null) {
-          return false;
-        }
 
         if (this.useHostWidth) {
           instance.popper.style.width = this.hostWidth;
@@ -294,7 +294,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   private checkOverflow(isElementOverflow: boolean) {
     if (isElementOverflow) {
       if (!this.instance) {
-        this.createInstance();
+        this.createInstanceOnNonNilValue();
       } else {
         this.instance.enable();
       }
