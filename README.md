@@ -234,7 +234,7 @@ zIndex: TippyProps['zIndex'];
 
 lazy: boolean;
 variation: string;
-isEnable: boolean;
+isEnabled: boolean;
 className: string;
 onlyTextOverflow: boolean;
 useHostWidth: boolean;
