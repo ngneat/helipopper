@@ -54,9 +54,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   public isVisible = false;
 
   private instance: TippyInstance;
-  private view: Content;
   private viewRef: ViewRef;
-  private destroyed = new Subject();
+  private destroyed = new Subject<void>();
   private props: Partial<TippyConfig>;
   private enabled = true;
   private variationDefined = false;
@@ -74,10 +73,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   ngOnChanges(changes: NgChanges<TippyDirective>) {
     if (isPlatformServer(this.platformId)) return;
-
-    if (changes.content) {
-      this.view = changes.content.currentValue;
-    }
 
     let props: Partial<TippyConfig> = Object.keys(changes).reduce((acc, change) => {
       acc[change] = changes[change].currentValue;
