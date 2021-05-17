@@ -8,5 +8,5 @@
       "@ngneat/overview": "ngneatOverview"
     }
   },
-  "whitelistedNonPeerDependencies": ["tippy.js", "@ngneat/overview"]
+  "allowedNonPeerDependencies": ["tippy.js", "@ngneat/overview"]
 }

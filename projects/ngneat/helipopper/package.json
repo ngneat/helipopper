@@ -4,8 +4,8 @@
   "description": "A Powerful Tooltip and Popover for Angular Applications",
   "schematics": "./schematics/collection.json",
   "dependencies": {
-    "tslib": "^1.10.0",
-    "tippy.js": "^6.2.3"
+    "tippy.js": "^6.2.3",
+    "tslib": "^2.0.0"
   },
   "keywords": [
     "angular",
