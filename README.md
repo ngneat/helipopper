@@ -250,7 +250,6 @@ visible = new EventEmitter<boolean>();
 ### Global Config
 - You can pass any `tippy` option at global config level. 
 - `beforeRender` - Hook that'll be called before rendering the tooltip content ( applies only for string )
-- `disableOnNilValue` - Boolean flag that disables the tooltip if the assigned value is null or undefined. This can be seen as a shortcut to `isEnable`
 
 ### Create `tippy` Programmatically
 

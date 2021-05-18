@@ -186,7 +186,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   private createInstanceOnNonNilValue() {
-    if (this.globalConfig.disableOnNilValue && this.content !== null && this.content !== undefined) {
+    if (this.content !== null && this.content !== undefined) {
       this.createInstance();
     }
   }
@@ -208,10 +208,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         this.globalConfig.onCreate?.(instance);
       },
       onShow: instance => {
-        this.zone.run(() => {
-          this.instance.setContent(this.resolveContent());
-        });
-
+        this.zone.run(() => this.instance.setContent(this.resolveContent()));
         if (this.useHostWidth) {
           instance.popper.style.width = this.hostWidth;
           instance.popper.style.maxWidth = this.hostWidth;
@@ -234,7 +231,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   private resolveContent() {
-    if (this.globalConfig.disableOnNilValue && (this.content === null || this.content === undefined)) {
+    if (this.content === null || this.content === undefined) {
       return null;
     }
 
