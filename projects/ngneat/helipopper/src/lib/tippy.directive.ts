@@ -231,10 +231,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   private resolveContent() {
-    if (this.content === null || this.content === undefined) {
-      return null;
-    }
-
     if (!this.viewOptions$ && !isString(this.content)) {
       if (isComponent(this.content)) {
         this.viewOptions$ = {
