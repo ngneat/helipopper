@@ -181,42 +181,44 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   private createInstance() {
-    this.instance = tippy(this.host.nativeElement as HTMLElement, {
-      allowHTML: true,
-      appendTo: document.body,
-      ...onlyTippyProps(this.globalConfig),
-      ...onlyTippyProps(this.props),
-      onMount: instance => {
-        this.isVisible = true;
-        this.visible.next(true);
-        this.useHostWidth && this.listenToHostResize();
-        this.globalConfig.onMount?.(instance);
-      },
-      onCreate: instance => {
-        this.className && instance.popper.classList.add(this.className);
-        this.globalConfig.onCreate?.(instance);
-      },
-      onShow: instance => {
-        this.zone.run(() => this.instance.setContent(this.resolveContent()));
-        if (this.useHostWidth) {
-          instance.popper.style.width = this.hostWidth;
-          instance.popper.style.maxWidth = this.hostWidth;
-          (instance.popper.firstElementChild as HTMLElement).style.maxWidth = this.hostWidth;
+    if (this.content !== null && this.content !== undefined) {
+      this.instance = tippy(this.host.nativeElement as HTMLElement, {
+        allowHTML: true,
+        appendTo: document.body,
+        ...onlyTippyProps(this.globalConfig),
+        ...onlyTippyProps(this.props),
+        onMount: instance => {
+          this.isVisible = true;
+          this.visible.next(true);
+          this.useHostWidth && this.listenToHostResize();
+          this.globalConfig.onMount?.(instance);
+        },
+        onCreate: instance => {
+          this.className && instance.popper.classList.add(this.className);
+          this.globalConfig.onCreate?.(instance);
+        },
+        onShow: instance => {
+          this.zone.run(() => this.instance.setContent(this.resolveContent()));
+          if (this.useHostWidth) {
+            instance.popper.style.width = this.hostWidth;
+            instance.popper.style.maxWidth = this.hostWidth;
+            (instance.popper.firstElementChild as HTMLElement).style.maxWidth = this.hostWidth;
+          }
+          this.globalConfig.onShow?.(instance);
+        },
+        onHidden: instance => {
+          this.destroyView();
+          this.isVisible = false;
+          this.visible.next(false);
+          this.globalConfig.onHidden?.(instance);
         }
-        this.globalConfig.onShow?.(instance);
-      },
-      onHidden: instance => {
-        this.destroyView();
-        this.isVisible = false;
-        this.visible.next(false);
-        this.globalConfig.onHidden?.(instance);
-      }
-    });
+      });
 
-    this.setStatus();
-    this.setProps(this.props);
+      this.setStatus();
+      this.setProps(this.props);
 
-    this.variation === "contextMenu" && this.handleContextMenu();
+      this.variation === "contextMenu" && this.handleContextMenu();
+    }
   }
 
   private resolveContent() {

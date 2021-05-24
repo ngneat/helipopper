@@ -29,7 +29,7 @@ describe("@ngneat/helipopper", () => {
   describe("Custom template", () => {
     it("should create tooltip with a custom template", () => {
       cy.get("#custom-template button")
-        .click()
+        .click({ force: true })
         .get(".positions")
         .contains("top")
         .should("exist");
@@ -43,6 +43,30 @@ describe("@ngneat/helipopper", () => {
         .get("app-example")
         .contains("example works")
         .should("exist");
+    });
+  });
+
+  describe("Tippy nil values", () => {
+    it("should create a tooltip with a non-nil value", () => {
+      cy.get("#tippy-value-non-nil button")
+        .click({ force: true })
+        .get(".tippy-box .tippy-content")
+        .contains("I have a tooltip value different from nil")
+        .should("exist");
+    });
+
+    it("should not create a tooltip when using a null value", () => {
+      cy.get("#tippy-value-null button")
+        .click({ force: true })
+        .get(".tippy-box .tippy-content")
+        .should("not.exist");
+    });
+
+    it("should not create a tooltip when using an undefined value", () => {
+      cy.get("#tippy-value-undefined button")
+        .click({ force: true })
+        .get(".tippy-box .tippy-content")
+        .should("not.exist");
     });
   });
 });
