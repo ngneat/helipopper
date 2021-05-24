@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/ngneat/helipopper/compare/v3.1.1...v3.2.0) (2021-05-24)
+
+
+### Features
+
+* 🎸 support class name property when using the service ([0a8218b](https://github.com/ngneat/helipopper/commit/0a8218b6ae10b6a9102fab523f329f62c2b22dfa))
+
 ### [3.1.1](https://github.com/ngneat/helipopper/compare/v3.1.0...v3.1.1) (2021-03-14)
 
 
