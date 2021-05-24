@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.2.1](https://github.com/ngneat/helipopper/compare/v3.2.0...v3.2.1) (2021-05-24)
+
+
+### Bug Fixes
+
+* 🐛 fix nullish check ([59d17db](https://github.com/ngneat/helipopper/commit/59d17dbfc09d19afd1a591f8dc543c6298402a52))
+
 ## [3.2.0](https://github.com/ngneat/helipopper/compare/v3.1.1...v3.2.0) (2021-05-24)
 
 
