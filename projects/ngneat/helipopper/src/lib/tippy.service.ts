@@ -45,7 +45,7 @@ export class TippyService {
       onCreate: instance => {
         options.className && instance.popper.classList.add(options.className);
         this.globalConfig.onCreate?.(instance);
-        options?.onCreate(instance);
+        options.onCreate?.(instance);
       }
     };
 
