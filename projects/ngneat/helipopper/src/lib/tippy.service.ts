@@ -1,11 +1,11 @@
-import { Inject, Injectable, Injector } from "@angular/core";
-import tippy from "tippy.js";
-import { isComponent, isTemplateRef, ViewService } from "@ngneat/overview";
-import { Content } from "@ngneat/overview";
-import { CreateOptions, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance } from "./tippy.types";
-import { onlyTippyProps } from "./utils";
+import { Inject, Injectable, Injector } from '@angular/core';
+import tippy from 'tippy.js';
+import { isComponent, isTemplateRef, ViewService } from '@ngneat/overview';
+import { Content } from '@ngneat/overview';
+import { CreateOptions, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance } from './tippy.types';
+import { onlyTippyProps } from './utils';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class TippyService {
   constructor(
     @Inject(TIPPY_CONFIG) private globalConfig: TippyConfig,
@@ -41,7 +41,12 @@ export class TippyService {
       },
       ...onlyTippyProps(this.globalConfig),
       ...this.globalConfig.variations[options.variation || this.globalConfig.defaultVariation],
-      ...onlyTippyProps(options)
+      ...onlyTippyProps(options),
+      onCreate: instance => {
+        options.className && instance.popper.classList.add(options.className);
+        this.globalConfig.onCreate?.(instance);
+        options?.onCreate(instance);
+      }
     };
 
     return tippy(host, config);
