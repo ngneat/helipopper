@@ -15,7 +15,7 @@ import tippy from 'tippy.js';
 import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
 import { dimensionsChanges, inView, onlyTippyProps, overflowChanges } from './utils';
 import { fromEvent, merge, Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { isComponent, isString, isTemplateRef, ViewService } from '@ngneat/overview';
 import { ViewOptions, ViewRef } from '@ngneat/overview';
 import { Content } from '@ngneat/overview';
@@ -48,6 +48,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input() onlyTextOverflow = false;
   @Input() data: any;
   @Input() useHostWidth = false;
+  @Input() hideOnEscape = false;
   @Input('tippy') content: Content;
 
   @Output() visible = new EventEmitter<boolean>();
@@ -60,7 +61,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   private enabled = true;
   private variationDefined = false;
   private viewOptions$: ViewOptions;
-
   constructor(
     @Inject(PLATFORM_ID) private platformId: string,
     @Inject(TIPPY_CONFIG) private globalConfig: TippyConfig,
@@ -202,7 +202,10 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
           this.globalConfig.onCreate?.(instance);
         },
         onShow: instance => {
-          this.zone.run(() => this.instance.setContent(this.resolveContent()));
+          this.zone.run(() => {
+            this.instance.setContent(this.resolveContent());
+            this.hideOnEscape && this.handleEscapeButton();
+          });
           if (this.useHostWidth) {
             // Don't access `hostWidth` multiple times since it's a getter that calls `getBoundingClientRect()`,
             // which triggers the whole layout update.
@@ -280,6 +283,16 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
         this.instance.show();
       });
+  }
+
+  private handleEscapeButton() {
+    this.pressButton$(document.body, 'Escape')
+      .pipe(takeUntil(merge(this.destroyed, this.visible.pipe(filter(v => !v)))))
+      .subscribe(() => this.hide());
+  }
+
+  private pressButton$(element: HTMLElement, codeButton: string) {
+    return fromEvent(element, 'keydown').pipe(filter(({ code }: KeyboardEvent) => codeButton === code));
   }
 
   private checkOverflow(isElementOverflow: boolean) {

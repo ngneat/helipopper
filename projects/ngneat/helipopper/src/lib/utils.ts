@@ -100,7 +100,8 @@ export function onlyTippyProps(allProps: any) {
     'className',
     'onlyTextOverflow',
     'data',
-    'content'
+    'content',
+    'hideOnEscape'
   ];
 
   Object.keys(allProps).forEach(prop => {

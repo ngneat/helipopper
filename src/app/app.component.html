@@ -1,7 +1,7 @@
 <!--<button (click)="show = !show">Toggle All</button>-->
 
 <ng-container *ngIf="show">
-  <div [formGroup]="tooltipSettings" style="text-transform: capitalize">
+  <div id="tippy-playground" [formGroup]="tooltipSettings" style="text-transform: capitalize">
     <div *ngFor="let option of tooltipTypes" class="flex items-center">
       <input type="radio" formControlName="type" name="type" [value]="option" class="mr-4" />
       {{ option }}
@@ -21,12 +21,20 @@
       }}
     </div>
 
+    <hr />
+
+    <label>
+      <input type="checkbox" formControlName="hideOnEsc" id="hideOnEsc-toggle" class="mr-4" /> Hide on press escape
+      button
+    </label>
+
     <div class="btn-container">
       <button
         class="btn btn-outline-primary"
         tippy="Helpful Message"
         [placement]="tooltipPosition"
         [variation]="tooltipType"
+        [hideOnEscape]="hideOnEsc"
       >
         I have a tooltip
       </button>
@@ -142,7 +150,7 @@
       <button [isEnabled]="!isDisabled" tippy="Tooltip" class="btn btn-outline-dark">Element</button>
     </div>
 
-    <button (click)="toggle()" class="btn btn-outline-primary btn-sm">{{ isDisabled ? "Enable" : "Disable" }}</button>
+    <button (click)="toggle()" class="btn btn-outline-primary btn-sm">{{ isDisabled ? 'Enable' : 'Disable' }}</button>
   </div>
 
   <hr />
