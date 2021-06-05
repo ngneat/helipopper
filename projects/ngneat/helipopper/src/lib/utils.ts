@@ -1,18 +1,20 @@
-import { Observable } from "rxjs";
-import { auditTime, map } from "rxjs/operators";
-import { coerceElement, TippyElement } from "./tippy.types";
+import { NgZone } from '@angular/core';
+import { Observable } from 'rxjs';
+import { auditTime, map } from 'rxjs/operators';
+import { coerceElement, TippyElement } from './tippy.types';
 
 declare const ResizeObserver: any;
 
 let supportsIntersectionObserver = false;
 let supportsResizeObserver = false;
 
-if (typeof window !== "undefined") {
-  supportsIntersectionObserver = "IntersectionObserver" in window;
-  supportsResizeObserver = "ResizeObserver" in window;
+if (typeof window !== 'undefined') {
+  supportsIntersectionObserver = 'IntersectionObserver' in window;
+  supportsResizeObserver = 'ResizeObserver' in window;
 }
 
 export function inView(
+  ngZone: NgZone,
   host: TippyElement,
   options: IntersectionObserverInit = {
     root: null,
@@ -28,18 +30,20 @@ export function inView(
       return;
     }
 
-    const observer = new IntersectionObserver(entries => {
-      // Several changes may occur in the same tick, we want to check the latest entry state.
-      const entry = entries[entries.length - 1];
-      if (entry.isIntersecting) {
-        subscriber.next();
-        subscriber.complete();
-      }
-    }, options);
+    return ngZone.runOutsideAngular(() => {
+      const observer = new IntersectionObserver(entries => {
+        // Several changes may occur in the same tick, we want to check the latest entry state.
+        const entry = entries[entries.length - 1];
+        if (entry.isIntersecting) {
+          subscriber.next();
+          subscriber.complete();
+        }
+      }, options);
 
-    observer.observe(element);
+      observer.observe(element);
 
-    return () => observer.disconnect();
+      return () => observer.disconnect();
+    });
   });
 }
 
@@ -86,17 +90,17 @@ export function onlyTippyProps(allProps: any) {
   const tippyProps = {};
 
   const ownProps = [
-    "variations",
-    "useHostWidth",
-    "defaultVariation",
-    "beforeRender",
-    "lazy",
-    "variation",
-    "isEnabled",
-    "className",
-    "onlyTextOverflow",
-    "data",
-    "content"
+    'variations',
+    'useHostWidth',
+    'defaultVariation',
+    'beforeRender',
+    'lazy',
+    'variation',
+    'isEnabled',
+    'className',
+    'onlyTextOverflow',
+    'data',
+    'content'
   ];
 
   Object.keys(allProps).forEach(prop => {

@@ -9,37 +9,37 @@ import {
   Output,
   PLATFORM_ID,
   ViewContainerRef
-} from "@angular/core";
-import { AfterViewInit, OnChanges, OnDestroy, OnInit } from "@angular/core";
-import tippy from "tippy.js";
-import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from "./tippy.types";
-import { dimensionsChanges, inView, onlyTippyProps, overflowChanges } from "./utils";
-import { fromEvent, merge, Subject } from "rxjs";
-import { switchMap, takeUntil } from "rxjs/operators";
-import { isComponent, isString, isTemplateRef, ViewService } from "@ngneat/overview";
-import { ViewOptions, ViewRef } from "@ngneat/overview";
-import { Content } from "@ngneat/overview";
-import { isPlatformServer } from "@angular/common";
+} from '@angular/core';
+import { AfterViewInit, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import tippy from 'tippy.js';
+import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
+import { dimensionsChanges, inView, onlyTippyProps, overflowChanges } from './utils';
+import { fromEvent, merge, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { isComponent, isString, isTemplateRef, ViewService } from '@ngneat/overview';
+import { ViewOptions, ViewRef } from '@ngneat/overview';
+import { Content } from '@ngneat/overview';
+import { isPlatformServer } from '@angular/common';
 
 @Directive({
-  selector: "[tippy]",
-  exportAs: "tippy"
+  selector: '[tippy]',
+  exportAs: 'tippy'
 })
 export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnInit {
-  @Input() appendTo: TippyProps["appendTo"];
-  @Input() delay: TippyProps["delay"];
-  @Input() duration: TippyProps["duration"];
-  @Input() hideOnClick: TippyProps["hideOnClick"];
-  @Input() interactive: TippyProps["interactive"];
-  @Input() interactiveBorder: TippyProps["interactiveBorder"];
-  @Input() maxWidth: TippyProps["maxWidth"];
-  @Input() offset: TippyProps["offset"];
-  @Input() placement: TippyProps["placement"];
-  @Input() popperOptions: TippyProps["popperOptions"];
-  @Input() showOnCreate: TippyProps["showOnCreate"];
-  @Input() trigger: TippyProps["trigger"];
-  @Input() triggerTarget: TippyProps["triggerTarget"];
-  @Input() zIndex: TippyProps["zIndex"];
+  @Input() appendTo: TippyProps['appendTo'];
+  @Input() delay: TippyProps['delay'];
+  @Input() duration: TippyProps['duration'];
+  @Input() hideOnClick: TippyProps['hideOnClick'];
+  @Input() interactive: TippyProps['interactive'];
+  @Input() interactiveBorder: TippyProps['interactiveBorder'];
+  @Input() maxWidth: TippyProps['maxWidth'];
+  @Input() offset: TippyProps['offset'];
+  @Input() placement: TippyProps['placement'];
+  @Input() popperOptions: TippyProps['popperOptions'];
+  @Input() showOnCreate: TippyProps['showOnCreate'];
+  @Input() trigger: TippyProps['trigger'];
+  @Input() triggerTarget: TippyProps['triggerTarget'];
+  @Input() zIndex: TippyProps['zIndex'];
 
   @Input() lazy: boolean;
   @Input() variation: string;
@@ -48,7 +48,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input() onlyTextOverflow = false;
   @Input() data: any;
   @Input() useHostWidth = false;
-  @Input("tippy") content: Content;
+  @Input('tippy') content: Content;
 
   @Output() visible = new EventEmitter<boolean>();
   public isVisible = false;
@@ -82,7 +82,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
     let variation: string;
 
-    if (isChanged<NgChanges<TippyDirective>>("variation", changes)) {
+    if (isChanged<NgChanges<TippyDirective>>('variation', changes)) {
       variation = changes.variation.currentValue;
       this.variationDefined = true;
     } else if (!this.variationDefined) {
@@ -97,7 +97,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       };
     }
 
-    if (isChanged<NgChanges<TippyDirective>>("isEnabled", changes)) {
+    if (isChanged<NgChanges<TippyDirective>>('isEnabled', changes)) {
       this.enabled = changes.isEnabled.currentValue;
       this.setStatus();
     }
@@ -114,7 +114,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   ngAfterViewInit() {
     if (this.lazy) {
       if (this.onlyTextOverflow) {
-        inView(this.host)
+        inView(this.zone, this.host)
           .pipe(
             switchMap(() => overflowChanges(this.host)),
             takeUntil(this.destroyed)
@@ -123,7 +123,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
             this.checkOverflow(isElementOverflow);
           });
       } else {
-        inView(this.host)
+        inView(this.zone, this.host)
           .pipe(takeUntil(this.destroyed))
           .subscribe(() => {
             this.createInstance();
@@ -181,7 +181,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   private createInstance() {
-    if (this.content !== null && this.content !== undefined) {
+    if (this.content == null) {
+      return;
+    }
+
+    this.zone.runOutsideAngular(() => {
       this.instance = tippy(this.host.nativeElement as HTMLElement, {
         allowHTML: true,
         appendTo: document.body,
@@ -200,9 +204,12 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         onShow: instance => {
           this.zone.run(() => this.instance.setContent(this.resolveContent()));
           if (this.useHostWidth) {
-            instance.popper.style.width = this.hostWidth;
-            instance.popper.style.maxWidth = this.hostWidth;
-            (instance.popper.firstElementChild as HTMLElement).style.maxWidth = this.hostWidth;
+            // Don't access `hostWidth` multiple times since it's a getter that calls `getBoundingClientRect()`,
+            // which triggers the whole layout update.
+            const hostWidth = this.hostWidth;
+            instance.popper.style.width = hostWidth;
+            instance.popper.style.maxWidth = hostWidth;
+            (instance.popper.firstElementChild as HTMLElement).style.maxWidth = hostWidth;
           }
           this.globalConfig.onShow?.(instance);
         },
@@ -217,8 +224,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       this.setStatus();
       this.setProps(this.props);
 
-      this.variation === "contextMenu" && this.handleContextMenu();
-    }
+      this.variation === 'contextMenu' && this.handleContextMenu();
+    });
   }
 
   private resolveContent() {
@@ -255,7 +262,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   private handleContextMenu() {
-    fromEvent(this.host.nativeElement, "contextmenu")
+    fromEvent(this.host.nativeElement, 'contextmenu')
       .pipe(takeUntil(this.destroyed))
       .subscribe((event: MouseEvent) => {
         event.preventDefault();
