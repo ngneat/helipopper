@@ -67,7 +67,7 @@
     "angular-cli-ghpages": "^0.6.2",
     "codelyzer": "^6.0.0",
     "cross-env": "^5.2.0",
-    "cypress": "^5.6.0",
+    "cypress": "^7.4.0",
     "git-cz": "^3.2.1",
     "husky": "^3.0.1",
     "jasmine-core": "~3.6.0",
