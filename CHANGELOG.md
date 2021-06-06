@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://github.com/ngneat/helipopper/compare/v3.2.1...v3.4.0) (2021-06-06)
+
+
+### Features
+
+* added config 'disableOnNilValue' to disable tippy if value is nil ([3a27fa0](https://github.com/ngneat/helipopper/commit/3a27fa08916b45c582b10d31c70e0a1feaf50351))
+* added config 'disableOnNilValue' to skip instance if value is nil ([8c14a5e](https://github.com/ngneat/helipopper/commit/8c14a5ed98ff2d286e3c7981f3de1b2bb28313f7))
+* only create tippy instance in case of non-nil value ([f712880](https://github.com/ngneat/helipopper/commit/f712880cacf2bd9e09db9ff9e46f39c5641069f1))
+* only create tippy instance in case of non-nil value ([06b8d7d](https://github.com/ngneat/helipopper/commit/06b8d7da5fd38205df78cb2625a23ca261c92ca0))
+* removed config 'disableOnNilValue' in favour of default behaviour ([8bfd4b6](https://github.com/ngneat/helipopper/commit/8bfd4b6eaabb55b651832978b608938e32d2e814))
+
+## [3.3.0](https://github.com/ngneat/helipopper/compare/v3.2.1...v3.3.0) (2021-06-06)
+
+
+### Features
+
+* added config 'disableOnNilValue' to disable tippy if value is nil ([3a27fa0](https://github.com/ngneat/helipopper/commit/3a27fa08916b45c582b10d31c70e0a1feaf50351))
+* added config 'disableOnNilValue' to skip instance if value is nil ([8c14a5e](https://github.com/ngneat/helipopper/commit/8c14a5ed98ff2d286e3c7981f3de1b2bb28313f7))
+* only create tippy instance in case of non-nil value ([f712880](https://github.com/ngneat/helipopper/commit/f712880cacf2bd9e09db9ff9e46f39c5641069f1))
+* only create tippy instance in case of non-nil value ([06b8d7d](https://github.com/ngneat/helipopper/commit/06b8d7da5fd38205df78cb2625a23ca261c92ca0))
+* removed config 'disableOnNilValue' in favour of default behaviour ([8bfd4b6](https://github.com/ngneat/helipopper/commit/8bfd4b6eaabb55b651832978b608938e32d2e814))
+
 ### [3.2.1](https://github.com/ngneat/helipopper/compare/v3.2.0...v3.2.1) (2021-05-24)
 
 
