@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.0](https://github.com/ngneat/helipopper/compare/v3.4.0...v3.5.0) (2021-06-07)
+
+
+### Features
+
+* 🎸 support multiple class names ([3f6724c](https://github.com/ngneat/helipopper/commit/3f6724c4e3f62bc170dd7b059a6067b4b2e5886e))
+* add hideOnEscapeButton to close popper ([dab90fc](https://github.com/ngneat/helipopper/commit/dab90fcbf860742295b1ac7b3b11d68a1c34cbea))
+
 ## [3.4.0](https://github.com/ngneat/helipopper/compare/v3.2.1...v3.4.0) (2021-06-06)
 
 
