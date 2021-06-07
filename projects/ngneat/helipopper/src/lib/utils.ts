@@ -114,7 +114,9 @@ export function onlyTippyProps(allProps: any) {
 }
 
 export function normalizeClassName(className: string | string[]): string[] {
-  return isString(className) ? className.split(' ') : className;
+  const classes = isString(className) ? className.split(' ') : className;
+
+  return classes.map(klass => klass.trim()).filter(Boolean);
 }
 
 function isString(value: unknown): value is string {
