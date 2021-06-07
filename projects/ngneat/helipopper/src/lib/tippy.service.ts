@@ -3,7 +3,7 @@ import tippy from 'tippy.js';
 import { isComponent, isTemplateRef, ViewService } from '@ngneat/overview';
 import { Content } from '@ngneat/overview';
 import { CreateOptions, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance } from './tippy.types';
-import { onlyTippyProps } from './utils';
+import { normalizeClassName, onlyTippyProps } from './utils';
 
 @Injectable({ providedIn: 'root' })
 export class TippyService {
@@ -43,7 +43,11 @@ export class TippyService {
       ...this.globalConfig.variations[options.variation || this.globalConfig.defaultVariation],
       ...onlyTippyProps(options),
       onCreate: instance => {
-        options.className && instance.popper.classList.add(options.className);
+        if (options.className) {
+          for (const klass of normalizeClassName(options.className)) {
+            instance.popper.classList.add(klass);
+          }
+        }
         this.globalConfig.onCreate?.(instance);
         options.onCreate?.(instance);
       }

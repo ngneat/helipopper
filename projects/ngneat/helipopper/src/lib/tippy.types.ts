@@ -4,7 +4,7 @@ import { ViewOptions } from '@ngneat/overview';
 
 export interface CreateOptions extends Partial<TippyProps>, ViewOptions {
   variation: string;
-  className: string;
+  className: string | string[];
 }
 
 export type NgChanges<Component extends object, Props = ExcludeFunctions<Component>> = {
