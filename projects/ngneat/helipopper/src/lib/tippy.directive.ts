@@ -8,18 +8,20 @@ import {
   NgZone,
   Output,
   PLATFORM_ID,
-  ViewContainerRef
+  ViewContainerRef,
+  AfterViewInit,
+  OnChanges,
+  OnDestroy,
+  OnInit
 } from '@angular/core';
-import { AfterViewInit, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
 import tippy from 'tippy.js';
-import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
-import { dimensionsChanges, inView, normalizeClassName, onlyTippyProps, overflowChanges } from './utils';
 import { fromEvent, merge, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { isComponent, isString, isTemplateRef, ViewService } from '@ngneat/overview';
-import { ViewOptions, ViewRef } from '@ngneat/overview';
-import { Content } from '@ngneat/overview';
-import { isPlatformServer } from '@angular/common';
+import { isComponent, isString, isTemplateRef, ViewService, ViewOptions, ViewRef, Content } from '@ngneat/overview';
+
+import { dimensionsChanges, inView, normalizeClassName, onlyTippyProps, overflowChanges } from './utils';
+import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
 
 @Directive({
   selector: '[tippy]',
@@ -112,32 +114,34 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   ngAfterViewInit() {
-    if (this.lazy) {
-      if (this.onlyTextOverflow) {
-        inView(this.zone, this.host)
-          .pipe(
-            switchMap(() => overflowChanges(this.host)),
-            takeUntil(this.destroyed)
-          )
+    this.zone.runOutsideAngular(() => {
+      if (this.lazy) {
+        if (this.onlyTextOverflow) {
+          inView(this.host)
+            .pipe(
+              switchMap(() => overflowChanges(this.host)),
+              takeUntil(this.destroyed)
+            )
+            .subscribe(isElementOverflow => {
+              this.checkOverflow(isElementOverflow);
+            });
+        } else {
+          inView(this.host)
+            .pipe(takeUntil(this.destroyed))
+            .subscribe(() => {
+              this.createInstance();
+            });
+        }
+      } else if (this.onlyTextOverflow) {
+        overflowChanges(this.host)
+          .pipe(takeUntil(this.destroyed))
           .subscribe(isElementOverflow => {
             this.checkOverflow(isElementOverflow);
           });
       } else {
-        inView(this.zone, this.host)
-          .pipe(takeUntil(this.destroyed))
-          .subscribe(() => {
-            this.createInstance();
-          });
+        this.createInstance();
       }
-    } else if (this.onlyTextOverflow) {
-      overflowChanges(this.host)
-        .pipe(takeUntil(this.destroyed))
-        .subscribe(isElementOverflow => {
-          this.checkOverflow(isElementOverflow);
-        });
-    } else {
-      this.createInstance();
-    }
+    });
   }
 
   ngOnDestroy() {

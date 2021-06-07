@@ -1,4 +1,3 @@
-import { NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 import { auditTime, map } from 'rxjs/operators';
 import { coerceElement, TippyElement } from './tippy.types';
@@ -14,7 +13,6 @@ if (typeof window !== 'undefined') {
 }
 
 export function inView(
-  ngZone: NgZone,
   host: TippyElement,
   options: IntersectionObserverInit = {
     root: null,
@@ -30,29 +28,25 @@ export function inView(
       return;
     }
 
-    return ngZone.runOutsideAngular(() => {
-      const observer = new IntersectionObserver(entries => {
-        // Several changes may occur in the same tick, we want to check the latest entry state.
-        const entry = entries[entries.length - 1];
-        if (entry.isIntersecting) {
-          subscriber.next();
-          subscriber.complete();
-        }
-      }, options);
+    const observer = new IntersectionObserver(entries => {
+      // Several changes may occur in the same tick, we want to check the latest entry state.
+      const entry = entries[entries.length - 1];
+      if (entry.isIntersecting) {
+        subscriber.next();
+        subscriber.complete();
+      }
+    }, options);
 
-      observer.observe(element);
+    observer.observe(element);
 
-      return () => observer.disconnect();
-    });
+    return () => observer.disconnect();
   });
 }
 
-function isElementOverflow(host: HTMLElement) {
-  const parentEl = host.parentElement;
-  const parentTest = host.offsetWidth > parentEl.offsetWidth;
-  const elementTest = host.offsetWidth < host.scrollWidth;
-
-  return parentTest || elementTest;
+function isElementOverflow(host: HTMLElement): boolean {
+  // Don't access the `offsetWidth` multipe times since it triggers layout updates.
+  const hostOffsetWidth = host.offsetWidth;
+  return hostOffsetWidth > host.parentElement.offsetWidth || hostOffsetWidth < host.scrollWidth;
 }
 
 export function overflowChanges(host: TippyElement) {
@@ -60,9 +54,7 @@ export function overflowChanges(host: TippyElement) {
 
   return dimensionsChanges(element).pipe(
     auditTime(150),
-    map(() => {
-      return isElementOverflow(element);
-    })
+    map(() => isElementOverflow(element))
   );
 }
 
@@ -79,9 +71,7 @@ function resizeObserverStrategy(target: HTMLElement): Observable<boolean> {
     }
 
     const observer = new ResizeObserver(() => subscriber.next(true));
-
     observer.observe(target);
-
     return () => observer.disconnect();
   });
 }
