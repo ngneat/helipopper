@@ -13,7 +13,7 @@ import {
 import { AfterViewInit, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import tippy from 'tippy.js';
 import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
-import { dimensionsChanges, inView, onlyTippyProps, overflowChanges } from './utils';
+import { dimensionsChanges, inView, normalizeClassName, onlyTippyProps, overflowChanges } from './utils';
 import { fromEvent, merge, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { isComponent, isString, isTemplateRef, ViewService } from '@ngneat/overview';
@@ -44,7 +44,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input() lazy: boolean;
   @Input() variation: string;
   @Input() isEnabled: boolean;
-  @Input() className: string;
+  @Input() className: string | string[];
   @Input() onlyTextOverflow = false;
   @Input() data: any;
   @Input() useHostWidth = false;
@@ -198,7 +198,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
           this.globalConfig.onMount?.(instance);
         },
         onCreate: instance => {
-          this.className && instance.popper.classList.add(this.className);
+          if (this.className) {
+            for (const klass of normalizeClassName(this.className)) {
+              instance.popper.classList.add(klass);
+            }
+          }
           this.globalConfig.onCreate?.(instance);
         },
         onShow: instance => {
