@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.5.2](https://github.com/ngneat/helipopper/compare/v3.5.1...v3.5.2) (2021-06-07)
+
+
+### Bug Fixes
+
+* 🐛 filter invalid class names ([987082b](https://github.com/ngneat/helipopper/commit/987082bd88b6dbe64d6eeb86fd14cbd7f1c06fc3))
+
 ### [3.5.1](https://github.com/ngneat/helipopper/compare/v3.5.0...v3.5.1) (2021-06-07)
 
 
