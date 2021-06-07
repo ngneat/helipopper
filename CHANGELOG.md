@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.5.1](https://github.com/ngneat/helipopper/compare/v3.5.0...v3.5.1) (2021-06-07)
+
+
+### Bug Fixes
+
+* 🐛 support multipule class names in service ([9a7fd8e](https://github.com/ngneat/helipopper/commit/9a7fd8e82c20ad1493ea38df755ba0f2f988d473))
+
 ## [3.5.0](https://github.com/ngneat/helipopper/compare/v3.4.0...v3.5.0) (2021-06-07)
 
 
