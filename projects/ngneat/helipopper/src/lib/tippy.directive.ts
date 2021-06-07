@@ -24,6 +24,7 @@ import { dimensionsChanges, inView, normalizeClassName, onlyTippyProps, overflow
 import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
 
 @Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[tippy]',
   exportAs: 'tippy'
 })
