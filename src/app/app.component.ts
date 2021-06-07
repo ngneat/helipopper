@@ -1,32 +1,33 @@
-import { Component, ElementRef, ViewChild } from "@angular/core";
-import { FormBuilder } from "@angular/forms";
-import { ExampleComponent } from "./example/example.component";
-import { interval } from "rxjs";
-import { finalize } from "rxjs/operators";
-import { TippyInstance, TippyService } from "@ngneat/helipopper";
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { ExampleComponent } from './example/example.component';
+import { interval } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { TippyInstance, TippyService } from '@ngneat/helipopper';
 
 @Component({
-  selector: "app-root",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"]
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  tooltipPositions = ["auto", "top", "right", "bottom", "left"];
+  tooltipPositions = ['auto', 'top', 'right', 'bottom', 'left'];
   tooltipAlignments = [
-    { label: "start", value: "-start" },
-    { label: "center", value: "" },
-    { label: "end", value: "-end" }
+    { label: 'start', value: '-start' },
+    { label: 'center', value: '' },
+    { label: 'end', value: '-end' }
   ];
 
-  tooltipTypes = ["popper", "tooltip", "popperBorder"];
+  tooltipTypes = ['popper', 'tooltip', 'popperBorder'];
 
   tooltipSettings = this.fb.group({
-    type: this.fb.control("tooltip"),
-    alignment: this.fb.control(""),
-    position: this.fb.control("top")
+    type: this.fb.control('tooltip'),
+    alignment: this.fb.control(''),
+    position: this.fb.control('top'),
+    hideOnEsc: this.fb.control(false)
   });
 
-  interval$ = interval(1000).pipe(finalize(() => console.log("interval completed")));
+  interval$ = interval(1000).pipe(finalize(() => console.log('interval completed')));
 
   get tooltipPosition(): string {
     const { position, alignment } = this.tooltipSettings.value;
@@ -36,6 +37,10 @@ export class AppComponent {
 
   get tooltipType(): string {
     return this.tooltipSettings.value.type;
+  }
+
+  get hideOnEsc(): boolean {
+    return this.tooltipSettings.value.hideOnEsc;
   }
 
   items = Array.from({ length: 500 }, (_, i) => ({
@@ -48,7 +53,7 @@ export class AppComponent {
     label: `Value ${i + 1}`
   }));
 
-  thoughts = "We just need someone to talk to 🥺";
+  thoughts = 'We just need someone to talk to 🥺';
   isDisabled = false;
   text = `Long Long All Text`;
   comp = ExampleComponent;
@@ -59,8 +64,8 @@ export class AppComponent {
 
   constructor(private fb: FormBuilder, private service: TippyService) {}
 
-  @ViewChild("inputName", { static: true }) inputName: ElementRef;
-  @ViewChild("inputNameComp", { static: true }) inputNameComp: ElementRef;
+  @ViewChild('inputName', { static: true }) inputName: ElementRef;
+  @ViewChild('inputNameComp', { static: true }) inputNameComp: ElementRef;
   maxWidth = 300;
   show = true;
 
@@ -69,14 +74,14 @@ export class AppComponent {
   }
 
   handleStatus($event: boolean): void {
-    console.log("show tooltip", $event);
+    console.log('show tooltip', $event);
   }
 
   instance2: TippyInstance;
 
   useService(host: HTMLButtonElement) {
     if (!this.instance2) {
-      this.instance2 = this.service.create(host, "Created");
+      this.instance2 = this.service.create(host, 'Created');
     }
   }
 
@@ -85,16 +90,16 @@ export class AppComponent {
   useServiceComponent(host2: HTMLButtonElement) {
     if (!this.instance) {
       this.instance = this.service.create(host2, ExampleComponent, {
-        variation: "popper"
+        variation: 'popper'
       });
     }
   }
 
   duplicate(item: any) {
-    console.log("duplicate", item);
+    console.log('duplicate', item);
   }
 
   copy(item: any) {
-    console.log("copy", item);
+    console.log('copy', item);
   }
 }
