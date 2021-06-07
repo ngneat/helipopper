@@ -112,3 +112,11 @@ export function onlyTippyProps(allProps: any) {
 
   return tippyProps;
 }
+
+export function normalizeClassName(className: string | string[]): string[] {
+  return isString(className) ? className.split(' ') : className;
+}
+
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
