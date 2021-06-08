@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0](https://github.com/ngneat/helipopper/compare/v3.5.3...v3.6.0) (2021-06-08)
+
+
+### Features
+
+* 🎸 support custom host ([fd7ed5f](https://github.com/ngneat/helipopper/commit/fd7ed5f17324c0a0ddf86d82d9e614124af0d161))
+
 ### [3.5.3](https://github.com/ngneat/helipopper/compare/v3.5.2...v3.5.3) (2021-06-07)
 
 ### [3.5.2](https://github.com/ngneat/helipopper/compare/v3.5.1...v3.5.2) (2021-06-07)
