@@ -91,7 +91,8 @@ export function onlyTippyProps(allProps: any) {
     'onlyTextOverflow',
     'data',
     'content',
-    'hideOnEscape'
+    'hideOnEscape',
+    'customHost'
   ];
 
   Object.keys(allProps).forEach(prop => {
@@ -106,7 +107,7 @@ export function onlyTippyProps(allProps: any) {
 export function normalizeClassName(className: string | string[]): string[] {
   const classes = isString(className) ? className.split(' ') : className;
 
-  return classes.map(klass => klass.trim()).filter(Boolean);
+  return classes.map(klass => klass?.trim()).filter(Boolean);
 }
 
 function isString(value: unknown): value is string {

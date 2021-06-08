@@ -17,6 +17,7 @@
           { "name": "debugger", "message": "The debugger is forbidden" },
           { "name": "fdescribe", "message": "The fdescribe is forbidden" }
         ],
+        "@angular-eslint/no-input-rename": "off",
         "@angular-eslint/directive-selector": [
           "error",
           {
