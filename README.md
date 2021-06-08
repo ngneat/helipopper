@@ -238,6 +238,7 @@ isEnabled: boolean;
 className: string;
 onlyTextOverflow: boolean;
 useHostWidth: boolean;
+tippyHost: HTMLElement;
 hideOnEscape: boolean;
 data: any;
 ```
