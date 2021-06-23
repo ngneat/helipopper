@@ -96,5 +96,12 @@ describe('@ngneat/helipopper', () => {
         .get(popperSelector)
         .should('not.exist');
     });
+
+    it('should hide on Escape when variation have hideOnEscape property', () => {
+      cy.get('.btn-container button[variation="hideOnEscape"]')
+        .click({ force: true })
+        .get(popperSelector)
+        .should('not.exist');
+    });
   });
 });

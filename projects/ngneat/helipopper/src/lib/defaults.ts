@@ -2,7 +2,12 @@ import { TippyConfig } from './tippy.types';
 
 type Variation = TippyConfig['variations'][0];
 
+const defaultsProps: Variation = {
+  hideOnEscape: false
+};
+
 export const tooltipVariation: Variation = {
+  ...defaultsProps,
   theme: null,
   arrow: false,
   animation: 'scale',
@@ -11,6 +16,7 @@ export const tooltipVariation: Variation = {
 };
 
 export const popperVariation: Variation = {
+  ...defaultsProps,
   theme: 'light',
   arrow: true,
   offset: [0, 10],
@@ -21,6 +27,7 @@ export const popperVariation: Variation = {
 
 export function withContextMenuVariation(baseVariation: Variation): Variation {
   return {
+    ...defaultsProps,
     ...baseVariation,
     placement: 'right-start',
     trigger: 'manual',
