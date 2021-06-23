@@ -87,6 +87,7 @@ variation looks like:
 
 ```ts
 export const tooltipVariation = {
+  hideOnEscape: false,
   theme: null,
   arrow: false,
   animation: 'scale',

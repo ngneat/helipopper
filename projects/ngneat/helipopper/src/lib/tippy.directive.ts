@@ -218,7 +218,9 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         onShow: instance => {
           this.zone.run(() => {
             this.instance.setContent(this.resolveContent());
-            this.hideOnEscape && this.handleEscapeButton();
+            if (this.hideOnEscape || this.props.hideOnEscape) {
+              this.handleEscapeButton();
+            }
           });
           if (this.useHostWidth) {
             // Don't access `hostWidth` multiple times since it's a getter that calls `getBoundingClientRect()`,

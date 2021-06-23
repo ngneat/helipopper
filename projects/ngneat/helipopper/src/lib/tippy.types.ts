@@ -31,7 +31,9 @@ export const TIPPY_CONFIG = new InjectionToken<Partial<TippyConfig>>('Tippy conf
 export const TIPPY_REF = new InjectionToken('TIPPY_REF');
 
 export type TippyInstance = Instance;
-export type TippyProps = Props;
+export interface TippyProps extends Props {
+  hideOnEscape: boolean;
+}
 
 export interface TippyConfig extends TippyProps {
   variations: Record<string, Partial<TippyProps>>;
