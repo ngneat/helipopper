@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0](https://github.com/ngneat/helipopper/compare/v3.5.3...v3.6.0) (2021-06-30)
+
+
+### Features
+
+* 🎸 ng add support v12 ([4e07bec](https://github.com/ngneat/helipopper/commit/4e07bec2352dc1385ff27650f1b79759c8b48aba)), closes [#55](https://github.com/ngneat/helipopper/issues/55)
+
 ### [3.5.3](https://github.com/ngneat/helipopper/compare/v3.5.2...v3.5.3) (2021-06-07)
 
 ### [3.5.2](https://github.com/ngneat/helipopper/compare/v3.5.1...v3.5.2) (2021-06-07)
