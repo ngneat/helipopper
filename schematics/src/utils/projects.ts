@@ -1,4 +1,3 @@
-import { workspaces } from '@angular-devkit/core';
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
 
 export function getWorkspacePath(host: Tree): string {
@@ -8,7 +7,7 @@ export function getWorkspacePath(host: Tree): string {
   return path;
 }
 
-export function getWorkspace(host: Tree): workspaces.WorkspaceDefinition {
+export function getWorkspace(host: Tree) {
   const path = getWorkspacePath(host);
   const configBuffer = host.read(path);
   if (configBuffer === null) {
@@ -21,8 +20,8 @@ export function getWorkspace(host: Tree): workspaces.WorkspaceDefinition {
 
 export function getProject(host: Tree, projectName?: string) {
   const workspace = getWorkspace(host);
-  projectName = projectName || <string>workspace.extensions.defaultProject;
-  const project = workspace.projects.get(projectName);
+  projectName = projectName || workspace.defaultProject;
+  const project = workspace.projects[projectName];
 
   if (!project) {
     throw new SchematicsException(`Invalid project name: ${projectName}`);
