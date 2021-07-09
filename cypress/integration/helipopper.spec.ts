@@ -97,4 +97,12 @@ describe('@ngneat/helipopper', () => {
         .should('not.exist');
     });
   });
+
+  describe('showOnCreate', () => {
+    it('should show tooltip if created', () => {
+      cy.get('.tippy-content')
+        .contains('Shown immediately when created')
+        .should('exist');
+    });
+  });
 });
