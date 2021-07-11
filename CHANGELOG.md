@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.7.1](https://github.com/ngneat/helipopper/compare/v3.7.0...v3.7.1) (2021-07-11)
+
+
+### Bug Fixes
+
+* correct instance to run showOnCreate  (test) ([a3e5dc8](https://github.com/ngneat/helipopper/commit/a3e5dc84c8afe933610b63e05b2fb9bb1d48dbb6))
+* correct instance to run showOnCreate correct ([976ec37](https://github.com/ngneat/helipopper/commit/976ec376296c31ba759add8978564d52594ba184))
+
 ## [3.6.0](https://github.com/ngneat/helipopper/compare/v3.5.3...v3.6.0) (2021-06-30)
 
 
