@@ -102,4 +102,6 @@ export class AppComponent {
   copy(item: any) {
     console.log('copy', item);
   }
+
+  visibility = false;
 }

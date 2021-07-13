@@ -181,6 +181,29 @@
 
   <hr />
 
+  <h6>Declaritive visibility</h6>
+
+  <div class="btn-container">
+    <button
+      tippy="I'm a declarative tooltip"
+      variation="tooltip"
+      trigger="manual"
+      className="declarativeTooltip"
+      class="btn btn-outline-secondary"
+      #visibiliyTooltip="tippy"
+      [isVisible]="visibility"
+      data-cy="tippy-reference-declarative"
+    >
+      Show Tooltip
+    </button>
+  </div>
+
+  <button (click)="visibility = !visibility" data-cy="trigger-declarative" class="btn btn-outline-info btn-sm mt-2">
+    Show tooltip
+  </button>
+
+  <hr />
+
   <h6>Show on Create</h6>
 
   <div class="btn-container">
