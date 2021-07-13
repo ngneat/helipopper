@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/ngneat/helipopper/compare/v3.7.1...v4.0.0) (2021-07-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* When providing a string as content, we use innertext instead to prevent
+xss
+
+### Features
+
+* 🎸 don't use innerhtml when passing a string ([cb4f2f7](https://github.com/ngneat/helipopper/commit/cb4f2f72d67a83217a4c67fc3e280b3e5add2a96))
+
 ### [3.7.1](https://github.com/ngneat/helipopper/compare/v3.7.0...v3.7.1) (2021-07-11)
 
 

@@ -105,4 +105,16 @@ describe('@ngneat/helipopper', () => {
         .should('exist');
     });
   });
+
+  describe('isVisible', () => {
+    it('should not be visible while flag is false', () => {
+      cy.get('.declarativeTooltip').should('not.exist');
+    });
+    it('should be visible while flag is true', () => {
+      cy.get('[data-cy~="trigger-declarative"]').click({ force: true });
+      cy.get(popperSelector).contains("I'm a declarative tooltip");
+      cy.get('[data-cy~="trigger-declarative"]').click({ force: true });
+      cy.get('.declarativeTooltip').should('not.exist');
+    });
+  });
 });
