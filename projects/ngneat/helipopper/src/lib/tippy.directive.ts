@@ -106,7 +106,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     }
 
     if (isChanged<NgChanges<TippyDirective>>('isVisible', changes)) {
-      this.isVisible ? this.instance?.show() : this.instance?.hide();
+      this.isVisible ? this.show() : this.hide();
     }
 
     this.setProps(props);
@@ -213,6 +213,9 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
             }
           }
           this.globalConfig.onCreate?.(instance);
+          if (this.isVisible === true) {
+            instance.show();
+          }
         },
         onShow: instance => {
           this.zone.run(() => {

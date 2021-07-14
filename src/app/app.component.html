@@ -190,16 +190,15 @@
       trigger="manual"
       className="declarativeTooltip"
       class="btn btn-outline-secondary"
-      #visibiliyTooltip="tippy"
       [isVisible]="visibility"
       data-cy="tippy-reference-declarative"
     >
-      Show Tooltip
+      Declaritive Tooltip
     </button>
   </div>
 
   <button (click)="visibility = !visibility" data-cy="trigger-declarative" class="btn btn-outline-info btn-sm mt-2">
-    Show tooltip
+    Toggle tooltip
   </button>
 
   <hr />
