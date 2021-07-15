@@ -24,6 +24,7 @@ import { dimensionsChanges, inView, normalizeClassName, onlyTippyProps, overflow
 import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
 
 @Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[tippy]',
   exportAs: 'tippy'
 })
@@ -52,6 +53,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input() useHostWidth = false;
   @Input() hideOnEscape = false;
   @Input('tippy') content: Content;
+  @Input('tippyHost') customHost: HTMLElement;
 
   @Output() visible = new EventEmitter<boolean>();
   public isVisible = false;
@@ -70,7 +72,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     private viewService: ViewService,
     private vcr: ViewContainerRef,
     private zone: NgZone,
-    private host: ElementRef
+    private hostRef: ElementRef
   ) {}
 
   ngOnChanges(changes: NgChanges<TippyDirective>) {
@@ -180,8 +182,12 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     this.enabled ? this.instance?.enable() : this.instance?.disable();
   }
 
+  private get host(): HTMLElement {
+    return this.customHost || this.hostRef.nativeElement;
+  }
+
   private get hostWidth(): string {
-    return `${this.host.nativeElement.getBoundingClientRect().width}px`;
+    return `${this.host.getBoundingClientRect().width}px`;
   }
 
   private createInstance() {
@@ -190,7 +196,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     }
 
     this.zone.runOutsideAngular(() => {
-      this.instance = tippy(this.host.nativeElement as HTMLElement, {
+      this.instance = tippy(this.host, {
         allowHTML: true,
         appendTo: document.body,
         ...onlyTippyProps(this.globalConfig),
@@ -277,7 +283,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   private handleContextMenu() {
-    fromEvent(this.host.nativeElement, 'contextmenu')
+    fromEvent(this.host, 'contextmenu')
       .pipe(takeUntil(this.destroyed))
       .subscribe((event: MouseEvent) => {
         event.preventDefault();
@@ -320,7 +326,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   private listenToHostResize() {
-    dimensionsChanges(this.host.nativeElement)
+    dimensionsChanges(this.host)
       .pipe(takeUntil(merge(this.destroyed, this.visible)))
       .subscribe(() => {
         this.instance.popper.style.width = this.hostWidth;

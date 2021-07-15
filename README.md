@@ -231,6 +231,7 @@ showOnCreate: TippyProps['showOnCreate'];
 trigger: TippyProps['trigger'];
 triggerTarget: TippyProps['triggerTarget'];
 zIndex: TippyProps['zIndex'];
+tippyHost: HTMLElement;
 
 lazy: boolean;
 variation: string;
