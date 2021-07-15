@@ -7,6 +7,9 @@
     "tippy.js": "^6.2.3",
     "tslib": "^2.0.0"
   },
+  "peerDependencies": {
+    "@ngneat/overview": "*"
+  },
   "keywords": [
     "angular",
     "angular tooltip",
