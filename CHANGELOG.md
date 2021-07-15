@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.1](https://github.com/ngneat/helipopper/compare/v4.0.0...v4.0.1) (2021-07-15)
+
+
+### Bug Fixes
+
+* 🐛 revert custom host ([a5e72d6](https://github.com/ngneat/helipopper/commit/a5e72d69336bd32802d3cf2827e60c0e303da437))
+
 ## [4.0.0](https://github.com/ngneat/helipopper/compare/v3.7.1...v4.0.0) (2021-07-15)
 
 
