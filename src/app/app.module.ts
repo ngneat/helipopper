@@ -1,33 +1,35 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
 
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
-import { ReactiveFormsModule } from "@angular/forms";
-import { ExampleComponent } from "./example/example.component";
-import { popperVariation, TippyModule, tooltipVariation, withContextMenuVariation } from "@ngneat/helipopper";
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ExampleComponent } from './example/example.component';
+import { popperVariation, TippyModule, tooltipVariation, withContextMenuVariation } from '@ngneat/helipopper';
+import { IsVisibleComponent } from './is-visible/isVisible.component';
+import { PlaygroundComponent } from './playground/playground.component';
 
 @NgModule({
-  declarations: [AppComponent, ExampleComponent],
+  declarations: [AppComponent, PlaygroundComponent, ExampleComponent, IsVisibleComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     TippyModule.forRoot({
-      defaultVariation: "tooltip",
+      defaultVariation: 'tooltip',
       variations: {
         tooltip: tooltipVariation,
         popper: popperVariation,
         menu: {
           ...popperVariation,
-          appendTo: "parent",
+          appendTo: 'parent',
           arrow: false,
           offset: [0, 0]
         },
         contextMenu: withContextMenuVariation(popperVariation),
         popperBorder: {
           ...popperVariation,
-          theme: "light-border"
+          theme: 'light-border'
         }
       }
     })
