@@ -6,9 +6,11 @@ import { AppComponent } from "./app.component";
 import { ReactiveFormsModule } from "@angular/forms";
 import { ExampleComponent } from "./example/example.component";
 import { popperVariation, TippyModule, tooltipVariation, withContextMenuVariation } from "@ngneat/helipopper";
+import { PlaygroundComponent } from "./playground/playground.component";
+import { IsVisibleComponent } from "./is-visible/isVisible.component";
 
 @NgModule({
-  declarations: [AppComponent, ExampleComponent],
+  declarations: [AppComponent, ExampleComponent, PlaygroundComponent, ExampleComponent, IsVisibleComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
