@@ -21,7 +21,8 @@ export class TippyService {
 
           if (isTemplateRef(content)) {
             instance.$viewOptions.context = {
-              $implicit: instance.hide.bind(instance)
+              $implicit: instance.hide.bind(instance),
+              ...options.context
             };
           } else if (isComponent(content)) {
             instance.$viewOptions.injector = Injector.create({
