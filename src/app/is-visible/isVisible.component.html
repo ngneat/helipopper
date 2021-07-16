@@ -1,0 +1,21 @@
+<h6>Declaritive visibility (already set true before render in the component)</h6>
+
+<div class="btn-container">
+  <button
+    tippy="I'm a declarative tooltip"
+    variation="tooltip"
+    trigger="click"
+    className="declarativeTooltip"
+    class="btn btn-outline-secondary"
+    [isVisible]="visibility"
+    data-cy="tippy-reference-declarative"
+  >
+    Declaritive Tooltip
+  </button>
+</div>
+
+<button (click)="visibility = !visibility" data-cy="trigger-declarative" class="btn btn-outline-info btn-sm mt-2">
+  Toggle tooltip
+</button>
+
+<hr />
