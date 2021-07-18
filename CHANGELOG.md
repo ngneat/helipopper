@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/ngneat/helipopper/compare/v4.0.2...v4.1.0) (2021-07-18)
+
+
+### Features
+
+* declarativly toggle visibility ([e9f0e89](https://github.com/ngneat/helipopper/commit/e9f0e89174da74f01768ab1643bfb63d41690c90))
+
 ### [4.0.2](https://github.com/ngneat/helipopper/compare/v4.0.1...v4.0.2) (2021-07-16)
 
 
