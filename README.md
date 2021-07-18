@@ -210,6 +210,19 @@ Now you can use it in your template:
 <button (click)="tooltip.hide()">Close</button>
 ```
 
+### Show/hide declarativly
+
+Use isVisible to trigger show and hide. Set trigger to manual.
+
+```html
+<div tippy="Helpful Message" trigger="manual" [isVisible]="visibility">
+  Click Open to see me
+</div>
+
+<button (click)="visibility = true">Open</button>
+<button (click)="visibility = false">Close</button>
+```
+
 You can see more examples in
 our [playground](https://github.com/ngneat/helipopper/blob/master/src/app/app.component.html), or
 live [here](https://ngneat.github.io/helipopper/).
@@ -236,6 +249,7 @@ tippyHost: HTMLElement;
 lazy: boolean;
 variation: string;
 isEnabled: boolean;
+isVisible: boolean;
 className: string;
 onlyTextOverflow: boolean;
 useHostWidth: boolean;

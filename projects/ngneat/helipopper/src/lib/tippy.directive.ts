@@ -56,7 +56,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input('tippyHost') customHost: HTMLElement;
 
   @Output() visible = new EventEmitter<boolean>();
-  public isVisible = false;
+  @Input() public isVisible = false;
 
   private instance: TippyInstance;
   private viewRef: ViewRef;
@@ -79,6 +79,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     if (isPlatformServer(this.platformId)) return;
 
     let props: Partial<TippyConfig> = Object.keys(changes).reduce((acc, change) => {
+      if (change === 'isVisible') return acc;
+
       acc[change] = changes[change].currentValue;
 
       return acc;
@@ -104,6 +106,10 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     if (isChanged<NgChanges<TippyDirective>>('isEnabled', changes)) {
       this.enabled = changes.isEnabled.currentValue;
       this.setStatus();
+    }
+
+    if (isChanged<NgChanges<TippyDirective>>('isVisible', changes)) {
+      this.isVisible ? this.show() : this.hide();
     }
 
     this.setProps(props);
@@ -214,6 +220,9 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
             }
           }
           this.globalConfig.onCreate?.(instance);
+          if (this.isVisible === true) {
+            instance.show();
+          }
         },
         onShow: instance => {
           this.zone.run(() => {
