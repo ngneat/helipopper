@@ -230,7 +230,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
             if (isString(content)) {
               instance.setProps({ allowHTML: false });
             }
-            instance.setContent(this.resolveContent());
+            instance.setContent(content);
             this.hideOnEscape && this.handleEscapeButton();
           });
           if (this.useHostWidth) {
