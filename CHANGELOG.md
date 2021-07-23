@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.1.1](https://github.com/ngneat/helipopper/compare/v4.1.0...v4.1.1) (2021-07-23)
+
+
+### Bug Fixes
+
+* 🐛 check duplicate component ([2263bed](https://github.com/ngneat/helipopper/commit/2263bed741797fc413f47970c17185c7dafc7a8e)), closes [#65](https://github.com/ngneat/helipopper/issues/65)
+
 ## [4.1.0](https://github.com/ngneat/helipopper/compare/v4.0.2...v4.1.0) (2021-07-18)
 
 
