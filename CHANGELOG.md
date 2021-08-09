@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/ngneat/helipopper/compare/v4.1.1...v4.2.0) (2021-08-09)
+
+
+### Features
+
+* 🎸 allow passing context to component ([e342668](https://github.com/ngneat/helipopper/commit/e3426680e736facf9f8313e6c6c3e2ba1c1a4358))
+
 ### [4.1.1](https://github.com/ngneat/helipopper/compare/v4.1.0...v4.1.1) (2021-07-23)
 
 
