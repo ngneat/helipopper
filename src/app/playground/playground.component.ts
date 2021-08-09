@@ -90,7 +90,10 @@ export class PlaygroundComponent {
   useServiceComponent(host2: HTMLButtonElement) {
     if (!this.instance) {
       this.instance = this.service.create(host2, ExampleComponent, {
-        variation: 'popper'
+        variation: 'popper',
+        context: {
+          foo: 1
+        }
       });
     }
   }

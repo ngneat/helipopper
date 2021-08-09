@@ -25,6 +25,7 @@ export class TippyService {
               ...options.context
             };
           } else if (isComponent(content)) {
+            instance.context = options.context;
             instance.$viewOptions.injector = Injector.create({
               providers: [{ provide: TIPPY_REF, useValue: instance }],
               parent: options.injector || this.injector
