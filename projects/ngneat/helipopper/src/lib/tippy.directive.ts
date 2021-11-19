@@ -159,6 +159,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   destroyView() {
+    this.viewOptions$ = null;
     this.viewRef?.destroy();
     this.viewRef = null;
   }
@@ -261,9 +262,15 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   private resolveContent() {
     if (!this.viewOptions$ && !isString(this.content)) {
       if (isComponent(this.content)) {
+        this.instance.data = this.data;
         this.viewOptions$ = {
           injector: Injector.create({
-            providers: [{ provide: TIPPY_REF, useValue: this.instance }],
+            providers: [
+              {
+                provide: TIPPY_REF,
+                useValue: this.instance
+              }
+            ],
             parent: this.injector
           })
         };

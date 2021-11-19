@@ -44,7 +44,17 @@ describe('@ngneat/helipopper', () => {
       cy.get('#custom-component button')
         .click({ force: true })
         .get('app-example')
-        .contains('example works')
+        .contains('Hello, ngneat')
+        .should('exist');
+
+      cy.get('#custom-component input')
+        .clear()
+        .type('world!');
+
+      cy.get('#custom-component button')
+        .click({ force: true })
+        .get('app-example')
+        .contains('Hello, world!')
         .should('exist');
     });
   });

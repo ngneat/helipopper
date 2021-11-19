@@ -112,8 +112,21 @@
   <div id="custom-component">
     <h6>Custom Component</h6>
 
+    <div>
+      <label>
+        Name:
+        <input type="text" #input (keyup)="(true)" value="ngneat" />
+      </label>
+    </div>
+
     <div class="btn-container">
-      <button class="btn btn-outline-danger" [tippy]="comp" variation="popper" (visible)="handleStatus($event)">
+      <button
+        class="btn btn-outline-danger"
+        [tippy]="comp"
+        [data]="{ name: input.value }"
+        variation="popper"
+        (visible)="handleStatus($event)"
+      >
         Open component
       </button>
     </div>
