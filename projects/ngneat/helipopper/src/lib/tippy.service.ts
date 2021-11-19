@@ -27,7 +27,15 @@ export class TippyService {
           } else if (isComponent(content)) {
             instance.context = options.context;
             instance.$viewOptions.injector = Injector.create({
-              providers: [{ provide: TIPPY_REF, useValue: instance }],
+              providers: [
+                {
+                  provide: TIPPY_REF,
+                  useValue: {
+                    ...instance,
+                    data: options.data
+                  }
+                }
+              ],
               parent: options.injector || this.injector
             });
           }

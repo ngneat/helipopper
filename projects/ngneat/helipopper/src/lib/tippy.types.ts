@@ -28,9 +28,12 @@ export const TIPPY_CONFIG = new InjectionToken<Partial<TippyConfig>>('Tippy conf
     return {};
   }
 });
-export const TIPPY_REF = new InjectionToken('TIPPY_REF');
+export const TIPPY_REF = new InjectionToken<TippyInstance>('TIPPY_REF');
 
-export type TippyInstance = Instance;
+export interface TippyInstance extends Instance {
+  data?: any;
+}
+
 export type TippyProps = Props;
 
 export interface TippyConfig extends TippyProps {
