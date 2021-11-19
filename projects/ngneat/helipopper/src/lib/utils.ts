@@ -91,6 +91,7 @@ export function onlyTippyProps(allProps: any) {
     'onlyTextOverflow',
     'data',
     'content',
+    'context',
     'hideOnEscape',
     'customHost'
   ];
