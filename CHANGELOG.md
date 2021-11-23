@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.0](https://github.com/ngneat/helipopper/compare/v4.2.0...v4.3.0) (2021-11-23)
+
+
+### Features
+
+* pass data to custom component ([53224d1](https://github.com/ngneat/helipopper/commit/53224d13b9a5fa0063341d8808509ad5a72fe997)), closes [#74](https://github.com/ngneat/helipopper/issues/74)
+
+
+### Bug Fixes
+
+* add context to ownProps to remove from tippy config ([c096ef2](https://github.com/ngneat/helipopper/commit/c096ef23d125ddfb0f964d296249384d63dbc918))
+
 ## [4.2.0](https://github.com/ngneat/helipopper/compare/v4.1.1...v4.2.0) (2021-08-09)
 
 
