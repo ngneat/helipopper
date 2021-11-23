@@ -26,8 +26,14 @@ export class TippyService {
             };
           } else if (isComponent(content)) {
             instance.context = options.context;
+            instance.data = options.data;
             instance.$viewOptions.injector = Injector.create({
-              providers: [{ provide: TIPPY_REF, useValue: instance }],
+              providers: [
+                {
+                  provide: TIPPY_REF,
+                  useValue: instance
+                }
+              ],
               parent: options.injector || this.injector
             });
           }

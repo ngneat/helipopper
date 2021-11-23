@@ -91,8 +91,8 @@ export class PlaygroundComponent {
     if (!this.instance) {
       this.instance = this.service.create(host2, ExampleComponent, {
         variation: 'popper',
-        context: {
-          foo: 1
+        data: {
+          name: 'ngneat'
         }
       });
     }
