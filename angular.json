@@ -94,13 +94,6 @@
             "scripts": []
           }
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["tsconfig.app.json", "tsconfig.spec.json", "e2e/tsconfig.json"],
-            "exclude": ["**/node_modules/**"]
-          }
-        },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
@@ -143,16 +136,6 @@
             "main": "projects/ngneat/helipopper/src/test.ts",
             "tsConfig": "projects/ngneat/helipopper/tsconfig.spec.json",
             "karmaConfig": "projects/ngneat/helipopper/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/ngneat/helipopper/tsconfig.lib.json",
-              "projects/ngneat/helipopper/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
           }
         }
       }
