@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0](https://github.com/ngneat/helipopper/compare/v4.3.0...v5.0.0) (2021-11-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* Peer dep of angular 13
+
+### Features
+
+* 🎸 upgrade to ng13 ([0736821](https://github.com/ngneat/helipopper/commit/07368217c22bebb4cffd63a1353f390177312bd0))
+
 ## [4.3.0](https://github.com/ngneat/helipopper/compare/v4.2.0...v4.3.0) (2021-11-23)
 
 
