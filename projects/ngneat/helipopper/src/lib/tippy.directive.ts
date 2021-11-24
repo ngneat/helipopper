@@ -305,14 +305,15 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         event.preventDefault();
 
         this.instance.setProps({
-          getReferenceClientRect: () => ({
-            width: 0,
-            height: 0,
-            top: event.clientY,
-            bottom: event.clientY,
-            left: event.clientX,
-            right: event.clientX
-          })
+          getReferenceClientRect: () =>
+            ({
+              width: 0,
+              height: 0,
+              top: event.clientY,
+              bottom: event.clientY,
+              left: event.clientX,
+              right: event.clientX
+            } as any)
         });
 
         this.instance.show();
