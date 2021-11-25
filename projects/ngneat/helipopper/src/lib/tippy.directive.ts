@@ -112,7 +112,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       this.isVisible ? this.show() : this.hide();
     }
 
-    this.setProps(props);
+    this.setProps({...this.props, ...props});
   }
 
   ngOnInit() {
