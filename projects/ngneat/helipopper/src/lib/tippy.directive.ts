@@ -112,7 +112,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       this.isVisible ? this.show() : this.hide();
     }
 
-    this.setProps({...this.props, ...props});
+    this.setProps({ ...this.props, ...props });
   }
 
   ngOnInit() {
@@ -122,6 +122,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   ngAfterViewInit() {
+    if (isPlatformServer(this.platformId)) return;
+
     this.zone.runOutsideAngular(() => {
       if (this.lazy) {
         if (this.onlyTextOverflow) {
