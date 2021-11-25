@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.2](https://github.com/ngneat/helipopper/compare/v5.0.1...v5.0.2) (2021-11-25)
+
+
+### Bug Fixes
+
+* 🐛 dont create tippy on server side ([2dbf2c4](https://github.com/ngneat/helipopper/commit/2dbf2c424461300c2399c88b74b169387dbf4a12)), closes [#77](https://github.com/ngneat/helipopper/issues/77)
+
 ### [5.0.1](https://github.com/ngneat/helipopper/compare/v5.0.0...v5.0.1) (2021-11-25)
 
 
