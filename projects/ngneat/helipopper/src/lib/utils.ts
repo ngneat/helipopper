@@ -93,7 +93,10 @@ export function onlyTippyProps(allProps: any) {
     'content',
     'context',
     'hideOnEscape',
-    'customHost'
+    'customHost',
+    'onShow',
+    'onHidden',
+    'onCreate'
   ];
 
   Object.keys(allProps).forEach(prop => {

@@ -1,9 +1,10 @@
 import { Instance, Props } from 'tippy.js';
-import { ElementRef, InjectionToken } from '@angular/core';
-import { ViewOptions } from '@ngneat/overview';
+import { ElementRef, InjectionToken, TemplateRef, Type } from '@angular/core';
+import { CompRef, StringRef, TplRef, ViewOptions } from '@ngneat/overview';
 
 export interface CreateOptions extends Partial<TippyProps>, ViewOptions {
   variation: string;
+  preserveView: boolean;
   className: string | string[];
   data: any;
 }
@@ -48,3 +49,11 @@ export function coerceElement(element: TippyElement) {
 }
 
 export type TippyElement = ElementRef | Element;
+
+type ResolveViewRef<T> = T extends Type<any> ? CompRef<T> : T extends TemplateRef<infer C> ? TplRef<C> : StringRef;
+
+export interface ExtendedTippyInstance<T> extends TippyInstance {
+  view: ResolveViewRef<T>;
+  $viewOptions: ViewOptions;
+  context?: ViewOptions['context'];
+}
