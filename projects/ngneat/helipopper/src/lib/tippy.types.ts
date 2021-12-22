@@ -50,7 +50,11 @@ export function coerceElement(element: TippyElement) {
 
 export type TippyElement = ElementRef | Element;
 
-type ResolveViewRef<T> = T extends Type<any> ? CompRef<T> : T extends TemplateRef<infer C> ? TplRef<C> : StringRef;
+type ResolveViewRef<T> = T extends Type<infer Instance>
+  ? CompRef<Instance>
+  : T extends TemplateRef<infer Context>
+  ? TplRef<Context>
+  : StringRef;
 
 export interface ExtendedTippyInstance<T> extends TippyInstance {
   view: ResolveViewRef<T>;
