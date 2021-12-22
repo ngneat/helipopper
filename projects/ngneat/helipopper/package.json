@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/helipopper",
-  "version": "4.4.0",
+  "version": "4.4.1",
   "description": "A Powerful Tooltip and Popover for Angular Applications",
   "schematics": "./schematics/collection.json",
   "dependencies": {
