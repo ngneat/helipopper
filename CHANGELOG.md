@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.1.0](https://github.com/ngneat/helipopper/compare/v5.0.2...v5.1.0) (2021-12-23)
+
+
+### Features
+
+* 🎸 preserve view when creating tooltip via service ([d497bd4](https://github.com/ngneat/helipopper/commit/d497bd4d13e28313b9dcb345bff461d9ebaafd89))
+
 ### [5.0.2](https://github.com/ngneat/helipopper/compare/v5.0.1...v5.0.2) (2021-11-25)
 
 
