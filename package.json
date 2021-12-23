@@ -41,7 +41,7 @@
     "@angular/platform-browser": "~13.0.2",
     "@angular/platform-browser-dynamic": "~13.0.2",
     "@angular/router": "~13.0.2",
-    "@ngneat/overview": "^2.0.0",
+    "@ngneat/overview": "3.0.2",
     "@popperjs/core": "^2.4.2",
     "rxjs": "~7.4.0",
     "tippy.js": "6.3.7",
