@@ -2,7 +2,7 @@ import { Inject, Injectable, Injector } from '@angular/core';
 import tippy from 'tippy.js';
 import { isComponent, isTemplateRef, ViewService } from '@ngneat/overview';
 import { Content } from '@ngneat/overview';
-import { CreateOptions, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance } from './tippy.types';
+import { CreateOptions, ExtendedTippyInstance, TIPPY_CONFIG, TIPPY_REF, TippyConfig } from './tippy.types';
 import { normalizeClassName, onlyTippyProps } from './utils';
 
 @Injectable({ providedIn: 'root' })
@@ -13,7 +13,7 @@ export class TippyService {
     private injector: Injector
   ) {}
 
-  create(host: Element, content: Content, options: Partial<CreateOptions> = {}): TippyInstance {
+  create<T extends Content>(host: Element, content: T, options: Partial<CreateOptions> = {}): ExtendedTippyInstance<T> {
     const config = {
       onShow: instance => {
         if (!instance.$viewOptions) {
@@ -38,14 +38,18 @@ export class TippyService {
             });
           }
         }
-        instance.view = this.view.createView(content, { ...options, ...instance.$viewOptions });
+        if (!instance.view) {
+          instance.view = this.view.createView(content, { ...options, ...instance.$viewOptions });
+        }
         instance.setContent(instance.view.getElement());
         options?.onShow?.(instance);
       },
       onHidden: instance => {
-        instance.view.destroy();
+        if (!options.preserveView) {
+          instance.view.destroy();
+          instance.view = null;
+        }
         options?.onHidden?.(instance);
-        instance.view = null;
       },
       ...onlyTippyProps(this.globalConfig),
       ...this.globalConfig.variations[options.variation || this.globalConfig.defaultVariation],
@@ -61,6 +65,6 @@ export class TippyService {
       }
     };
 
-    return tippy(host, config);
+    return tippy(host, config) as ExtendedTippyInstance<T>;
   }
 }

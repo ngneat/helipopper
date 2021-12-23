@@ -315,7 +315,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
               bottom: event.clientY,
               left: event.clientX,
               right: event.clientX
-            } as any)
+            } as DOMRectReadOnly)
         });
 
         this.instance.show();
