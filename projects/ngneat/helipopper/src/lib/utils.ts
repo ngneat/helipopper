@@ -94,13 +94,15 @@ export function onlyTippyProps(allProps: any) {
     'context',
     'hideOnEscape',
     'customHost',
-    'onShow',
-    'onHidden',
-    'onCreate'
+    'injector',
+    'preserveView',
+    'vcr'
   ];
 
+  const overriddenMethods = ['onShow', 'onHidden', 'onCreate'];
+
   Object.keys(allProps).forEach(prop => {
-    if (!ownProps.includes(prop)) {
+    if (!ownProps.includes(prop) && !overriddenMethods.includes(prop)) {
       tippyProps[prop] = allProps[prop];
     }
   });
