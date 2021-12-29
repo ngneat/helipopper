@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.4.2](https://github.com/ngneat/helipopper/compare/v4.4.1...v4.4.2) (2021-12-29)
+
+
+### Bug Fixes
+
+* 🐛 filter out custom props ([e3f8cca](https://github.com/ngneat/helipopper/commit/e3f8ccaee7594d0f62da390f3437b67178ebf943))
+
 ### [4.4.1](https://github.com/ngneat/helipopper/compare/v4.4.0...v4.4.1) (2021-12-22)
 
 
