@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/helipopper",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "description": "A Powerful Tooltip and Popover for Angular Applications",
   "dependencies": {
     "tippy.js": "6.3.7",
