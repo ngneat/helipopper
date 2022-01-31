@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ExampleComponent } from '../example/example.component';
 import { interval } from 'rxjs';
@@ -8,7 +8,8 @@ import { TippyInstance, TippyService } from '@ngneat/helipopper';
 @Component({
   selector: 'app-is-visible',
   templateUrl: './playground.component.html',
-  styleUrls: ['./playground.component.scss']
+  styleUrls: ['./playground.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlaygroundComponent {
   tooltipPositions = ['auto', 'top', 'right', 'bottom', 'left'];

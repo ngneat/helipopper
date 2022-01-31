@@ -52,6 +52,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input() data: any;
   @Input() useHostWidth = false;
   @Input() hideOnEscape = false;
+  @Input() detectChangesComponent = true;
+
   @Input('tippy') content: Content;
   @Input('tippyHost') customHost: HTMLElement;
 
@@ -290,6 +292,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       vcr: this.vcr,
       ...this.viewOptions$
     });
+
+    // We need to call detectChanges for onPush components to update the content
+    if (this.detectChangesComponent && isComponent(this.content)) {
+      this.viewRef.detectChanges();
+    }
 
     let content = this.viewRef.getElement();
 
