@@ -252,8 +252,10 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         },
         onHidden: instance => {
           this.destroyView();
-          this.isVisible = false;
-          this.visible.next(false);
+          this.zone.run(() => {
+            this.isVisible = false;
+            this.visible.next(false);
+          });
           this.globalConfig.onHidden?.(instance);
         }
       });
