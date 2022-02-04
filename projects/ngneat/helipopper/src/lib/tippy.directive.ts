@@ -213,8 +213,10 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         ...onlyTippyProps(this.globalConfig),
         ...onlyTippyProps(this.props),
         onMount: instance => {
-          this.isVisible = true;
-          this.visible.next(true);
+          this.zone.run(() => {
+            this.isVisible = true;
+            this.visible.next(true);
+          });
           this.useHostWidth && this.listenToHostResize();
           this.globalConfig.onMount?.(instance);
         },
