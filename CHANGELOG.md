@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.3](https://github.com/ngneat/helipopper/compare/v5.1.2...v5.1.3) (2022-02-04)
+
+
+### Bug Fixes
+
+* 🐛 isVisible should run inside the zone ([90901de](https://github.com/ngneat/helipopper/commit/90901de286307d7ba2e18e9fc68b82b5d86779f8))
+
 ### [5.1.2](https://github.com/ngneat/helipopper/compare/v5.1.1...v5.1.2) (2022-01-31)
 
 
