@@ -26,7 +26,8 @@ import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyPr
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[tippy]',
-  exportAs: 'tippy'
+  exportAs: 'tippy',
+  standalone: true
 })
 export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnInit {
   @Input() appendTo: TippyProps['appendTo'];

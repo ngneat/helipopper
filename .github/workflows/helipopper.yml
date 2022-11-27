@@ -28,7 +28,7 @@ jobs:
 
       - uses: actions/setup-node@v1
         with:
-          node-version: 14.15
+          node-version: 16
 
       - name: Install dependencies
         # If checksum for the `package-lock.json` hasn't changed then we shouldn't run
@@ -37,7 +37,7 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         env:
           HUSKY_SKIP_INSTALL: 'true'
-        run: npm ci
+        run: npm i --force
 
       - name: Build library
         run: npm run build:lib
