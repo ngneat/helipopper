@@ -42,24 +42,22 @@ If you're using v1 and don't want to migrate, you can find it [here](https://git
 npm install @ngneat/helipopper @ngneat/overview
 ```
 
-It will automatically add the `TippyModule` to your `AppModule`. You can configure it as shown below:
+Configure it as shown below:
 
 ```ts
-import { TippyModule, tooltipVariation, popperVariation } from '@ngneat/helipopper';
+import { provideTippyConfig, tooltipVariation, popperVariation } from '@ngneat/helipopper';
 
-@NgModule({
-  declarations: [AppComponent],
-  imports: [TippyModule.forRoot({
-    defaultVariation: 'tooltip',
-    variations: {
-      tooltip: tooltipVariation,
-      popper: popperVariation,
-    }
-  })],
-  bootstrap: [AppComponent]
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideTippyConfig({
+      defaultVariation: 'tooltip',
+      variations: {
+        tooltip: tooltipVariation,
+        popper: popperVariation,
+      }
+    })
+  ]
 })
-export class AppModule {
-}
 ```
 
 Add the styles you want to `styles.scss`:
@@ -72,10 +70,9 @@ Add the styles you want to `styles.scss`:
 
 You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/) it if you need to.
 
-Now you can use it in your templates:
+Import the standalone `TippyDirective` and use it in your templates:
 
 ```html
-
 <button tippy="Helpful Message">
   I have a tooltip
 </button>
@@ -115,8 +112,7 @@ import { TIPPY_REF, TippyInstance } from '@ngneat/helipopper';
 
 @Component()
 class MyComponent {
-  constructor(@Inject(TIPPY_REF) tippy: TippyInstance) {
-  }
+  tippy = inject(TIPPY_REF);
 }
 ```
 
@@ -159,14 +155,14 @@ First, define the `contextMenu` variation:
 ```ts
 import { 
   popperVariation, 
-  TippyModule, 
   tooltipVariation, 
+  provideTippyConfig,
   withContextMenuVariation 
 } from '@ngneat/helipopper';
 
-@NgModule({
-  imports: [
-    TippyModule.forRoot({
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideTippyConfig({
       defaultVariation: 'tooltip',
       variations: {
         tooltip: tooltipVariation,
@@ -174,9 +170,8 @@ import {
         contextMenu: withContextMenuVariation(popperVariation),
       }
     })
-  ],
+  ]
 })
-export class AppModule {}
 ```
 
 Now you can use it in your template:
@@ -274,10 +269,7 @@ import { TippyService, TippyInstance } from '@ngneat/helipopper';
 
 class Component {
   @ViewChild('inputName') inputName: ElementRef;
-  private tippy: TippyInstance;
-
-  constructor(private tippy: TippyService) {
-  }
+  private tippy = inject(TippyService);
 
   open() {
     if(!this.tippy) {
@@ -292,32 +284,3 @@ class Component {
   }
 }
 ```
-
-## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><a href="https://www.netbasal.com/"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Netanel Basal</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=NetanelBasal" title="Code">💻</a> <a href="https://github.com/@ngneat/helipopper/commits?author=NetanelBasal" title="Documentation">📖</a> <a href="#ideas-NetanelBasal" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=itayod" title="Code">💻</a></td>
-    <td align="center"><a href="https://gerome-dev.netlify.com/"><img src="https://avatars0.githubusercontent.com/u/32737308?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Gérôme Grignon</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=geromegrignon" title="Code">💻</a></td>
-    <td align="center"><a href="https://medium.com/@overthesanity"><img src="https://avatars1.githubusercontent.com/u/7337691?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Artur Androsovych</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=arturovt" title="Code">💻</a> <a href="https://github.com/@ngneat/helipopper/commits?author=arturovt" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/shaharkazaz"><img src="https://avatars2.githubusercontent.com/u/17194830?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Shahar Kazaz</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=shaharkazaz" title="Code">💻</a> <a href="https://github.com/@ngneat/helipopper/commits?author=shaharkazaz" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://houseofangular.io/team/"><img src="https://avatars.githubusercontent.com/u/55434796?v=4?s=100" width="100px;" alt=""/><br /><sub><b>stefanoww</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=stefanoww" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/rhutchison"><img src="https://avatars.githubusercontent.com/u/1460261?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ryan Hutchison</b></sub></a><br /><a href="https://github.com/@ngneat/helipopper/commits?author=rhutchison" title="Code">💻</a> <a href="https://github.com/@ngneat/helipopper/commits?author=rhutchison" title="Documentation">📖</a> <a href="#ideas-rhutchison" title="Ideas, Planning, & Feedback">🤔</a></td>
-  </tr>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
-Contributions of any kind welcome!
-Icon made by <a href="https://www.flaticon.com/authors/freepik" title="freepik">Airport</a>
-from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
