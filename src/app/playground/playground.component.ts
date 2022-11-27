@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { ExampleComponent } from '../example/example.component';
 import { interval } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -63,7 +63,7 @@ export class PlaygroundComponent {
     this.text = this.text === `Long Long All Text` ? `Short` : `Long Long All Text`;
   }
 
-  constructor(private fb: FormBuilder, private service: TippyService) {}
+  constructor(private fb: UntypedFormBuilder, private service: TippyService) {}
 
   @ViewChild('inputName', { static: true }) inputName: ElementRef;
   @ViewChild('inputNameComp', { static: true }) inputNameComp: ElementRef;
