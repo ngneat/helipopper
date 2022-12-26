@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.1.0](https://github.com/ngneat/helipopper/compare/v6.0.0...v6.1.0) (2022-12-26)
+
+
+### Features
+
+* 🎸 add variation class ([c82f4b8](https://github.com/ngneat/helipopper/commit/c82f4b8f007b462b062f06f918cc15c38fc6189c))
+
 ## [6.0.0](https://github.com/ngneat/helipopper/compare/v5.1.4...v6.0.0) (2022-11-27)
 
 
