@@ -14,6 +14,7 @@ export class TippyService {
   ) {}
 
   create<T extends Content>(host: Element, content: T, options: Partial<CreateOptions> = {}): ExtendedTippyInstance<T> {
+    const variation = options.variation || this.globalConfig.defaultVariation;
     const config = {
       onShow: instance => {
         if (!instance.$viewOptions) {
@@ -52,9 +53,10 @@ export class TippyService {
         options?.onHidden?.(instance);
       },
       ...onlyTippyProps(this.globalConfig),
-      ...this.globalConfig.variations[options.variation || this.globalConfig.defaultVariation],
+      ...this.globalConfig.variations[variation],
       ...onlyTippyProps(options),
       onCreate: instance => {
+        instance.popper.classList.add(`tippy-variation-${variation}`);
         if (options.className) {
           for (const klass of normalizeClassName(options.className)) {
             instance.popper.classList.add(klass);

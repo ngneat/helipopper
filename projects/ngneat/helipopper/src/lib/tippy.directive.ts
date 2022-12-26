@@ -222,6 +222,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
           this.globalConfig.onMount?.(instance);
         },
         onCreate: instance => {
+          instance.popper.classList.add(`tippy-variation-${this.variation || this.globalConfig.defaultVariation}`);
           if (this.className) {
             for (const klass of normalizeClassName(this.className)) {
               instance.popper.classList.add(klass);
