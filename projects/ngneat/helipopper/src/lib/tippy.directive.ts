@@ -234,6 +234,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
           }
         },
         onShow: instance => {
+          this.host.setAttribute('data-tippy-open', '');
           this.zone.run(() => {
             const content = this.resolveContent();
             if (isString(content)) {
@@ -253,6 +254,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
           this.globalConfig.onShow?.(instance);
         },
         onHidden: instance => {
+          this.host.removeAttribute('data-tippy-open');
           this.destroyView();
           this.zone.run(() => {
             this.isVisible = false;

@@ -17,6 +17,7 @@ export class TippyService {
     const variation = options.variation || this.globalConfig.defaultVariation;
     const config = {
       onShow: instance => {
+        host.setAttribute('data-tippy-open', '');
         if (!instance.$viewOptions) {
           instance.$viewOptions = {};
 
@@ -46,6 +47,8 @@ export class TippyService {
         options?.onShow?.(instance);
       },
       onHidden: instance => {
+        host.removeAttribute('data-tippy-open');
+
         if (!options.preserveView) {
           instance.view.destroy();
           instance.view = null;
