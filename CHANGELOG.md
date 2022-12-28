@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.2.0](https://github.com/ngneat/helipopper/compare/v6.1.0...v6.2.0) (2022-12-28)
+
+
+### Features
+
+* 🎸 add data-tippy-open attribute on the host ([0ea15c4](https://github.com/ngneat/helipopper/commit/0ea15c45e9b06af20925b2515bead39b576ad12e))
+
 ## [6.1.0](https://github.com/ngneat/helipopper/compare/v6.0.0...v6.1.0) (2022-12-26)
 
 
