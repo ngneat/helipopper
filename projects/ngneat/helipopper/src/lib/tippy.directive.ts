@@ -233,10 +233,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
             instance.show();
           }
         },
-        onShown() {
-          this.host.setAttribute('data-tippy-open', '');
-        },
         onShow: instance => {
+          instance.reference.setAttribute('data-tippy-open', '');
           this.zone.run(() => {
             const content = this.resolveContent();
             if (isString(content)) {
@@ -255,8 +253,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
           }
           this.globalConfig.onShow?.(instance);
         },
-        onHide() {
-          this.host.removeAttribute('data-tippy-open');
+        onHide(instance) {
+          instance.reference.removeAttribute('data-tippy-open');
         },
         onHidden: instance => {
           this.destroyView();
