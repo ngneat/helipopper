@@ -44,6 +44,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input() trigger: TippyProps['trigger'];
   @Input() triggerTarget: TippyProps['triggerTarget'];
   @Input() zIndex: TippyProps['zIndex'];
+  @Input() animation: TippyProps['animation'];
 
   @Input() lazy: boolean;
   @Input() variation: string;
