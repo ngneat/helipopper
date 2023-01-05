@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.2.2](https://github.com/ngneat/helipopper/compare/v6.2.1...v6.2.2) (2023-01-05)
+
+
+### Bug Fixes
+
+* 🐛 fix reference ([f0c8abc](https://github.com/ngneat/helipopper/commit/f0c8abc90fb5b2424f15530c4bca054208bae3c3))
+
 ### [6.2.1](https://github.com/ngneat/helipopper/compare/v6.2.0...v6.2.1) (2023-01-05)
 
 
