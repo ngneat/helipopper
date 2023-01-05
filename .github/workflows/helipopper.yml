@@ -45,7 +45,7 @@ jobs:
       - name: Build playground app in production mode
         run: npm run build:playground
 
-      - uses: cypress-io/github-action@v2
+      - uses: cypress-io/github-action@v5
         with:
           browser: chrome
           headless: true
