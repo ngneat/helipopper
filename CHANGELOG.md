@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.3.0](https://github.com/ngneat/helipopper/compare/v6.2.2...v6.3.0) (2023-01-05)
+
+
+### Features
+
+* 🎸 expose animation input ([8cfcb35](https://github.com/ngneat/helipopper/commit/8cfcb35a9cebf38616df741312d910c9bceba337))
+
 ### [6.2.2](https://github.com/ngneat/helipopper/compare/v6.2.1...v6.2.2) (2023-01-05)
 
 
