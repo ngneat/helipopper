@@ -42,14 +42,14 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### ⚠ BREAKING CHANGES
 
-* upgrade to Angular 14
+* upgrade to Angular 15
 
 - Remove `TippyModule`
-- Peer dependency is now ng v14
+- Peer dependency is now ng v15
 
 ### Features
 
-* upgrade to Angular 14 ([e040211](https://github.com/ngneat/helipopper/commit/e04021193f063d5a3bd33334a579f2a130902f55))
+* upgrade to Angular 15 ([e040211](https://github.com/ngneat/helipopper/commit/e04021193f063d5a3bd33334a579f2a130902f55))
 
 ### [5.1.4](https://github.com/ngneat/helipopper/compare/v5.1.3...v5.1.4) (2022-02-04)
 
