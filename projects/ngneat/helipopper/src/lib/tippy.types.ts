@@ -44,10 +44,6 @@ export interface TippyConfig extends TippyProps {
   beforeRender?: (text: string) => string;
 }
 
-export function coerceElement(element: TippyElement) {
-  return element instanceof ElementRef ? element.nativeElement : element;
-}
-
 export type TippyElement = ElementRef | Element;
 
 export interface ExtendedTippyInstance<T> extends TippyInstance {

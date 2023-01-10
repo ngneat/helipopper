@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Directive,
   ElementRef,
   EventEmitter,
@@ -6,21 +7,27 @@ import {
   Injector,
   Input,
   NgZone,
-  Output,
-  PLATFORM_ID,
-  ViewContainerRef,
-  AfterViewInit,
   OnChanges,
   OnDestroy,
-  OnInit
+  OnInit,
+  Output,
+  PLATFORM_ID,
+  ViewContainerRef
 } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
-import tippy from 'tippy.js';
+import tippy, { Instance } from 'tippy.js';
 import { fromEvent, merge, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { isComponent, isString, isTemplateRef, ViewService, ViewOptions, ViewRef, Content } from '@ngneat/overview';
+import { Content, isComponent, isString, isTemplateRef, ViewOptions, ViewRef, ViewService } from '@ngneat/overview';
 
-import { dimensionsChanges, inView, normalizeClassName, onlyTippyProps, overflowChanges } from './utils';
+import {
+  coerceCssPixelValue,
+  dimensionsChanges,
+  inView,
+  normalizeClassName,
+  onlyTippyProps,
+  overflowChanges
+} from './utils';
 import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
 
 @Directive({
@@ -55,6 +62,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input() useHostWidth = false;
   @Input() hideOnEscape = false;
   @Input() detectChangesComponent = true;
+  @Input() popperWidth: number | string;
 
   @Input('tippy') content: Content;
   @Input('tippyHost') customHost: HTMLElement;
@@ -199,8 +207,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     return this.customHost || this.hostRef.nativeElement;
   }
 
-  private get hostWidth(): string {
-    return `${this.host.getBoundingClientRect().width}px`;
+  private get hostWidth(): number {
+    return this.host.getBoundingClientRect().width;
   }
 
   private createInstance() {
@@ -245,12 +253,9 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
             this.hideOnEscape && this.handleEscapeButton();
           });
           if (this.useHostWidth) {
-            // Don't access `hostWidth` multiple times since it's a getter that calls `getBoundingClientRect()`,
-            // which triggers the whole layout update.
-            const hostWidth = this.hostWidth;
-            instance.popper.style.width = hostWidth;
-            instance.popper.style.maxWidth = hostWidth;
-            (instance.popper.firstElementChild as HTMLElement).style.maxWidth = hostWidth;
+            this.setInstanceWidth(instance, this.hostWidth);
+          } else if (this.popperWidth) {
+            this.setInstanceWidth(instance, this.popperWidth);
           }
           this.globalConfig.onShow?.(instance);
         },
@@ -366,8 +371,15 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     dimensionsChanges(this.host)
       .pipe(takeUntil(merge(this.destroyed, this.visible)))
       .subscribe(() => {
-        this.instance.popper.style.width = this.hostWidth;
+        this.setInstanceWidth(this.instance, this.hostWidth);
       });
+  }
+
+  private setInstanceWidth(instance: Instance, width: string | number) {
+    const inPixels = coerceCssPixelValue(width);
+    instance.popper.style.width = inPixels;
+    instance.popper.style.maxWidth = inPixels;
+    (instance.popper.firstElementChild as HTMLElement).style.maxWidth = inPixels;
   }
 }
 

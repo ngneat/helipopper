@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 import { auditTime, map } from 'rxjs/operators';
-import { coerceElement, TippyElement } from './tippy.types';
+import { TippyElement } from './tippy.types';
+import { ElementRef } from '@angular/core';
 
 declare const ResizeObserver: any;
 
@@ -96,7 +97,8 @@ export function onlyTippyProps(allProps: any) {
     'customHost',
     'injector',
     'preserveView',
-    'vcr'
+    'vcr',
+    'popperWidth'
   ];
 
   const overriddenMethods = ['onShow', 'onHidden', 'onCreate'];
@@ -116,6 +118,22 @@ export function normalizeClassName(className: string | string[]): string[] {
   return classes.map(klass => klass?.trim()).filter(Boolean);
 }
 
+export function coerceCssPixelValue<T>(value: T): string {
+  if (isNil(value)) {
+    return '';
+  }
+
+  return typeof value === 'string' ? value : `${value}px`;
+}
+
 function isString(value: unknown): value is string {
   return typeof value === 'string';
+}
+
+function isNil(value: any): value is undefined | null {
+  return value === undefined || value === null;
+}
+
+function coerceElement(element: TippyElement) {
+  return element instanceof ElementRef ? element.nativeElement : element;
 }
