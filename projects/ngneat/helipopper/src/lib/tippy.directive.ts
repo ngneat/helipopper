@@ -62,7 +62,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input() useHostWidth = false;
   @Input() hideOnEscape = false;
   @Input() detectChangesComponent = true;
-  @Input() width: number | string;
+  @Input() popperWidth: number | string;
 
   @Input('tippy') content: Content;
   @Input('tippyHost') customHost: HTMLElement;
@@ -254,8 +254,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
           });
           if (this.useHostWidth) {
             this.setInstanceWidth(instance, this.hostWidth);
-          } else if (this.width) {
-            this.setInstanceWidth(instance, this.width);
+          } else if (this.popperWidth) {
+            this.setInstanceWidth(instance, this.popperWidth);
           }
           this.globalConfig.onShow?.(instance);
         },
