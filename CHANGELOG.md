@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.4.0](https://github.com/ngneat/helipopper/compare/v6.3.0...v6.4.0) (2023-01-10)
+
+
+### Features
+
+* 🎸 expose width input ([0412cf9](https://github.com/ngneat/helipopper/commit/0412cf9bfa99dc2d0461faf325dfaefb8121086b))
+
 ## [6.3.0](https://github.com/ngneat/helipopper/compare/v6.2.2...v6.3.0) (2023-01-05)
 
 
