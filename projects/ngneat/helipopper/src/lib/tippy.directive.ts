@@ -37,6 +37,8 @@ import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyPr
   standalone: true
 })
 export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnInit {
+  static ngAcceptInputType_useTextContent: boolean | '';
+
   @Input() appendTo: TippyProps['appendTo'];
   @Input() delay: TippyProps['delay'];
   @Input() duration: TippyProps['duration'];
@@ -53,6 +55,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input() zIndex: TippyProps['zIndex'];
   @Input() animation: TippyProps['animation'];
 
+  @Input() useTextContent: boolean;
   @Input() lazy: boolean;
   @Input() variation: string;
   @Input() isEnabled: boolean;
@@ -212,7 +215,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   private createInstance() {
-    if (!this.content) {
+    if (!this.content && !coerceBooleanInput(this.useTextContent)) {
       return;
     }
 
@@ -245,10 +248,17 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         onShow: instance => {
           instance.reference.setAttribute('data-tippy-open', '');
           this.zone.run(() => {
-            const content = this.resolveContent();
+            const content = this.resolveContent(instance);
             if (isString(content)) {
               instance.setProps({ allowHTML: false });
+
+              if (!content?.trim()) {
+                this.disable();
+              } else {
+                this.enable();
+              }
             }
+
             instance.setContent(content);
             this.hideOnEscape && this.handleEscapeButton();
           });
@@ -279,7 +289,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     });
   }
 
-  private resolveContent() {
+  private resolveContent(instance: TippyInstance) {
     if (!this.viewOptions$ && !isString(this.content)) {
       if (isComponent(this.content)) {
         this.instance.data = this.data;
@@ -315,6 +325,10 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     }
 
     let content = this.viewRef.getElement();
+
+    if (coerceBooleanInput(this.useTextContent)) {
+      content = instance.reference.textContent;
+    }
 
     if (isString(content) && this.globalConfig.beforeRender) {
       content = this.globalConfig.beforeRender(content);
@@ -385,4 +399,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
 function isChanged<T>(key: keyof T, changes: T) {
   return key in changes;
+}
+
+export function coerceBooleanInput(value: any): boolean {
+  return value != null && `${value}` !== 'false';
 }

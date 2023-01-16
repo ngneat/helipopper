@@ -81,6 +81,7 @@ export function onlyTippyProps(allProps: any) {
   const tippyProps = {};
 
   const ownProps = [
+    'useTextContent',
     'variations',
     'useHostWidth',
     'defaultVariation',

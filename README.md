@@ -136,6 +136,16 @@ You can pass the `onlyTextOverflow` input to show the tooltip only when the host
 
 Note that it's using [`ResizeObserver`](https://caniuse.com/resizeobserver) api.
 
+### Use Text Content
+
+You can instruct tippy to use the element textContent as the tooltip content:
+
+```html
+<p tippy useTextContent>
+  {{ text }}
+</p>
+```
+
 
 ### Lazy
 
@@ -241,6 +251,7 @@ triggerTarget: TippyProps['triggerTarget'];
 zIndex: TippyProps['zIndex'];
 tippyHost: HTMLElement;
 
+useTextContent: boolean;
 lazy: boolean;
 variation: string;
 isEnabled: boolean;
