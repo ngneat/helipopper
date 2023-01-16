@@ -28,6 +28,8 @@ export class PlaygroundComponent {
     hideOnEsc: this.fb.control(false)
   });
 
+  noContextText: string | undefined;
+
   interval$ = interval(1000).pipe(finalize(() => console.log('interval completed')));
 
   get tooltipPosition(): string {

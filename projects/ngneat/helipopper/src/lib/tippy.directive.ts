@@ -64,7 +64,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input() detectChangesComponent = true;
   @Input() popperWidth: number | string;
 
-  @Input('tippy') content: Content;
+  @Input('tippy') content: Content | undefined | null;
   @Input('tippyHost') customHost: HTMLElement;
 
   @Output() visible = new EventEmitter<boolean>();
@@ -212,7 +212,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   private createInstance() {
-    if (this.content == null) {
+    if (!this.content) {
       return;
     }
 

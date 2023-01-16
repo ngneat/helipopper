@@ -1,4 +1,4 @@
-<!--<button (click)="show = !show">Toggle All</button>-->
+<!-- <button (click)="show = !show">Toggle All</button> -->
 
 <ng-container *ngIf="show">
   <div id="tippy-playground" [formGroup]="tooltipSettings" style="text-transform: capitalize">
@@ -318,6 +318,13 @@
     placeholder="Sanitize"
     tippy="<img src='empty.gif' onerror='alert(1);' />"
   />
+</div>
+
+<hr />
+
+<div>
+  <h6>No Content</h6>
+  <input style="max-width: 600px" type="text" placeholder="No content" [tippy]="noContextText" />
 </div>
 
 <hr />
