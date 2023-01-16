@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.5.0](https://github.com/ngneat/helipopper/compare/v6.3.0...v6.5.0) (2023-01-16)
+
+
+### Features
+
+* 🎸 add text content option ([be9c114](https://github.com/ngneat/helipopper/commit/be9c114840afaebb7ece8adecc0d1cc040481ce1))
+* 🎸 allow nil content ([bff69ef](https://github.com/ngneat/helipopper/commit/bff69efa3b7505c1ce745573a0c4c67066953a41))
+* 🎸 expose width input ([0412cf9](https://github.com/ngneat/helipopper/commit/0412cf9bfa99dc2d0461faf325dfaefb8121086b))
+
 ## [6.4.0](https://github.com/ngneat/helipopper/compare/v6.3.0...v6.4.0) (2023-01-10)
 
 
