@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.5.1](https://github.com/ngneat/helipopper/compare/v6.5.0...v6.5.1) (2023-01-28)
+
+
+### Bug Fixes
+
+* 🐛 update overview dep ([ccfd6cb](https://github.com/ngneat/helipopper/commit/ccfd6cb93876cf1f3b562489cd5e56da08f3bbdf)), closes [#123](https://github.com/ngneat/helipopper/issues/123)
+
 ## [6.5.0](https://github.com/ngneat/helipopper/compare/v6.3.0...v6.5.0) (2023-01-16)
 
 
