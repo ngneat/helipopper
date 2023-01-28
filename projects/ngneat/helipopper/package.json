@@ -8,7 +8,7 @@
   },
   "peerDependencies": {
     "@angular/core": ">=14.0.0",
-    "@ngneat/overview": ">=3.0.0"
+    "@ngneat/overview": "^4.0.1"
   },
   "keywords": [
     "angular",
