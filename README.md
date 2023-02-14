@@ -280,11 +280,12 @@ import { TippyService, TippyInstance } from '@ngneat/helipopper';
 
 class Component {
   @ViewChild('inputName') inputName: ElementRef;
-  private tippy = inject(TippyService);
+  private tippyService = inject(TippyService);
+  tippy:TippyInstance;
 
   show() {
     if(!this.tippy) {
-      this.tippy = this.tippy.create(this.inputName, 'this field is required');
+      this.tippy = this.tippyService.create(this.inputName, 'this field is required');
     }
 
     this.tippy.show();
