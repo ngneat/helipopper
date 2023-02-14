@@ -295,3 +295,7 @@ class Component {
   }
 }
 ```
+
+## Contributors ✨
+
+Thank goes to all these wonderful [people who contributed](https://github.com/ngneat/helipopper/graphs/contributors) ❤️
