@@ -282,12 +282,12 @@ class Component {
   @ViewChild('inputName') inputName: ElementRef;
   private tippy = inject(TippyService);
 
-  open() {
+  show() {
     if(!this.tippy) {
       this.tippy = this.tippy.create(this.inputName, 'this field is required');
     }
 
-    this.tippy.open();
+    this.tippy.show();
   }
 
   ngOnDestroy() {
