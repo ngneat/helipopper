@@ -73,21 +73,21 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Output() visible = new EventEmitter<boolean>();
   @Input() public isVisible = false;
 
-  private instance: TippyInstance;
-  private viewRef: ViewRef;
-  private destroyed = new Subject<void>();
-  private props: Partial<TippyConfig>;
-  private enabled = true;
-  private variationDefined = false;
-  private viewOptions$: ViewOptions;
+  protected instance: TippyInstance;
+  protected viewRef: ViewRef;
+  protected destroyed = new Subject<void>();
+  protected props: Partial<TippyConfig>;
+  protected enabled = true;
+  protected variationDefined = false;
+  protected viewOptions$: ViewOptions;
   constructor(
-    @Inject(PLATFORM_ID) private platformId: string,
-    @Inject(TIPPY_CONFIG) private globalConfig: TippyConfig,
-    private injector: Injector,
-    private viewService: ViewService,
-    private vcr: ViewContainerRef,
-    private zone: NgZone,
-    private hostRef: ElementRef
+    @Inject(PLATFORM_ID) protected platformId: string,
+    @Inject(TIPPY_CONFIG) protected globalConfig: TippyConfig,
+    protected injector: Injector,
+    protected viewService: ViewService,
+    protected vcr: ViewContainerRef,
+    protected zone: NgZone,
+    protected hostRef: ElementRef
   ) {}
 
   ngOnChanges(changes: NgChanges<TippyDirective>) {
@@ -197,24 +197,24 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     this.instance?.disable();
   }
 
-  private setProps(props: Partial<TippyConfig>) {
+  protected setProps(props: Partial<TippyConfig>) {
     this.props = props;
     this.instance?.setProps(onlyTippyProps(props));
   }
 
-  private setStatus() {
+  protected setStatus() {
     this.enabled ? this.instance?.enable() : this.instance?.disable();
   }
 
-  private get host(): HTMLElement {
+  protected get host(): HTMLElement {
     return this.customHost || this.hostRef.nativeElement;
   }
 
-  private get hostWidth(): number {
+  protected get hostWidth(): number {
     return this.host.getBoundingClientRect().width;
   }
 
-  private createInstance() {
+  protected createInstance() {
     if (!this.content && !coerceBooleanInput(this.useTextContent)) {
       return;
     }
@@ -289,7 +289,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     });
   }
 
-  private resolveContent(instance: TippyInstance) {
+  protected resolveContent(instance: TippyInstance) {
     if (!this.viewOptions$ && !isString(this.content)) {
       if (isComponent(this.content)) {
         this.instance.data = this.data;
@@ -337,7 +337,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     return content;
   }
 
-  private handleContextMenu() {
+  protected handleContextMenu() {
     fromEvent(this.host, 'contextmenu')
       .pipe(takeUntil(this.destroyed))
       .subscribe((event: MouseEvent) => {
@@ -359,17 +359,17 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       });
   }
 
-  private handleEscapeButton() {
+  protected handleEscapeButton() {
     this.pressButton$(document.body, 'Escape')
       .pipe(takeUntil(merge(this.destroyed, this.visible.pipe(filter(v => !v)))))
       .subscribe(() => this.hide());
   }
 
-  private pressButton$(element: HTMLElement, codeButton: string) {
+  protected pressButton$(element: HTMLElement, codeButton: string) {
     return fromEvent(element, 'keydown').pipe(filter(({ code }: KeyboardEvent) => codeButton === code));
   }
 
-  private checkOverflow(isElementOverflow: boolean) {
+  protected checkOverflow(isElementOverflow: boolean) {
     if (isElementOverflow) {
       if (!this.instance) {
         this.createInstance();
@@ -381,7 +381,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     }
   }
 
-  private listenToHostResize() {
+  protected listenToHostResize() {
     dimensionsChanges(this.host)
       .pipe(takeUntil(merge(this.destroyed, this.visible)))
       .subscribe(() => {
@@ -389,7 +389,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       });
   }
 
-  private setInstanceWidth(instance: Instance, width: string | number) {
+  protected setInstanceWidth(instance: Instance, width: string | number) {
     const inPixels = coerceCssPixelValue(width);
     instance.popper.style.width = inPixels;
     instance.popper.style.maxWidth = inPixels;
