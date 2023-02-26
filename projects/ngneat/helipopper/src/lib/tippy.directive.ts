@@ -80,6 +80,16 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   protected enabled = true;
   protected variationDefined = false;
   protected viewOptions$: ViewOptions;
+
+  /**
+   * We had use `visible` event emitter previously as a `takeUntil` subscriber in multiple places
+   * within the directive.
+   * This is for internal use only; thus we don't have to deal with the `visible` event emitter
+   * and trigger change detections only when the `visible` event is being listened outside
+   * in the template (`<button [tippy]="..." (visible)="..."></button>`).
+   */
+  protected visibleInternal = new Subject<boolean>();
+
   constructor(
     @Inject(PLATFORM_ID) protected platformId: string,
     @Inject(TIPPY_CONFIG) protected globalConfig: TippyConfig,
@@ -226,10 +236,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         ...onlyTippyProps(this.globalConfig),
         ...onlyTippyProps(this.props),
         onMount: instance => {
-          this.zone.run(() => {
-            this.isVisible = true;
-            this.visible.next(true);
-          });
+          this.isVisible = true;
+          this.visibleInternal.next(this.isVisible);
+          if (this.visible.observed) {
+            this.zone.run(() => this.visible.next(this.isVisible));
+          }
           this.useHostWidth && this.listenToHostResize();
           this.globalConfig.onMount?.(instance);
         },
@@ -274,10 +285,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         },
         onHidden: instance => {
           this.destroyView();
-          this.zone.run(() => {
-            this.isVisible = false;
-            this.visible.next(false);
-          });
+          this.isVisible = false;
+          this.visibleInternal.next(this.isVisible);
+          if (this.visible.observed) {
+            this.zone.run(() => this.visible.next(this.isVisible));
+          }
           this.globalConfig.onHidden?.(instance);
         }
       });
@@ -359,14 +371,15 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       });
   }
 
-  protected handleEscapeButton() {
-    this.pressButton$(document.body, 'Escape')
-      .pipe(takeUntil(merge(this.destroyed, this.visible.pipe(filter(v => !v)))))
-      .subscribe(() => this.hide());
-  }
-
-  protected pressButton$(element: HTMLElement, codeButton: string) {
-    return fromEvent(element, 'keydown').pipe(filter(({ code }: KeyboardEvent) => codeButton === code));
+  protected handleEscapeButton(): void {
+    this.zone.runOutsideAngular(() => {
+      fromEvent(document.body, 'keydown')
+        .pipe(
+          filter(({ code }: KeyboardEvent) => code === 'Escape'),
+          takeUntil(merge(this.destroyed, this.visibleInternal.pipe(filter(v => !v))))
+        )
+        .subscribe(() => this.hide());
+    });
   }
 
   protected checkOverflow(isElementOverflow: boolean) {
@@ -383,7 +396,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   protected listenToHostResize() {
     dimensionsChanges(this.host)
-      .pipe(takeUntil(merge(this.destroyed, this.visible)))
+      .pipe(takeUntil(merge(this.destroyed, this.visibleInternal)))
       .subscribe(() => {
         this.setInstanceWidth(this.instance, this.hostWidth);
       });
@@ -397,7 +410,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 }
 
-function isChanged<T>(key: keyof T, changes: T) {
+function isChanged<T extends object>(key: keyof T, changes: T) {
   return key in changes;
 }
 
