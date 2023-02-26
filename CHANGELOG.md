@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.6.0](https://github.com/ngneat/helipopper/compare/v6.5.2...v6.6.0) (2023-02-26)
+
+
+### Features
+
+* make tippy directive extendable ([e94a27c](https://github.com/ngneat/helipopper/commit/e94a27c6c5d69772cde5cd8beaead02f25feb59f))
+
+
+### Bug Fixes
+
+* do not trigger change detection for `visible` and `keydown` events ([39c69c3](https://github.com/ngneat/helipopper/commit/39c69c3a6e0564b649b96782171c81d58b07cdcd))
+
 ### [6.5.2](https://github.com/ngneat/helipopper/compare/v6.5.1...v6.5.2) (2023-02-04)
 
 ### [6.5.1](https://github.com/ngneat/helipopper/compare/v6.5.0...v6.5.1) (2023-01-28)
