@@ -8,36 +8,21 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
 
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/cache@v3
-        id: npm-cache
-        with:
-          # We also specify `~/.cache` because Cypress binary is installed
-          # in that location.
-          path: |
-            node_modules
-            ~/.cache
-          key: ${{ runner.os }}-v1-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-v1-npm
-
-      - uses: actions/setup-node@v3
+      - name: Npm install
+        uses: actions/setup-node@v3
         with:
           node-version: 16
-
-      - name: Install dependencies
-        # If checksum for the `package-lock.json` hasn't changed then we shouldn't run
-        # `npm ci` because it will hit the `postinstall` hook
-        # that will run `ngcc` compiler accordingly.
-        if: steps.npm-cache.outputs.cache-hit != 'true'
+          cache: 'npm'
         env:
           HUSKY_SKIP_INSTALL: 'true'
-        run: npm ci
+      - run: npm i
 
       - name: Build library
         run: npm run build:lib

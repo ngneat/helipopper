@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
 import { ExampleComponent } from '../example/example.component';
-import { interval } from 'rxjs';
-import { finalize } from 'rxjs/operators';
-import { TippyInstance, TippyService } from '@ngneat/helipopper';
+import { TippyDirective, TippyInstance, TippyService } from '@ngneat/helipopper';
 
 @Component({
   selector: 'app-is-visible',
@@ -30,12 +28,10 @@ export class PlaygroundComponent {
 
   noContextText: string | undefined;
 
-  interval$ = interval(1000).pipe(finalize(() => console.log('interval completed')));
-
-  get tooltipPosition(): string {
+  get tooltipPosition() {
     const { position, alignment } = this.tooltipSettings.value;
 
-    return `${position}${alignment}`;
+    return `${position}${alignment}` as TippyDirective['placement'];
   }
 
   get tooltipType(): string {
@@ -56,8 +52,7 @@ export class PlaygroundComponent {
     label: `Value ${i + 1}`
   }));
 
-  thoughts = 'We just need someone to talk to 🥺';
-  isDisabled = false;
+  isEnabled = true;
   text = `Long Long All Text`;
   comp = ExampleComponent;
 
@@ -73,7 +68,7 @@ export class PlaygroundComponent {
   show = true;
 
   toggle() {
-    this.isDisabled = !this.isDisabled;
+    this.isEnabled = !this.isEnabled;
   }
 
   handleStatus($event: boolean): void {

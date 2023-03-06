@@ -31,10 +31,10 @@
     <div class="btn-container">
       <button
         class="btn btn-outline-primary"
-        tippy="Helpful Message"
-        [placement]="tooltipPosition"
-        [variation]="tooltipType"
-        [hideOnEscape]="hideOnEsc"
+        tp="Helpful Message"
+        [tpPlacement]="tooltipPosition"
+        [tpVariation]="tooltipType"
+        [tpHideOnEscape]="hideOnEsc"
       >
         I have a tooltip
       </button>
@@ -46,7 +46,7 @@
   <h6>Default variation</h6>
 
   <div class="btn-container">
-    <button tippy="Default tooltip" class="btn btn-outline-secondary">Click Me</button>
+    <button tp="Default tooltip" class="btn btn-outline-secondary">Click Me</button>
   </div>
 
   <hr />
@@ -55,23 +55,19 @@
     <h6>NIL values</h6>
 
     <div class="btn-container" id="tippy-value-non-nil">
-      <button
-        [tippy]="'I have a tooltip value different from nil'"
-        variation="popper"
-        class="btn btn-outline-secondary"
-      >
+      <button [tp]="'I have a tooltip value different from nil'" tpVariation="popper" class="btn btn-outline-secondary">
         Click me to see my tooltip
       </button>
     </div>
 
     <div class="btn-container" id="tippy-value-null">
-      <button [tippy]="null" variation="popper" class="btn btn-outline-secondary">
+      <button [tp]="null" tpVariation="popper" class="btn btn-outline-secondary">
         Click me but I won't show a tooltip
       </button>
     </div>
 
     <div class="btn-container" id="tippy-value-undefined">
-      <button [tippy]="undefined" variation="popper" class="btn btn-outline-secondary">
+      <button [tp]="undefined" tpVariation="popper" class="btn btn-outline-secondary">
         Click me but I won't show a tooltip
       </button>
     </div>
@@ -83,7 +79,7 @@
     <h6>Custom Template</h6>
 
     <div class="btn-container" id="custom-template">
-      <button [tippy]="tpl" variation="popper" class="btn btn-outline-secondary" #tippy2="tippy">Click Me</button>
+      <button [tp]="tpl" tpVariation="popper" class="btn btn-outline-secondary" #tippy2="tippy">Click Me</button>
       Visible: {{ tippy2.isVisible }}
     </div>
 
@@ -97,7 +93,7 @@
 
     <h6>ng-container</h6>
     <div class="btn-container">
-      <button [tippy]="tpl2" variation="popper" class="btn btn-outline-secondary">Click Me</button>
+      <button [tp]="tpl2" tpVariation="popper" class="btn btn-outline-secondary">Click Me</button>
     </div>
 
     <ng-template #tpl2>
@@ -122,10 +118,10 @@
     <div class="btn-container">
       <button
         class="btn btn-outline-danger"
-        [tippy]="comp"
-        [data]="{ name: input.value }"
-        variation="popper"
-        (visible)="handleStatus($event)"
+        [tp]="comp"
+        [tpData]="{ name: input.value }"
+        tpVariation="popper"
+        (tpVisible)="handleStatus($event)"
       >
         Open component
       </button>
@@ -138,7 +134,7 @@
     <h6>Manual Trigger</h6>
 
     <div class="btn-container items-center">
-      <p tippy="Helpful Message" trigger="manual" #tippy="tippy" class="mr-4">Click open to see me</p>
+      <p tp="Helpful Message" tpTrigger="manual" #tippy="tippy" class="mr-4">Click open to see me</p>
 
       <button (click)="tippy.show()" class="btn btn-outline-dark">Open</button>
       <button (click)="tippy.hide()" class="btn btn-outline-dark">Close</button>
@@ -150,7 +146,7 @@
   <div id="lazy">
     <h6>Lazy</h6>
     <div style="height: 300px; overflow-y: auto">
-      <div *ngFor="let item of items" [tippy]="item.label" [lazy]="true">{{ item.label }}</div>
+      <div *ngFor="let item of items" [tp]="item.label" [tpIsLazy]="true">{{ item.label }}</div>
     </div>
   </div>
 
@@ -160,10 +156,10 @@
     <h6>Disabled</h6>
 
     <div class="btn-container">
-      <button [isEnabled]="!isDisabled" tippy="Tooltip" class="btn btn-outline-dark">Element</button>
+      <button [tpIsEnabled]="isEnabled" tp="Tooltip" class="btn btn-outline-dark">Element</button>
     </div>
 
-    <button (click)="toggle()" class="btn btn-outline-primary btn-sm">{{ isDisabled ? 'Enable' : 'Disable' }}</button>
+    <button (click)="toggle()" class="btn btn-outline-primary btn-sm">{{ isEnabled ? 'Disable' : 'Enable' }}</button>
   </div>
 
   <hr />
@@ -173,7 +169,7 @@
 
     <p>Start with overflow and change to not overflow</p>
     <div style="max-width: 100px;" class="overflow-hidden flex">
-      <p class="ellipsis" [tippy]="text" placement="right" [onlyTextOverflow]="true">
+      <p class="ellipsis" [tp]="text" tpPlacement="right" [tpOnlyTextOverflow]="true">
         {{ text }}
       </p>
     </div>
@@ -184,7 +180,7 @@
 
     <p>Start with not overflow and change to overflow</p>
     <div [style.maxWidth.px]="maxWidth" class="overflow-hidden flex">
-      <p class="ellipsis" [tippy]="text" placement="right" [onlyTextOverflow]="true">
+      <p class="ellipsis" [tp]="text" tpPlacement="right" [tpOnlyTextOverflow]="true">
         {{ text }}
       </p>
     </div>
@@ -197,7 +193,7 @@
   <h6>Show on Create</h6>
 
   <div class="btn-container">
-    <button tippy="Shown immediately when created" [showOnCreate]="true" class="btn btn-outline-secondary">
+    <button tp="Shown immediately when created" [tpShowOnCreate]="true" class="btn btn-outline-secondary">
       Show on Create
     </button>
   </div>
@@ -208,12 +204,12 @@
 
   <div class="btn-container">
     <button
-      tippy="I'm a declarative tooltip"
-      variation="tooltip"
-      trigger="click"
-      className="declarativeTooltip"
+      tp="I'm a declarative tooltip"
+      tpVariation="tooltip"
+      tpTrigger="click"
+      tpClassName="declarativeTooltip"
       class="btn btn-outline-secondary"
-      [isVisible]="visibility"
+      [tpIsVisible]="visibility"
       data-cy="tippy-reference-declarative"
     >
       Declaritive Tooltip
@@ -246,7 +242,13 @@
     <h6>Context menu</h6>
 
     <ul class="list-group">
-      <li class="list-group-item" *ngFor="let item of list" [tippy]="contextMenu" [data]="item" variation="contextMenu">
+      <li
+        class="list-group-item"
+        *ngFor="let item of list"
+        [tp]="contextMenu"
+        [tpData]="item"
+        tpVariation="contextMenu"
+      >
         {{ item.label }}
       </li>
     </ul>
@@ -261,9 +263,9 @@
         style="flex: 1; max-width: 600px"
         type="text"
         placeholder="host width"
-        tippy="hello world"
-        variation="menu"
-        useHostWidth="true"
+        tp="hello world"
+        tpVariation="menu"
+        [tpUseHostWidth]="true"
       />
     </div>
   </div>
@@ -274,14 +276,14 @@
     <h6>Menu</h6>
 
     <div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" type="button" [tippy]="one" variation="menu">
+      <button class="btn btn-secondary dropdown-toggle" type="button" [tp]="one" tpVariation="menu">
         Dropdown button
       </button>
 
       <ng-template #one>
         <div>
           <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#" [tippy]="two" placement="right" variation="menu" trigger="mouseenter"
+          <a class="dropdown-item" href="#" [tp]="two" tpPlacement="right" tpVariation="menu" tpTrigger="mouseenter"
             >Another action</a
           >
           <a class="dropdown-item" href="#">Something else here</a>
@@ -292,7 +294,7 @@
         <div>
           <a class="dropdown-item" href="#">Action 2</a>
           <a class="dropdown-item" href="#">Another action 2</a>
-          <a class="dropdown-item" href="#" [tippy]="three" placement="right" variation="menu" trigger="mouseenter"
+          <a class="dropdown-item" href="#" [tp]="three" tpPlacement="right" tpVariation="menu" tpTrigger="mouseenter"
             >Something else here 2</a
           >
         </div>
@@ -312,26 +314,21 @@
 <div>
   <h6>Sanitize</h6>
 
-  <input
-    style="max-width: 600px"
-    type="text"
-    placeholder="Sanitize"
-    tippy="<img src='empty.gif' onerror='alert(1);' />"
-  />
+  <input style="max-width: 600px" type="text" placeholder="Sanitize" tp="<img src='empty.gif' onerror='alert(1);' />" />
 </div>
 
 <hr />
 
 <div>
   <h6>No Content</h6>
-  <input style="max-width: 600px" type="text" placeholder="No content" [tippy]="noContextText" />
+  <input style="max-width: 600px" type="text" placeholder="No content" [tp]="noContextText" />
 </div>
 
 <hr />
 
 <div>
   <h6>Use text content</h6>
-  <span tippy useTextContent>{{ text }}</span>
+  <span tp tpUseTextContent>{{ text }}</span>
 </div>
 
 <hr />
