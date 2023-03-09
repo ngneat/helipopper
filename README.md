@@ -73,7 +73,7 @@ You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/
 Import the standalone `TippyDirective` and use it in your templates:
 
 ```html
-<button tippy="Helpful Message">
+<button tp="Helpful Message">
   I have a tooltip
 </button>
 ```
@@ -95,7 +95,7 @@ export const tooltipVariation = {
 ### Use `TemplateRef` as content
 
 ```html
-<button [tippy]="tpl" variation="popper">
+<button [tp]="tpl" tpVariation="popper">
   Click Me
 </button>
 
@@ -117,7 +117,7 @@ class MyComponent {
 ```
 
 ```html
-<button [tippy]="MyComponent">
+<button [tp]="MyComponent">
   Click Me
 </button>
 ```
@@ -128,7 +128,7 @@ You can pass the `onlyTextOverflow` input to show the tooltip only when the host
 
 ```html
 <div style="max-width: 100px;" class="overflow-hidden flex">
-  <p class="ellipsis" [tippy]="text" placement="right" [onlyTextOverflow]="true">
+  <p class="ellipsis" [tp]="text" tpPlacement="right" [tpOnlyTextOverflow]="true">
     {{ text }}
   </p>
 </div>
@@ -141,7 +141,7 @@ Note that it's using [`ResizeObserver`](https://caniuse.com/resizeobserver) api.
 You can instruct tippy to use the element textContent as the tooltip content:
 
 ```html
-<p tippy useTextContent>
+<p tp tpUseTextContent>
   {{ text }}
 </p>
 ```
@@ -149,12 +149,12 @@ You can instruct tippy to use the element textContent as the tooltip content:
 
 ### Lazy
 
-You can pass the `lazy` input when you want to defer the creation of tippy only when the element is in the view:
+You can pass the `tpIsLazy` input when you want to defer the creation of tippy only when the element is in the view:
 
 ```html
 <div *ngFor="let item of items" 
-     [tippy]="item.label" 
-     [lazy]="true">{{ item.label }}
+     [tp]="item.label" 
+     [tpIsLazy]="true">{{ item.label }}
 </div>
 ```
 
@@ -196,9 +196,9 @@ Now you can use it in your template:
 
 <ul>
   <li *ngFor="let item of list" 
-      [tippy]="contextMenu" 
-      [data]="item" 
-      variation="contextMenu">
+      [tp]="contextMenu" 
+      [tpData]="item" 
+      tpVariation="contextMenu">
     {{ item.label }}
   </li>
 </ul>
@@ -207,7 +207,7 @@ Now you can use it in your template:
 ### Manual Trigger
 
 ```html
-<div tippy="Helpful Message" trigger="manual" #tooltip="tippy">
+<div tp="Helpful Message" tpTrigger="manual" #tooltip="tippy">
   Click Open to see me
 </div>
 
@@ -215,12 +215,12 @@ Now you can use it in your template:
 <button (click)="tooltip.hide()">Close</button>
 ```
 
-### Show/hide declarativly
+### Declarative show/hide
 
 Use isVisible to trigger show and hide. Set trigger to manual.
 
 ```html
-<div tippy="Helpful Message" trigger="manual" [isVisible]="visibility">
+<div tp="Helpful Message" tpTrigger="manual" [tpIsVisible]="visibility">
   Click Open to see me
 </div>
 
@@ -235,38 +235,42 @@ live [here](https://ngneat.github.io/helipopper/).
 ### Inputs
 
 ```ts
-appendTo: TippyProps['appendTo'];
-delay: TippyProps['delay'];
-duration: TippyProps['duration'];
-hideOnClick: TippyProps['hideOnClick'];
-interactive: TippyProps['interactive'];
-interactiveBorder: TippyProps['interactiveBorder'];
-maxWidth: TippyProps['maxWidth'];
-offset: TippyProps['offset'];
-placement: TippyProps['placement'];
-popperOptions: TippyProps['popperOptions'];
-showOnCreate: TippyProps['showOnCreate'];
-trigger: TippyProps['trigger'];
-triggerTarget: TippyProps['triggerTarget'];
-zIndex: TippyProps['zIndex'];
-tippyHost: HTMLElement;
-
-useTextContent: boolean;
-lazy: boolean;
-variation: string;
-isEnabled: boolean;
-isVisible: boolean;
-className: string;
-onlyTextOverflow: boolean;
-useHostWidth: boolean;
-hideOnEscape: boolean;
-data: any;
+tp: string | TemplateRef<any> | Type<any> | undefined | null;
+tpAppendTo: TippyProps['appendTo'];
+tpDelay: TippyProps['delay'];
+tpDuration: TippyProps['duration'];
+tpHideOnClick: TippyProps['hideOnClick'];
+tpInteractive: TippyProps['interactive'];
+tpInteractiveBorder: TippyProps['interactiveBorder'];
+tpMaxWidth: TippyProps['maxWidth'];
+tpOffset: TippyProps['offset'];
+tpPlacement: TippyProps['placement'];
+tpPopperOptions: TippyProps['popperOptions'];
+tpShowOnCreate: TippyProps['showOnCreate'];
+tpTrigger: TippyProps['trigger'];
+tpTriggerTarget: TippyProps['triggerTarget'];
+tpZIndex: TippyProps['zIndex'];
+tpAnimation: TippyProps['animation'];
+tpUseTextContent: boolean;
+tpIsLazy: boolean;
+tpVariation: string;
+tpIsEnabled: boolean;
+tpIsVisible: boolean;
+tpClassName: string;
+tpOnlyTextOverflow: boolean;
+tpData: any;
+tpUseHostWidth: boolean;
+tpHideOnEscape: boolean;
+tpDetectChangesComponent: boolean;
+tpPopperWidth: number | string;
+tpHost: HTMLElement;
+tpIsVisible: boolean;
 ```
 
 ### Outputs
 
 ```ts
-visible = new EventEmitter<boolean>();
+tpVisible = new EventEmitter<boolean>();
 ```
 
 ### Global Config
@@ -280,8 +284,8 @@ import { TippyService, TippyInstance } from '@ngneat/helipopper';
 
 class Component {
   @ViewChild('inputName') inputName: ElementRef;
+  tippy: TippyInstance;
   private tippyService = inject(TippyService);
-  tippy:TippyInstance;
 
   show() {
     if(!this.tippy) {

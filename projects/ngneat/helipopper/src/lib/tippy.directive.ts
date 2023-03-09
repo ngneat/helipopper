@@ -32,46 +32,42 @@ import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyPr
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[tippy]',
+  selector: '[tp]',
   exportAs: 'tippy',
   standalone: true
 })
 export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnInit {
-  static ngAcceptInputType_useTextContent: boolean | '';
+  @Input('tp') content: Content | undefined | null;
+  @Input('tpAppendTo') appendTo: TippyProps['appendTo'];
+  @Input('tpDelay') delay: TippyProps['delay'];
+  @Input('tpDuration') duration: TippyProps['duration'];
+  @Input('tpHideOnClick') hideOnClick: TippyProps['hideOnClick'];
+  @Input('tpInteractive') interactive: TippyProps['interactive'];
+  @Input('tpInteractiveBorder') interactiveBorder: TippyProps['interactiveBorder'];
+  @Input('tpMaxWidth') maxWidth: TippyProps['maxWidth'];
+  @Input('tpOffset') offset: TippyProps['offset'];
+  @Input('tpPlacement') placement: TippyProps['placement'];
+  @Input('tpPopperOptions') popperOptions: TippyProps['popperOptions'];
+  @Input('tpShowOnCreate') showOnCreate: TippyProps['showOnCreate'];
+  @Input('tpTrigger') trigger: TippyProps['trigger'];
+  @Input('tpTriggerTarget') triggerTarget: TippyProps['triggerTarget'];
+  @Input('tpZIndex') zIndex: TippyProps['zIndex'];
+  @Input('tpAnimation') animation: TippyProps['animation'];
+  @Input('tpUseTextContent') useTextContent: boolean;
+  @Input('tpIsLazy') isLazy: boolean;
+  @Input('tpVariation') variation: string;
+  @Input('tpIsEnabled') isEnabled: boolean;
+  @Input('tpClassName') className: string | string[];
+  @Input('tpOnlyTextOverflow') onlyTextOverflow = false;
+  @Input('tpData') data: any;
+  @Input('tpUseHostWidth') useHostWidth = false;
+  @Input('tpHideOnEscape') hideOnEscape = false;
+  @Input('tpDetectChangesComponent') detectChangesComponent = true;
+  @Input('tpPopperWidth') popperWidth: number | string;
+  @Input('tpHost') customHost: HTMLElement;
+  @Input('tpIsVisible') isVisible = false;
 
-  @Input() appendTo: TippyProps['appendTo'];
-  @Input() delay: TippyProps['delay'];
-  @Input() duration: TippyProps['duration'];
-  @Input() hideOnClick: TippyProps['hideOnClick'];
-  @Input() interactive: TippyProps['interactive'];
-  @Input() interactiveBorder: TippyProps['interactiveBorder'];
-  @Input() maxWidth: TippyProps['maxWidth'];
-  @Input() offset: TippyProps['offset'];
-  @Input() placement: TippyProps['placement'];
-  @Input() popperOptions: TippyProps['popperOptions'];
-  @Input() showOnCreate: TippyProps['showOnCreate'];
-  @Input() trigger: TippyProps['trigger'];
-  @Input() triggerTarget: TippyProps['triggerTarget'];
-  @Input() zIndex: TippyProps['zIndex'];
-  @Input() animation: TippyProps['animation'];
-
-  @Input() useTextContent: boolean;
-  @Input() lazy: boolean;
-  @Input() variation: string;
-  @Input() isEnabled: boolean;
-  @Input() className: string | string[];
-  @Input() onlyTextOverflow = false;
-  @Input() data: any;
-  @Input() useHostWidth = false;
-  @Input() hideOnEscape = false;
-  @Input() detectChangesComponent = true;
-  @Input() popperWidth: number | string;
-
-  @Input('tippy') content: Content | undefined | null;
-  @Input('tippyHost') customHost: HTMLElement;
-
-  @Output() visible = new EventEmitter<boolean>();
-  @Input() public isVisible = false;
+  @Output('tpVisible') visible = new EventEmitter<boolean>();
 
   protected instance: TippyInstance;
   protected viewRef: ViewRef;
@@ -150,7 +146,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     if (isPlatformServer(this.platformId)) return;
 
     this.zone.runOutsideAngular(() => {
-      if (this.lazy) {
+      if (this.isLazy) {
         if (this.onlyTextOverflow) {
           inView(this.host)
             .pipe(
