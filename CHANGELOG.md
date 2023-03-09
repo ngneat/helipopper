@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.0.1](https://github.com/ngneat/helipopper/compare/v7.0.0...v7.0.1) (2023-03-09)
+
+
+### Bug Fixes
+
+* 🐛 template type checking ([66a0f82](https://github.com/ngneat/helipopper/commit/66a0f82a4286e85f62bdeaebf92dee5728124c9d))
+
 ## [7.0.0](https://github.com/ngneat/helipopper/compare/v6.6.0...v7.0.0) (2023-03-09)
 
 
