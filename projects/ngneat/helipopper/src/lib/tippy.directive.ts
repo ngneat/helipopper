@@ -37,6 +37,8 @@ import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyPr
   standalone: true
 })
 export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnInit {
+  static ngAcceptInputType_useTextContent: boolean | '';
+
   @Input('tp') content: Content | undefined | null;
   @Input('tpAppendTo') appendTo: TippyProps['appendTo'];
   @Input('tpDelay') delay: TippyProps['delay'];
