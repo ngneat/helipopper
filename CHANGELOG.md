@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.0.0](https://github.com/ngneat/helipopper/compare/v6.6.0...v7.0.0) (2023-03-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* Rename `tippy` to `tp`
+* Prefix all inputs with `tp`
+* Rename `lazy` input to `tpIsLazy`
+
+You can find a script that will help you migrate [here](https://github.com/ngneat/helipopper/blob/master/migrations/v7-migration.md).
+
+### refactor
+
+* 💡 Rename directive inputs ([cc1a5a6](https://github.com/ngneat/helipopper/commit/cc1a5a6efce8c24f355d217ab1663e841a41a1d5))
+
 ## [6.6.0](https://github.com/ngneat/helipopper/compare/v6.5.2...v6.6.0) (2023-02-26)
 
 
