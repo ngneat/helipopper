@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.0.2](https://github.com/ngneat/helipopper/compare/v7.0.1...v7.0.2) (2023-03-15)
+
+
+### Bug Fixes
+
+* 🐛 remove tippy warning when using isLazy ([33cb300](https://github.com/ngneat/helipopper/commit/33cb300d68e4432cc46715a26cf255a1530713eb)), closes [#134](https://github.com/ngneat/helipopper/issues/134)
+
 ### [7.0.1](https://github.com/ngneat/helipopper/compare/v7.0.0...v7.0.1) (2023-03-09)
 
 
