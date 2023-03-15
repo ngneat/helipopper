@@ -86,7 +86,7 @@ export function onlyTippyProps(allProps: any) {
     'useHostWidth',
     'defaultVariation',
     'beforeRender',
-    'lazy',
+    'isLazy',
     'variation',
     'isEnabled',
     'className',
