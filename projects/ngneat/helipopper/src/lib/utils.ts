@@ -99,7 +99,8 @@ export function onlyTippyProps(allProps: any) {
     'injector',
     'preserveView',
     'vcr',
-    'popperWidth'
+    'popperWidth',
+    'zIndexGetter'
   ];
 
   const overriddenMethods = ['onShow', 'onHidden', 'onCreate'];
