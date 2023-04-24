@@ -42,6 +42,7 @@ export interface TippyConfig extends TippyProps {
   variations: Record<string, Partial<TippyProps>>;
   defaultVariation: keyof TippyConfig['variations'];
   beforeRender?: (text: string) => string;
+  zIndexGetter?(): number;
 }
 
 export type TippyElement = ElementRef | Element;

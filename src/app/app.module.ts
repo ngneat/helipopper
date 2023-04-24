@@ -15,12 +15,19 @@ import {
 import { PlaygroundComponent } from './playground/playground.component';
 import { IsVisibleComponent } from './is-visible/isVisible.component';
 
+let zIndex = 99999;
+
+function getZIndex() {
+  return zIndex++;
+}
+
 @NgModule({
   declarations: [AppComponent, ExampleComponent, PlaygroundComponent, ExampleComponent, IsVisibleComponent],
   imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule, TippyDirective],
   providers: [
     provideTippyConfig({
       defaultVariation: 'tooltip',
+      zIndexGetter: getZIndex,
       variations: {
         tooltip: tooltipVariation,
         popper: popperVariation,

@@ -231,6 +231,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       this.instance = tippy(this.host, {
         allowHTML: true,
         appendTo: document.body,
+        ...(this.globalConfig.zIndexGetter ? { zIndex: this.globalConfig.zIndexGetter() } : {}),
         ...onlyTippyProps(this.globalConfig),
         ...onlyTippyProps(this.props),
         onMount: instance => {
