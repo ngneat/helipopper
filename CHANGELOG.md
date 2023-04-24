@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.1.0](https://github.com/ngneat/helipopper/compare/v7.0.2...v7.1.0) (2023-04-24)
+
+
+### Features
+
+* 🎸 add global get index ([2c29cd4](https://github.com/ngneat/helipopper/commit/2c29cd4736198649b0dfb826f2f04be8130b7810))
+
 ### [7.0.2](https://github.com/ngneat/helipopper/compare/v7.0.1...v7.0.2) (2023-03-15)
 
 
