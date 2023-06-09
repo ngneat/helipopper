@@ -136,6 +136,14 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     }
 
     this.setProps({ ...this.props, ...props });
+
+    if (isChanged<NgChanges<TippyDirective>>('content', changes)) {
+      if (!changes.content.previousValue && changes.content.currentValue) {
+        this.createInstance();
+      } else if (changes.content.previousValue && !changes.content.currentValue) {
+        this.destroyInstance();
+      }
+    }
   }
 
   ngOnInit() {
@@ -298,6 +306,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
       this.variation === 'contextMenu' && this.handleContextMenu();
     });
+  }
+
+  protected destroyInstance() {
+    this.instance?.destroy();
+    this.instance = null;
   }
 
   protected resolveContent(instance: TippyInstance) {
