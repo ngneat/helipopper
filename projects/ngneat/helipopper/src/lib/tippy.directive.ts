@@ -136,6 +136,14 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     }
 
     this.setProps({ ...this.props, ...props });
+
+    if (isChanged<NgChanges<TippyDirective>>('content', changes) && !changes.content.isFirstChange()) {
+      if (!changes.content.previousValue && changes.content.currentValue) {
+        this.initInstanceCreation();
+      } else if (changes.content.previousValue && !changes.content.currentValue) {
+        this.destroyInstance();
+      }
+    }
   }
 
   ngOnInit() {
@@ -147,40 +155,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   ngAfterViewInit() {
     if (isPlatformServer(this.platformId)) return;
 
-    this.zone.runOutsideAngular(() => {
-      if (this.isLazy) {
-        if (this.onlyTextOverflow) {
-          inView(this.host)
-            .pipe(
-              switchMap(() => overflowChanges(this.host)),
-              takeUntil(this.destroyed)
-            )
-            .subscribe(isElementOverflow => {
-              this.checkOverflow(isElementOverflow);
-            });
-        } else {
-          inView(this.host)
-            .pipe(takeUntil(this.destroyed))
-            .subscribe(() => {
-              this.createInstance();
-            });
-        }
-      } else if (this.onlyTextOverflow) {
-        overflowChanges(this.host)
-          .pipe(takeUntil(this.destroyed))
-          .subscribe(isElementOverflow => {
-            this.checkOverflow(isElementOverflow);
-          });
-      } else {
-        this.createInstance();
-      }
-    });
+    this.initInstanceCreation();
   }
 
   ngOnDestroy() {
-    this.destroyed.next();
-    this.instance?.destroy();
-    this.destroyView();
+    this.destroyInstance();
   }
 
   destroyView() {
@@ -220,6 +199,37 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   protected get hostWidth(): number {
     return this.host.getBoundingClientRect().width;
+  }
+
+  protected initInstanceCreation() {
+    this.zone.runOutsideAngular(() => {
+      if (this.isLazy) {
+        if (this.onlyTextOverflow) {
+          inView(this.host)
+            .pipe(
+              switchMap(() => overflowChanges(this.host)),
+              takeUntil(this.destroyed)
+            )
+            .subscribe(isElementOverflow => {
+              this.checkOverflow(isElementOverflow);
+            });
+        } else {
+          inView(this.host)
+            .pipe(takeUntil(this.destroyed))
+            .subscribe(() => {
+              this.createInstance();
+            });
+        }
+      } else if (this.onlyTextOverflow) {
+        overflowChanges(this.host)
+          .pipe(takeUntil(this.destroyed))
+          .subscribe(isElementOverflow => {
+            this.checkOverflow(isElementOverflow);
+          });
+      } else {
+        this.createInstance();
+      }
+    });
   }
 
   protected createInstance() {
@@ -298,6 +308,13 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
       this.variation === 'contextMenu' && this.handleContextMenu();
     });
+  }
+
+  protected destroyInstance() {
+    this.destroyed.next();
+    this.instance?.destroy();
+    this.destroyView();
+    this.instance = null;
   }
 
   protected resolveContent(instance: TippyInstance) {
