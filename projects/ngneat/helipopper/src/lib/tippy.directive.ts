@@ -143,6 +143,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         this.createInstance();
       } else if (changes.content.previousValue && !changes.content.currentValue) {
         this.destroyInstance();
+        this.destroyView();
       }
     }
   }
@@ -188,7 +189,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   ngOnDestroy() {
     this.destroyed.next();
-    this.instance?.destroy();
+    this.destroyInstance();
     this.destroyView();
   }
 

@@ -110,8 +110,8 @@ export class PlaygroundComponent {
   undefinedTooltip = undefined;
   emptyTooltip = '';
   updateEmptyTooltips(): void {
-    this.nilTooltip = this.nilTooltip ? null : "I'm updated NIL tooltip.";
-    this.undefinedTooltip = this.undefinedTooltip ? undefined : "I'm updated undefined tooltip.";
-    this.emptyTooltip = this.emptyTooltip ? '' : "I'm updated empty string tooltip.";
+    this.nilTooltip = this.nilTooltip ? null : "I'm updated NIL tooltip";
+    this.undefinedTooltip = this.undefinedTooltip ? undefined : "I'm updated undefined tooltip";
+    this.emptyTooltip = this.emptyTooltip ? '' : "I'm updated empty string tooltip";
   }
 }

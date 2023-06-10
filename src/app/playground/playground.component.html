@@ -78,25 +78,25 @@
   <div>
     <h6>Dynamic NIL values</h6>
 
-    <div class="btn-container">
-      <button [tp]="nilTooltip" class="btn btn-outline-secondary">
+    <div class="btn-container" id="tippy-dynamic-nil">
+      <button [tp]="nilTooltip" tpClassName="dynamic-empty" class="btn btn-outline-secondary">
         I'm tooltip initialized to NIL. Click "Set tooltips" to see me.
       </button>
     </div>
 
-    <div class="btn-container">
-      <button [tp]="undefinedTooltip" class="btn btn-outline-secondary">
+    <div class="btn-container" id="tippy-dynamic-undefined">
+      <button [tp]="undefinedTooltip" tpClassName="dynamic-empty" class="btn btn-outline-secondary">
         I'm tooltip initialized to undefined. Click "Set tooltips" to see me.
       </button>
     </div>
 
-    <div class="btn-container">
-      <button [tp]="emptyTooltip" class="btn btn-outline-secondary">
+    <div class="btn-container" id="tippy-dynamic-empty">
+      <button [tp]="emptyTooltip" tpClassName="dynamic-empty" class="btn btn-outline-secondary">
         I'm tooltip initialized to empty string. Click "Set tooltips" to see me.
       </button>
     </div>
 
-    <div class="btn-container">
+    <div class="btn-container" id="tippy-dynamic-nil-toggle">
       <button class="btn btn-outline-secondary" (click)="updateEmptyTooltips()">
         {{ nilTooltip ? 'Unset tooltips' : 'Set tooltips' }}
       </button>

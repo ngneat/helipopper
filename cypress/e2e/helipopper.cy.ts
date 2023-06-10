@@ -83,6 +83,79 @@ describe('@ngneat/helipopper', () => {
     });
   });
 
+  describe('Tippy dynamic nil values', () => {
+    const dynamicNilPopperSelector = `.dynamic-empty ${popperSelector}`;
+
+    it('should create a tooltip when content is set from null to value and destroy on the other hand', () => {
+      cy.get('#tippy-dynamic-nil button')
+        .trigger('mouseenter')
+        .get(dynamicNilPopperSelector)
+        .should('not.exist');
+
+      cy.get('#tippy-dynamic-nil-toggle button').click({ force: true });
+
+      cy.get('#tippy-dynamic-nil button')
+        .trigger('mouseenter')
+        .get(dynamicNilPopperSelector)
+        .contains("I'm updated NIL tooltip")
+        .should('exist')
+        .click({ force: true });
+
+      cy.get('#tippy-dynamic-nil-toggle button').click({ force: true });
+
+      cy.get('#tippy-dynamic-nil button')
+        .trigger('mouseenter')
+        .get(dynamicNilPopperSelector)
+        .should('not.exist');
+    });
+
+    it('should create a tooltip when content is set from undefined to value and destroy on the other hand', () => {
+      cy.get('#tippy-dynamic-undefined button')
+        .trigger('mouseenter')
+        .get(dynamicNilPopperSelector)
+        .should('not.exist');
+
+      cy.get('#tippy-dynamic-nil-toggle button').click({ force: true });
+
+      cy.get('#tippy-dynamic-undefined button')
+        .trigger('mouseenter')
+        .get(dynamicNilPopperSelector)
+        .contains("I'm updated undefined tooltip")
+        .should('exist')
+        .click({ force: true });
+
+      cy.get('#tippy-dynamic-nil-toggle button').click({ force: true });
+
+      cy.get('#tippy-dynamic-undefined button')
+        .trigger('mouseenter')
+        .get(dynamicNilPopperSelector)
+        .should('not.exist');
+    });
+
+    it('should create a tooltip when content is set from empty to value and destroy on the other hand', () => {
+      cy.get('#tippy-dynamic-empty button')
+        .trigger('mouseenter')
+        .get(dynamicNilPopperSelector)
+        .should('not.exist');
+
+      cy.get('#tippy-dynamic-nil-toggle button').click({ force: true });
+
+      cy.get('#tippy-dynamic-empty button')
+        .trigger('mouseenter')
+        .get(dynamicNilPopperSelector)
+        .contains("I'm updated empty string tooltip")
+        .should('exist')
+        .click({ force: true });
+
+      cy.get('#tippy-dynamic-nil-toggle button').click({ force: true });
+
+      cy.get('#tippy-dynamic-empty button')
+        .trigger('mouseenter')
+        .get(dynamicNilPopperSelector)
+        .should('not.exist');
+    });
+  });
+
   describe('hideOnEscape', () => {
     const tippyTriggerSelector = `${playground} .btn-container button`;
     const tippyCheckboxSelector = '#hideOnEsc-toggle';
