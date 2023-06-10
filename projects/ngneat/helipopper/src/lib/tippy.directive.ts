@@ -78,6 +78,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   protected enabled = true;
   protected variationDefined = false;
   protected viewOptions$: ViewOptions;
+  protected checkContentChanges: boolean;
 
   /**
    * We had use `visible` event emitter previously as a `takeUntil` subscriber in multiple places
@@ -137,7 +138,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
     this.setProps({ ...this.props, ...props });
 
-    if (isChanged<NgChanges<TippyDirective>>('content', changes)) {
+    if (this.checkContentChanges && isChanged<NgChanges<TippyDirective>>('content', changes)) {
       if (!changes.content.previousValue && changes.content.currentValue) {
         this.createInstance();
       } else if (changes.content.previousValue && !changes.content.currentValue) {
@@ -231,6 +232,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   protected createInstance() {
+    this.checkContentChanges = true;
+
     if (!this.content && !coerceBooleanInput(this.useTextContent)) {
       return;
     }
