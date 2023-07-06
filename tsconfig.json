@@ -7,11 +7,11 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "module": "es2020",
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
-    "lib": ["es2018", "dom"],
+    "module": "es2020",
+    "lib": ["es2020", "dom"],
     "paths": {
       "@ngneat/helipopper": ["projects/ngneat/helipopper/src/public-api.ts"]
     },
