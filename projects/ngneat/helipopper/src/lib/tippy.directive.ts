@@ -12,7 +12,7 @@ import {
   OnInit,
   Output,
   PLATFORM_ID,
-  ViewContainerRef
+  ViewContainerRef,
 } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import tippy, { Instance } from 'tippy.js';
@@ -25,22 +25,29 @@ import {
   dimensionsChanges,
   inView,
   normalizeClassName,
+  observeVisibility,
   onlyTippyProps,
-  overflowChanges
+  overflowChanges,
 } from './utils';
 import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
+
+const defaultAppendTo = document.body;
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[tp]',
   exportAs: 'tippy',
-  standalone: true
+  standalone: true,
 })
 export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnInit {
   static ngAcceptInputType_useTextContent: boolean | '';
 
   @Input('tp') content: Content | undefined | null;
-  @Input('tpAppendTo') appendTo: TippyProps['appendTo'];
+
+  @Input('tpAppendTo') set appendTo(appendTo: TippyProps['appendTo']) {
+    this.updateProps({ appendTo });
+  }
+
   @Input('tpDelay') delay: TippyProps['delay'];
   @Input('tpDuration') duration: TippyProps['duration'];
   @Input('tpHideOnClick') hideOnClick: TippyProps['hideOnClick'];
@@ -87,6 +94,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
    * in the template (`<button [tippy]="..." (visible)="..."></button>`).
    */
   protected visibleInternal = new Subject<boolean>();
+  private visibilityObserverCleanup: () => void | undefined;
 
   constructor(
     @Inject(PLATFORM_ID) protected platformId: string,
@@ -122,7 +130,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     if (variation) {
       props = {
         ...this.globalConfig.variations[variation],
-        ...props
+        ...props,
       };
     }
 
@@ -135,7 +143,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       this.isVisible ? this.show() : this.hide();
     }
 
-    this.setProps({ ...this.props, ...props });
+    this.updateProps(props);
   }
 
   ngOnInit() {
@@ -155,7 +163,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
               switchMap(() => overflowChanges(this.host)),
               takeUntil(this.destroyed)
             )
-            .subscribe(isElementOverflow => {
+            .subscribe((isElementOverflow) => {
               this.checkOverflow(isElementOverflow);
             });
         } else {
@@ -168,7 +176,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       } else if (this.onlyTextOverflow) {
         overflowChanges(this.host)
           .pipe(takeUntil(this.destroyed))
-          .subscribe(isElementOverflow => {
+          .subscribe((isElementOverflow) => {
             this.checkOverflow(isElementOverflow);
           });
       } else {
@@ -181,12 +189,46 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     this.destroyed.next();
     this.instance?.destroy();
     this.destroyView();
+    this.visibilityObserverCleanup?.();
   }
 
   destroyView() {
     this.viewOptions$ = null;
     this.viewRef?.destroy();
     this.viewRef = null;
+  }
+
+  /**
+   * This method is useful when you append to an element that you might remove from the DOM.
+   * In such cases we want to hide the tooltip and let it go through the destroy lifecycle.
+   * For example, if you have a grid row with an element that you toggle using the display CSS property on hover.
+   */
+  observeHostVisibility() {
+    // We don't want to observe the host visibility if we are appending to the body.
+    if (this.props.appendTo && this.props.appendTo !== defaultAppendTo) {
+      this.visibilityObserverCleanup?.();
+      return this.visibleInternal
+        .asObservable()
+        .pipe(takeUntil(this.destroyed))
+        .subscribe((isVisible) => {
+          if (isVisible) {
+            this.zone.runOutsideAngular(() => {
+              this.visibilityObserverCleanup = observeVisibility(this.instance.reference, () => {
+                this.hide();
+                // Because we have animation on the popper it doesn't close immediately doesn't trigger the `tpVisible` event.
+                // Tippy is relying on the transitionend event to trigger the `onHidden` callback.
+                // https://github.com/atomiks/tippyjs/blob/master/src/dom-utils.ts#L117
+                // This event never fires because the popper is removed from the DOM before the transition ends.
+                if (this.props.animation) {
+                  this.onHidden();
+                }
+              });
+            });
+          } else {
+            this.visibilityObserverCleanup?.();
+          }
+        });
+    }
   }
 
   show() {
@@ -203,6 +245,10 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   disable() {
     this.instance?.disable();
+  }
+
+  protected updateProps(props: Partial<TippyConfig>) {
+    this.setProps({ ...this.props, ...props });
   }
 
   protected setProps(props: Partial<TippyConfig>) {
@@ -230,11 +276,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     this.zone.runOutsideAngular(() => {
       this.instance = tippy(this.host, {
         allowHTML: true,
-        appendTo: document.body,
+        appendTo: defaultAppendTo,
         ...(this.globalConfig.zIndexGetter ? { zIndex: this.globalConfig.zIndexGetter() } : {}),
         ...onlyTippyProps(this.globalConfig),
         ...onlyTippyProps(this.props),
-        onMount: instance => {
+        onMount: (instance) => {
           this.isVisible = true;
           this.visibleInternal.next(this.isVisible);
           if (this.visible.observed) {
@@ -243,7 +289,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
           this.useHostWidth && this.listenToHostResize();
           this.globalConfig.onMount?.(instance);
         },
-        onCreate: instance => {
+        onCreate: (instance) => {
           instance.popper.classList.add(`tippy-variation-${this.variation || this.globalConfig.defaultVariation}`);
           if (this.className) {
             for (const klass of normalizeClassName(this.className)) {
@@ -255,7 +301,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
             instance.show();
           }
         },
-        onShow: instance => {
+        onShow: (instance) => {
           instance.reference.setAttribute('data-tippy-open', '');
           this.zone.run(() => {
             const content = this.resolveContent(instance);
@@ -282,15 +328,9 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         onHide(instance) {
           instance.reference.removeAttribute('data-tippy-open');
         },
-        onHidden: instance => {
-          this.destroyView();
-          this.isVisible = false;
-          this.visibleInternal.next(this.isVisible);
-          if (this.visible.observed) {
-            this.zone.run(() => this.visible.next(this.isVisible));
-          }
-          this.globalConfig.onHidden?.(instance);
-        }
+        onHidden: (instance) => {
+          this.onHidden(instance);
+        },
       });
 
       this.setStatus();
@@ -309,25 +349,25 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
             providers: [
               {
                 provide: TIPPY_REF,
-                useValue: this.instance
-              }
+                useValue: this.instance,
+              },
             ],
-            parent: this.injector
-          })
+            parent: this.injector,
+          }),
         };
       } else if (isTemplateRef(this.content)) {
         this.viewOptions$ = {
           context: {
             $implicit: this.hide.bind(this),
-            data: this.data
-          }
+            data: this.data,
+          },
         };
       }
     }
 
     this.viewRef = this.viewService.createView(this.content, {
       vcr: this.vcr,
-      ...this.viewOptions$
+      ...this.viewOptions$,
     });
 
     // We need to call detectChanges for onPush components to update the content
@@ -362,8 +402,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
               top: event.clientY,
               bottom: event.clientY,
               left: event.clientX,
-              right: event.clientX
-            } as DOMRectReadOnly)
+              right: event.clientX,
+            } as DOMRectReadOnly),
         });
 
         this.instance.show();
@@ -375,7 +415,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       fromEvent(document.body, 'keydown')
         .pipe(
           filter(({ code }: KeyboardEvent) => code === 'Escape'),
-          takeUntil(merge(this.destroyed, this.visibleInternal.pipe(filter(v => !v))))
+          takeUntil(merge(this.destroyed, this.visibleInternal.pipe(filter((v) => !v))))
         )
         .subscribe(() => this.hide());
     });
@@ -406,6 +446,16 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     instance.popper.style.width = inPixels;
     instance.popper.style.maxWidth = inPixels;
     (instance.popper.firstElementChild as HTMLElement).style.maxWidth = inPixels;
+  }
+
+  private onHidden(instance: TippyInstance = this.instance) {
+    this.destroyView();
+    this.isVisible = false;
+    this.visibleInternal.next(this.isVisible);
+    if (this.visible.observed) {
+      this.zone.run(() => this.visible.next(this.isVisible));
+    }
+    this.globalConfig.onHidden?.(instance);
   }
 }
 
