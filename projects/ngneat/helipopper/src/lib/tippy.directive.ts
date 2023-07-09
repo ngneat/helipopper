@@ -25,30 +25,13 @@ import {
   dimensionsChanges,
   inView,
   normalizeClassName,
+  observeVisibility,
   onlyTippyProps,
   overflowChanges,
 } from './utils';
 import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
 
-let observer: IntersectionObserver;
-const cbs = new WeakMap<Element, () => void>();
-
-function observeVisibility(host: Element, cb: () => void) {
-  observer ??= new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) {
-        cbs.get(entry.target)!();
-      }
-    });
-  });
-  cbs.set(host, cb);
-  observer.observe(host);
-
-  return () => {
-    cbs.delete(host);
-    observer.unobserve(host);
-  };
-}
+const defaultAppendTo = document.body;
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -218,24 +201,28 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   /**
    * This method is useful when you append to an element that you might remove from the DOM.
    * In such cases we want to hide the tooltip and let it go through the destroy lifecycle.
+   * For example, if you have a grid row with an element that you toggle using the display CSS property on hover.
    */
   observeHostVisibility() {
-    if (this.props.appendTo) {
+    // We don't want to observe the host visibility if we are appending to the body.
+    if (this.props.appendTo && this.props.appendTo !== defaultAppendTo) {
       this.visibilityObserverCleanup?.();
-      this.visibleInternal
+      return this.visibleInternal
         .asObservable()
         .pipe(takeUntil(this.destroyed))
         .subscribe((isVisible) => {
           if (isVisible) {
-            this.visibilityObserverCleanup = observeVisibility(this.instance.reference, () => {
-              this.hide();
-              // Because we have animation on the popper it doesn't close immediately doesn't trigger the `tpVisible` event.
-              // Tippy is relying on the transitionend event to trigger the `onHidden` callback.
-              // https://github.com/atomiks/tippyjs/blob/master/src/dom-utils.ts#L117
-              // This event never fires because the popper is removed from the DOM before the transition ends.
-              if (this.props.animation) {
-                this.onHidden();
-              }
+            this.zone.runOutsideAngular(() => {
+              this.visibilityObserverCleanup = observeVisibility(this.instance.reference, () => {
+                this.hide();
+                // Because we have animation on the popper it doesn't close immediately doesn't trigger the `tpVisible` event.
+                // Tippy is relying on the transitionend event to trigger the `onHidden` callback.
+                // https://github.com/atomiks/tippyjs/blob/master/src/dom-utils.ts#L117
+                // This event never fires because the popper is removed from the DOM before the transition ends.
+                if (this.props.animation) {
+                  this.onHidden();
+                }
+              });
             });
           } else {
             this.visibilityObserverCleanup?.();
@@ -289,7 +276,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     this.zone.runOutsideAngular(() => {
       this.instance = tippy(this.host, {
         allowHTML: true,
-        appendTo: document.body,
+        appendTo: defaultAppendTo,
         ...(this.globalConfig.zIndexGetter ? { zIndex: this.globalConfig.zIndexGetter() } : {}),
         ...onlyTippyProps(this.globalConfig),
         ...onlyTippyProps(this.props),

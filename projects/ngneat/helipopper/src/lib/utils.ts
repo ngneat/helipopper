@@ -17,19 +17,19 @@ export function inView(
   host: TippyElement,
   options: IntersectionObserverInit = {
     root: null,
-    threshold: 0.3
+    threshold: 0.3,
   }
 ) {
   const element = coerceElement(host);
 
-  return new Observable(subscriber => {
+  return new Observable((subscriber) => {
     if (!supportsIntersectionObserver) {
       subscriber.next();
       subscriber.complete();
       return;
     }
 
-    const observer = new IntersectionObserver(entries => {
+    const observer = new IntersectionObserver((entries) => {
       // Several changes may occur in the same tick, we want to check the latest entry state.
       const entry = entries[entries.length - 1];
       if (entry.isIntersecting) {
@@ -64,7 +64,7 @@ export function dimensionsChanges(target: HTMLElement) {
 }
 
 function resizeObserverStrategy(target: HTMLElement): Observable<boolean> {
-  return new Observable(subscriber => {
+  return new Observable((subscriber) => {
     if (!supportsResizeObserver) {
       subscriber.next();
       subscriber.complete();
@@ -100,12 +100,12 @@ export function onlyTippyProps(allProps: any) {
     'preserveView',
     'vcr',
     'popperWidth',
-    'zIndexGetter'
+    'zIndexGetter',
   ];
 
   const overriddenMethods = ['onShow', 'onHidden', 'onCreate'];
 
-  Object.keys(allProps).forEach(prop => {
+  Object.keys(allProps).forEach((prop) => {
     if (!ownProps.includes(prop) && !overriddenMethods.includes(prop)) {
       tippyProps[prop] = allProps[prop];
     }
@@ -117,7 +117,7 @@ export function onlyTippyProps(allProps: any) {
 export function normalizeClassName(className: string | string[]): string[] {
   const classes = isString(className) ? className.split(' ') : className;
 
-  return classes.map(klass => klass?.trim()).filter(Boolean);
+  return classes.map((klass) => klass?.trim()).filter(Boolean);
 }
 
 export function coerceCssPixelValue<T>(value: T): string {
@@ -138,4 +138,23 @@ function isNil(value: any): value is undefined | null {
 
 function coerceElement(element: TippyElement) {
   return element instanceof ElementRef ? element.nativeElement : element;
+}
+
+let observer: IntersectionObserver;
+const elementHiddenHandlers = new WeakMap<Element, () => void>();
+export function observeVisibility(host: Element, hiddenHandler: () => void) {
+  observer ??= new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) {
+        elementHiddenHandlers.get(entry.target)!();
+      }
+    });
+  });
+  elementHiddenHandlers.set(host, hiddenHandler);
+  observer.observe(host);
+
+  return () => {
+    elementHiddenHandlers.delete(host);
+    observer.unobserve(host);
+  };
 }
