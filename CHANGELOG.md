@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.0.0](https://github.com/ngneat/helipopper/compare/v7.1.1...v8.0.0) (2023-07-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* peer dependency is now angular v16+
+
+### Features
+
+* 🎸 support host visibility observer ([5907e34](https://github.com/ngneat/helipopper/commit/5907e344d80bfc86b2bf1f1ddffc80b3637d5f4a))
+
+
+* 🤖 update to angular v16 ([04e9fbb](https://github.com/ngneat/helipopper/commit/04e9fbb655867c0a29ee965712d581c542a7d5c8))
+
 ### [7.1.1](https://github.com/ngneat/helipopper/compare/v7.1.0...v7.1.1) (2023-04-24)
 
 
