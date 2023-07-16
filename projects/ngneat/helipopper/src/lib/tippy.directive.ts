@@ -31,8 +31,6 @@ import {
 } from './utils';
 import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
 
-const defaultAppendTo = document.body;
-
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[tp]',
@@ -107,7 +105,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   ) {}
 
   ngOnChanges(changes: NgChanges<TippyDirective>) {
-    if (isPlatformServer(this.platformId)) return;
+    if (this.isServerSide) return;
 
     let props: Partial<TippyConfig> = Object.keys(changes).reduce((acc, change) => {
       if (change === 'isVisible') return acc;
@@ -153,7 +151,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   ngAfterViewInit() {
-    if (isPlatformServer(this.platformId)) return;
+    if (this.isServerSide) return;
 
     this.zone.runOutsideAngular(() => {
       if (this.isLazy) {
@@ -204,8 +202,9 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
    * For example, if you have a grid row with an element that you toggle using the display CSS property on hover.
    */
   observeHostVisibility() {
+    if (this.isServerSide) return;
     // We don't want to observe the host visibility if we are appending to the body.
-    if (this.props.appendTo && this.props.appendTo !== defaultAppendTo) {
+    if (this.props.appendTo && this.props.appendTo !== document.body) {
       this.visibilityObserverCleanup?.();
       return this.visibleInternal
         .asObservable()
@@ -276,7 +275,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     this.zone.runOutsideAngular(() => {
       this.instance = tippy(this.host, {
         allowHTML: true,
-        appendTo: defaultAppendTo,
+        appendTo: document.body,
         ...(this.globalConfig.zIndexGetter ? { zIndex: this.globalConfig.zIndexGetter() } : {}),
         ...onlyTippyProps(this.globalConfig),
         ...onlyTippyProps(this.props),
@@ -446,6 +445,10 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     instance.popper.style.width = inPixels;
     instance.popper.style.maxWidth = inPixels;
     (instance.popper.firstElementChild as HTMLElement).style.maxWidth = inPixels;
+  }
+
+  private get isServerSide() {
+    return isPlatformServer(this.platformId);
   }
 
   private onHidden(instance: TippyInstance = this.instance) {
