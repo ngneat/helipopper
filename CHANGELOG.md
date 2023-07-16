@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [8.0.1](https://github.com/ngneat/helipopper/compare/v8.0.0...v8.0.1) (2023-07-16)
+
+
+### Bug Fixes
+
+* 🐛 ssr ([26169f1](https://github.com/ngneat/helipopper/commit/26169f139ab462bceeb2b916b6c5803a5b3a7f54)), closes [#142](https://github.com/ngneat/helipopper/issues/142)
+
 ## [8.0.0](https://github.com/ngneat/helipopper/compare/v7.1.1...v8.0.0) (2023-07-09)
 
 
