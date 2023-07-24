@@ -39,7 +39,7 @@ If you're using v1 and don't want to migrate, you can find it [here](https://git
 ### Installation
 
 ```
-npm install @ngneat/helipopper @ngneat/overview
+npm install @ngneat/helipopper
 ```
 
 Configure it as shown below:
