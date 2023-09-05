@@ -44,9 +44,10 @@ export function inView(
   });
 }
 
-function isElementOverflow(host: HTMLElement): boolean {
-  // Don't access the `offsetWidth` multipe times since it triggers layout updates.
+export function isElementOverflow(host: HTMLElement): boolean {
+  // Don't access the `offsetWidth` multiple times since it triggers layout updates.
   const hostOffsetWidth = host.offsetWidth;
+
   return hostOffsetWidth > host.parentElement.offsetWidth || hostOffsetWidth < host.scrollWidth;
 }
 
@@ -101,6 +102,7 @@ export function onlyTippyProps(allProps: any) {
     'vcr',
     'popperWidth',
     'zIndexGetter',
+    'staticWidthHost',
   ];
 
   const overriddenMethods = ['onShow', 'onHidden', 'onCreate'];

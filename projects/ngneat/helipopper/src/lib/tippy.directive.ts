@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  booleanAttribute,
   Directive,
   ElementRef,
   EventEmitter,
@@ -16,14 +17,15 @@ import {
 } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import tippy, { Instance } from 'tippy.js';
-import { fromEvent, merge, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { fromEvent, merge, Observable, Subject } from 'rxjs';
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { Content, isComponent, isString, isTemplateRef, ViewOptions, ViewRef, ViewService } from '@ngneat/overview';
 
 import {
   coerceCssPixelValue,
   dimensionsChanges,
   inView,
+  isElementOverflow,
   normalizeClassName,
   observeVisibility,
   onlyTippyProps,
@@ -38,14 +40,10 @@ import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyPr
   standalone: true,
 })
 export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnInit {
-  static ngAcceptInputType_useTextContent: boolean | '';
-
-  @Input('tp') content: Content | undefined | null;
-
   @Input('tpAppendTo') set appendTo(appendTo: TippyProps['appendTo']) {
     this.updateProps({ appendTo });
   }
-
+  @Input('tp') content: Content | undefined | null;
   @Input('tpDelay') delay: TippyProps['delay'];
   @Input('tpDuration') duration: TippyProps['duration'];
   @Input('tpHideOnClick') hideOnClick: TippyProps['hideOnClick'];
@@ -60,12 +58,13 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input('tpTriggerTarget') triggerTarget: TippyProps['triggerTarget'];
   @Input('tpZIndex') zIndex: TippyProps['zIndex'];
   @Input('tpAnimation') animation: TippyProps['animation'];
-  @Input('tpUseTextContent') useTextContent: boolean;
+  @Input({ transform: booleanAttribute, alias: 'tpUseTextContent' }) useTextContent: boolean;
   @Input('tpIsLazy') isLazy: boolean;
   @Input('tpVariation') variation: string;
   @Input('tpIsEnabled') isEnabled: boolean;
   @Input('tpClassName') className: string | string[];
   @Input('tpOnlyTextOverflow') onlyTextOverflow = false;
+  @Input({ transform: booleanAttribute, alias: 'tpStaticWidthHost' }) staticWidthHost = false;
   @Input('tpData') data: any;
   @Input('tpUseHostWidth') useHostWidth = false;
   @Input('tpHideOnEscape') hideOnEscape = false;
@@ -93,6 +92,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
    */
   protected visibleInternal = new Subject<boolean>();
   private visibilityObserverCleanup: () => void | undefined;
+  private contentChanged = new Subject<void>();
 
   constructor(
     @Inject(PLATFORM_ID) protected platformId: string,
@@ -117,7 +117,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
     let variation: string;
 
-    if (isChanged<NgChanges<TippyDirective>>('variation', changes)) {
+    if (isChanged('content', changes)) {
+      this.contentChanged.next();
+    }
+
+    if (isChanged('variation', changes)) {
       variation = changes.variation.currentValue;
       this.variationDefined = true;
     } else if (!this.variationDefined) {
@@ -132,12 +136,12 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       };
     }
 
-    if (isChanged<NgChanges<TippyDirective>>('isEnabled', changes)) {
+    if (isChanged('isEnabled', changes)) {
       this.enabled = changes.isEnabled.currentValue;
       this.setStatus();
     }
 
-    if (isChanged<NgChanges<TippyDirective>>('isVisible', changes)) {
+    if (isChanged('isVisible', changes)) {
       this.isVisible ? this.show() : this.hide();
     }
 
@@ -158,7 +162,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         if (this.onlyTextOverflow) {
           inView(this.host)
             .pipe(
-              switchMap(() => overflowChanges(this.host)),
+              switchMap(() => this.isOverflowing$()),
               takeUntil(this.destroyed)
             )
             .subscribe((isElementOverflow) => {
@@ -172,7 +176,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
             });
         }
       } else if (this.onlyTextOverflow) {
-        overflowChanges(this.host)
+        this.isOverflowing$()
           .pipe(takeUntil(this.destroyed))
           .subscribe((isElementOverflow) => {
             this.checkOverflow(isElementOverflow);
@@ -268,7 +272,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   protected createInstance() {
-    if (!this.content && !coerceBooleanInput(this.useTextContent)) {
+    if (!this.content && !this.useTextContent) {
       return;
     }
 
@@ -376,7 +380,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
     let content = this.viewRef.getElement();
 
-    if (coerceBooleanInput(this.useTextContent)) {
+    if (this.useTextContent) {
       content = instance.reference.textContent;
     }
 
@@ -460,12 +464,34 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     }
     this.globalConfig.onHidden?.(instance);
   }
+
+  private isOverflowing$() {
+    const notifiers$ = [overflowChanges(this.host)];
+
+    // We need to handle cases where the host has a static width but the content might change
+    if (this.staticWidthHost) {
+      notifiers$.push(
+        this.contentChanged.asObservable().pipe(
+          // We need to wait for the content to be rendered before we can check if it's overflowing.
+          switchMap(() => {
+            return new Observable((subscriber) => {
+              const id = window.requestAnimationFrame(() => {
+                subscriber.next();
+                subscriber.complete();
+              });
+
+              return () => cancelAnimationFrame(id);
+            });
+          }),
+          map(() => isElementOverflow(this.host))
+        )
+      );
+    }
+
+    return merge(...notifiers$);
+  }
 }
 
-function isChanged<T extends object>(key: keyof T, changes: T) {
+function isChanged(key: keyof NgChanges<TippyDirective>, changes: NgChanges<TippyDirective>) {
   return key in changes;
-}
-
-export function coerceBooleanInput(value: any): boolean {
-  return value != null && `${value}` !== 'false';
 }

@@ -134,7 +134,19 @@ You can pass the `onlyTextOverflow` input to show the tooltip only when the host
 </div>
 ```
 
-Note that it's using [`ResizeObserver`](https://caniuse.com/resizeobserver) api.
+Note: this feature is using [`ResizeObserver`](https://caniuse.com/resizeobserver) api.
+
+You might have cases where the host has a static width and the content is dynamic. In this case, use the `tpStaticWidthHost` input with combination with `tpOnlyTextOverflow`:
+
+```html
+<div style="max-width: 100px;" class="overflow-hidden flex">
+  <p style="width: 100px" class="ellipsis" [tp]="dynamicText" tpPlacement="right" [tpOnlyTextOverflow]="true" tpStaticWidthHost>
+    {{ dynamicText }}
+  </p>
+</div>
+```
+
+Note: when using `tpStaticWidthHost` you can't use `tpUseTextContent`, you need to explicitly pass the content to `tp` in order to trigger content change.
 
 ### Use Text Content
 

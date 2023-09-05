@@ -159,7 +159,9 @@
       <button [tpIsEnabled]="isEnabled" tp="Tooltip" class="btn btn-outline-dark">Element</button>
     </div>
 
-    <button (click)="toggle()" class="btn btn-outline-primary btn-sm">{{ isEnabled ? 'Disable' : 'Enable' }}</button>
+    <button (click)="toggleEnabled()" class="btn btn-outline-primary btn-sm">
+      {{ isEnabled ? 'Disable' : 'Enable' }}
+    </button>
   </div>
 
   <hr />
@@ -168,24 +170,50 @@
     <h6>Text Overflow</h6>
 
     <p>Start with overflow and change to not overflow</p>
-    <div style="max-width: 100px;" class="overflow-hidden flex">
-      <p class="ellipsis" [tp]="text" tpPlacement="right" [tpOnlyTextOverflow]="true">
+    <div style="max-width: 100px" class="overflow-hidden flex">
+      <p class="ellipsis" [tp]="text" tpPlacement="right" [tpOnlyTextOverflow]="true" data-cy="overflow-case-1">
         {{ text }}
       </p>
     </div>
 
-    <button (click)="changeContent()" class="btn btn-outline-info btn-sm mt-2">Change content</button>
+    <button data-cy="content-toggler" (click)="text = toggleText(text, 1)" class="btn btn-outline-info btn-sm mt-2">
+      Change content
+    </button>
 
     <hr />
 
-    <p>Start with not overflow and change to overflow</p>
+    <p>Start with not overflow and change to overflow by decreasing the host width</p>
     <div [style.maxWidth.px]="maxWidth" class="overflow-hidden flex">
-      <p class="ellipsis" [tp]="text" tpPlacement="right" [tpOnlyTextOverflow]="true">
-        {{ text }}
+      <p class="ellipsis" [tp]="text2" tpPlacement="right" [tpOnlyTextOverflow]="true" data-cy="overflow-case-2">
+        {{ text2 }}
       </p>
     </div>
 
-    <button (click)="maxWidth = 100" class="btn btn-outline-info btn-sm mt-2">Change width</button>
+    <button data-cy="width-toggler" (click)="toggleMaxWidth()" class="btn btn-outline-info btn-sm mt-2">
+      Change max width
+    </button>
+    <button data-cy="content-toggler" (click)="text2 = toggleText(text2, 2)" class="btn btn-outline-info btn-sm mt-2">
+      Change content
+    </button>
+
+    <p>Start with not overflow and change to overflow by changing the content</p>
+    <div style="max-width: 100px" class="overflow-hidden flex">
+      <p
+        style="width: 100px"
+        class="ellipsis"
+        [tp]="text3"
+        tpPlacement="right"
+        tpStaticWidthHost
+        [tpOnlyTextOverflow]="true"
+        data-cy="overflow-case-3"
+      >
+        {{ text3 }}
+      </p>
+    </div>
+
+    <button data-cy="content-toggler" (click)="text3 = toggleText(text3, 3)" class="btn btn-outline-info btn-sm mt-2">
+      Change content
+    </button>
   </div>
 
   <hr />
