@@ -46,3 +46,6 @@ jobs:
 
       - name: Build library
         run: npm run build:lib
+
+      - name: Build playground
+        run: npm run build
