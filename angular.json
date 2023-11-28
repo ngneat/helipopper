@@ -74,11 +74,11 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "helipopper-playground:build"
+            "buildTarget": "helipopper-playground:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "helipopper-playground:build:production"
+              "buildTarget": "helipopper-playground:build:production"
             }
           }
         },
