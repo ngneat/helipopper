@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [9.0.0](https://github.com/ngneat/helipopper/compare/v8.0.3...v9.0.0) (2023-11-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* peer deps of the library and overview are v17
+
+### Features
+
+* 🎸 update to ng17 ([65f4c76](https://github.com/ngneat/helipopper/commit/65f4c768d5359ea78ec98406027d82737e502009))
+* 🎸 use makeEnvironmentProviders for config ([e629cb2](https://github.com/ngneat/helipopper/commit/e629cb2f3d47ffd2fd5faabf5f8caa2426987617))
+
 ### [8.0.3](https://github.com/ngneat/helipopper/compare/v8.0.2...v8.0.3) (2023-09-05)
 
 
