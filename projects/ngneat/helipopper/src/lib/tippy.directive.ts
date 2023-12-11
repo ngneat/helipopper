@@ -59,19 +59,19 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input('tpZIndex') zIndex: TippyProps['zIndex'];
   @Input('tpAnimation') animation: TippyProps['animation'];
   @Input({ transform: booleanAttribute, alias: 'tpUseTextContent' }) useTextContent: boolean;
-  @Input('tpIsLazy') isLazy: boolean;
+  @Input({ transform: booleanAttribute, alias: 'tpIsLazy' }) isLazy: boolean;
   @Input('tpVariation') variation: string;
   @Input('tpIsEnabled') isEnabled: boolean;
   @Input('tpClassName') className: string | string[];
-  @Input('tpOnlyTextOverflow') onlyTextOverflow = false;
+  @Input({ transform: booleanAttribute, alias: 'tpOnlyTextOverflow' }) onlyTextOverflow = false;
   @Input({ transform: booleanAttribute, alias: 'tpStaticWidthHost' }) staticWidthHost = false;
   @Input('tpData') data: any;
-  @Input('tpUseHostWidth') useHostWidth = false;
-  @Input('tpHideOnEscape') hideOnEscape = false;
+  @Input({ transform: booleanAttribute, alias: 'tpUseHostWidth' }) useHostWidth = false;
+  @Input({ transform: booleanAttribute, alias: 'tpHideOnEscape' }) hideOnEscape = false;
   @Input('tpDetectChangesComponent') detectChangesComponent = true;
   @Input('tpPopperWidth') popperWidth: number | string;
   @Input('tpHost') customHost: HTMLElement;
-  @Input('tpIsVisible') isVisible = false;
+  @Input({ transform: booleanAttribute, alias: 'tpIsVisible' }) isVisible = false;
 
   @Output('tpVisible') visible = new EventEmitter<boolean>();
 
