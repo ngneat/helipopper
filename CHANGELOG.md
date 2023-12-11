@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [9.1.0](https://github.com/ngneat/helipopper/compare/v9.0.0...v9.1.0) (2023-12-11)
+
+
+### Features
+
+* 🎸 use transform on boolean inputs ([0eec969](https://github.com/ngneat/helipopper/commit/0eec969e2e4c823d4e93836116aeff8c9982fdaa))
+
 ## [9.0.0](https://github.com/ngneat/helipopper/compare/v8.0.3...v9.0.0) (2023-11-28)
 
 
