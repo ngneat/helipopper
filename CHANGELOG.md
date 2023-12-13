@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [9.2.0](https://github.com/ngneat/helipopper/compare/v9.1.0...v9.2.0) (2023-12-13)
+
+
+### Features
+
+* 🎸 introduce injectTippyRef ([129b91a](https://github.com/ngneat/helipopper/commit/129b91aec9f10d134cb8ed66c0bbae742800d205))
+
 ## [9.1.0](https://github.com/ngneat/helipopper/compare/v9.0.0...v9.1.0) (2023-12-11)
 
 
