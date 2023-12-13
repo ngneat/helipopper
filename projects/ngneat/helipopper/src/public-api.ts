@@ -3,4 +3,4 @@ export { tooltipVariation, popperVariation, withContextMenuVariation } from './l
 export { TippyService } from './lib/tippy.service';
 export { inView, overflowChanges } from './lib/utils';
 export { ExtendedTippyInstance, TippyInstance, TIPPY_REF, TippyConfig, TIPPY_CONFIG } from './lib/tippy.types';
-export { provideTippyConfig } from './lib/providers';
+export { provideTippyConfig, injectTippyRef } from './lib/providers';

@@ -345,21 +345,24 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   protected resolveContent(instance: TippyInstance) {
     if (!this.viewOptions$ && !isString(this.content)) {
+      const injector = Injector.create({
+        providers: [
+          {
+            provide: TIPPY_REF,
+            useValue: this.instance,
+          },
+        ],
+        parent: this.injector,
+      });
       if (isComponent(this.content)) {
         this.instance.data = this.data;
+
         this.viewOptions$ = {
-          injector: Injector.create({
-            providers: [
-              {
-                provide: TIPPY_REF,
-                useValue: this.instance,
-              },
-            ],
-            parent: this.injector,
-          }),
+          injector,
         };
       } else if (isTemplateRef(this.content)) {
         this.viewOptions$ = {
+          injector,
           context: {
             $implicit: this.hide.bind(this),
             data: this.data,
