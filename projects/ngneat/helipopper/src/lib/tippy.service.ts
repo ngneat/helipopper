@@ -16,28 +16,31 @@ export class TippyService {
   create<T extends Content>(host: Element, content: T, options: Partial<CreateOptions> = {}): ExtendedTippyInstance<T> {
     const variation = options.variation || this.globalConfig.defaultVariation;
     const config = {
-      onShow: instance => {
+      onShow: (instance) => {
         host.setAttribute('data-tippy-open', '');
         if (!instance.$viewOptions) {
           instance.$viewOptions = {};
 
+          const injector = Injector.create({
+            providers: [
+              {
+                provide: TIPPY_REF,
+                useValue: instance,
+              },
+            ],
+            parent: options.injector || this.injector,
+          });
+
+          instance.$viewOptions.injector = injector;
+
           if (isTemplateRef(content)) {
             instance.$viewOptions.context = {
               $implicit: instance.hide.bind(instance),
-              ...options.context
+              ...options.context,
             };
           } else if (isComponent(content)) {
             instance.context = options.context;
             instance.data = options.data;
-            instance.$viewOptions.injector = Injector.create({
-              providers: [
-                {
-                  provide: TIPPY_REF,
-                  useValue: instance
-                }
-              ],
-              parent: options.injector || this.injector
-            });
           }
         }
         if (!instance.view) {
@@ -46,7 +49,7 @@ export class TippyService {
         instance.setContent(instance.view.getElement());
         options?.onShow?.(instance);
       },
-      onHidden: instance => {
+      onHidden: (instance) => {
         host.removeAttribute('data-tippy-open');
 
         if (!options.preserveView) {
@@ -58,7 +61,7 @@ export class TippyService {
       ...onlyTippyProps(this.globalConfig),
       ...this.globalConfig.variations[variation],
       ...onlyTippyProps(options),
-      onCreate: instance => {
+      onCreate: (instance) => {
         instance.popper.classList.add(`tippy-variation-${variation}`);
         if (options.className) {
           for (const klass of normalizeClassName(options.className)) {
@@ -67,7 +70,7 @@ export class TippyService {
         }
         this.globalConfig.onCreate?.(instance);
         options.onCreate?.(instance);
-      }
+      },
     };
 
     return tippy(host, config) as ExtendedTippyInstance<T>;
