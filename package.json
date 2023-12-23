@@ -77,7 +77,7 @@
     "ng-packagr": "^17.0.2",
     "prettier": "2.8.8",
     "serve": "^11.3.2",
-    "standard-version": "^8.0.2",
+    "standard-version": "^9.5.0",
     "start-server-and-test": "^1.12.2",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
