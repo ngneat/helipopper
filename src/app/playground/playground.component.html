@@ -1,7 +1,7 @@
 <!-- <button (click)="show = !show">Toggle All</button> -->
 
 <ng-container *ngIf="show">
-  <div id="tippy-playground" [formGroup]="tooltipSettings" style="text-transform: capitalize">
+  <div id="tippy-playground" [formGroup]="tooltipSettingsForm" style="text-transform: capitalize">
     <div *ngFor="let option of tooltipTypes" class="flex items-center">
       <input type="radio" formControlName="type" name="type" [value]="option" class="mr-4" />
       {{ option }}
@@ -32,9 +32,9 @@
       <button
         class="btn btn-outline-primary"
         tp="Helpful Message"
-        [tpPlacement]="tooltipPosition"
-        [tpVariation]="tooltipType"
-        [tpHideOnEscape]="hideOnEsc"
+        [tpPlacement]="tooltipPosition()"
+        [tpVariation]="tooltipType()"
+        [tpHideOnEscape]="hideOnEsc()"
       >
         I have a tooltip
       </button>
@@ -80,7 +80,7 @@
 
     <div class="btn-container" id="custom-template">
       <button [tp]="tpl" tpVariation="popper" class="btn btn-outline-secondary" #tippy2="tippy">Click Me</button>
-      Visible: {{ tippy2.isVisible }}
+      Visible: {{ tippy2.isVisible() }}
     </div>
 
     <ng-template #tpl let-hide>
