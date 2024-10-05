@@ -4,11 +4,11 @@
   "description": "A Powerful Tooltip and Popover for Angular Applications",
   "dependencies": {
     "tslib": "^2.3.0",
-    "@ngneat/overview": "^6.0.0",
+    "@ngneat/overview": "6.1.1",
     "tippy.js": "6.3.7"
   },
   "peerDependencies": {
-    "@angular/core": ">=17.0.0"
+    "@angular/core": ">=18.0.0"
   },
   "keywords": [
     "angular",
