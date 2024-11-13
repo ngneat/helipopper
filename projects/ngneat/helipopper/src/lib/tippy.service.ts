@@ -1,19 +1,27 @@
-import { Inject, Injectable, Injector } from '@angular/core';
-import tippy from 'tippy.js';
+import { inject, Inject, Injectable, Injector } from '@angular/core';
 import { isComponent, isTemplateRef, ViewService } from '@ngneat/overview';
 import { Content } from '@ngneat/overview';
+import type { Observable } from 'rxjs';
+
 import { CreateOptions, ExtendedTippyInstance, TIPPY_CONFIG, TIPPY_REF, TippyConfig } from './tippy.types';
 import { normalizeClassName, onlyTippyProps } from './utils';
+import { TippyFactory } from './tippy.factory';
 
 @Injectable({ providedIn: 'root' })
 export class TippyService {
+  private readonly _tippyFactory = inject(TippyFactory);
+
   constructor(
     @Inject(TIPPY_CONFIG) private globalConfig: TippyConfig,
     private view: ViewService,
     private injector: Injector
   ) {}
 
-  create<T extends Content>(host: Element, content: T, options: Partial<CreateOptions> = {}): ExtendedTippyInstance<T> {
+  create<T extends Content>(
+    host: HTMLElement,
+    content: T,
+    options: Partial<CreateOptions> = {}
+  ): Observable<ExtendedTippyInstance<T>> {
     const variation = options.variation || this.globalConfig.defaultVariation;
     const config = {
       onShow: (instance) => {
@@ -73,6 +81,6 @@ export class TippyService {
       },
     };
 
-    return tippy(host, config) as ExtendedTippyInstance<T>;
+    return this._tippyFactory.create(host, config) as Observable<ExtendedTippyInstance<T>>;
   }
 }

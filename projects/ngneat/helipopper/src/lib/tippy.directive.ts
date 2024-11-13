@@ -4,6 +4,7 @@ import {
   Directive,
   ElementRef,
   EventEmitter,
+  inject,
   Inject,
   Injector,
   Input,
@@ -16,7 +17,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
-import tippy, { Instance } from 'tippy.js';
+import type { Instance } from 'tippy.js';
 import { fromEvent, merge, Observable, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { Content, isComponent, isString, isTemplateRef, ViewOptions, ViewRef, ViewService } from '@ngneat/overview';
@@ -32,6 +33,7 @@ import {
   overflowChanges,
 } from './utils';
 import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
+import { TippyFactory } from './tippy.factory';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -93,6 +95,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   protected visibleInternal = new Subject<boolean>();
   private visibilityObserverCleanup: () => void | undefined;
   private contentChanged = new Subject<void>();
+
+  private tippyFactory = inject(TippyFactory);
 
   constructor(
     @Inject(PLATFORM_ID) protected platformId: string,
@@ -276,8 +280,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       return;
     }
 
-    this.zone.runOutsideAngular(() => {
-      this.instance = tippy(this.host, {
+    this.tippyFactory
+      .create(this.host, {
         allowHTML: true,
         appendTo: document.body,
         ...(this.globalConfig.zIndexGetter ? { zIndex: this.globalConfig.zIndexGetter() } : {}),
@@ -334,13 +338,16 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         onHidden: (instance) => {
           this.onHidden(instance);
         },
+      })
+      .pipe(takeUntil(this.destroyed))
+      .subscribe((instance) => {
+        this.instance = instance;
+
+        this.setStatus();
+        this.setProps(this.props);
+
+        this.variation === 'contextMenu' && this.handleContextMenu();
       });
-
-      this.setStatus();
-      this.setProps(this.props);
-
-      this.variation === 'contextMenu' && this.handleContextMenu();
-    });
   }
 
   protected resolveContent(instance: TippyInstance) {

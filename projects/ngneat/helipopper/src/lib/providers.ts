@@ -1,7 +1,7 @@
 import { inject, makeEnvironmentProviders } from '@angular/core';
 import { TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance } from './tippy.types';
 
-export function provideTippyConfig(config: Partial<TippyConfig> = {}) {
+export function provideTippyConfig(config: TippyConfig) {
   return makeEnvironmentProviders([{ provide: TIPPY_CONFIG, useValue: config }]);
 }
 

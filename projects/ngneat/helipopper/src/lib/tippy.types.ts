@@ -1,4 +1,5 @@
-import { Instance, Props } from 'tippy.js';
+import type tippy from 'tippy.js';
+import type { Instance, Props } from 'tippy.js';
 import { ElementRef, InjectionToken } from '@angular/core';
 import { ResolveViewRef, ViewOptions } from '@ngneat/overview';
 
@@ -24,12 +25,6 @@ type MarkFunctionPropertyNames<Component> = {
 
 type ExcludeFunctions<T extends object> = Pick<T, MarkFunctionPropertyNames<T>>;
 
-export const TIPPY_CONFIG = new InjectionToken<Partial<TippyConfig>>('Tippy config', {
-  providedIn: 'root',
-  factory() {
-    return {};
-  }
-});
 export const TIPPY_REF = new InjectionToken<TippyInstance>('TIPPY_REF');
 
 export interface TippyInstance extends Instance {
@@ -38,9 +33,9 @@ export interface TippyInstance extends Instance {
 
 export type TippyProps = Props;
 
-export interface TippyConfig extends TippyProps {
+export interface ExtendedTippyProps extends TippyProps {
   variations: Record<string, Partial<TippyProps>>;
-  defaultVariation: keyof TippyConfig['variations'];
+  defaultVariation: keyof ExtendedTippyProps['variations'];
   beforeRender?: (text: string) => string;
   zIndexGetter?(): number;
 }
@@ -52,3 +47,9 @@ export interface ExtendedTippyInstance<T> extends TippyInstance {
   $viewOptions: ViewOptions;
   context?: ViewOptions['context'];
 }
+
+export interface TippyConfig extends Partial<ExtendedTippyProps> {
+  loader: () => typeof tippy | Promise<{ default: typeof tippy }>;
+}
+
+export const TIPPY_CONFIG = new InjectionToken<TippyConfig>('Tippy config');
