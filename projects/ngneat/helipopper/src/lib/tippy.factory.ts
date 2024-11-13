@@ -19,15 +19,23 @@ export class TippyFactory {
 
   private readonly _config = inject(TIPPY_CONFIG);
 
-  private _tippy$: Observable<typeof tippy> | null = null;
+  private _tippyImpl$: Observable<typeof tippy> | null = null;
 
+  /**
+   * This returns an observable because the user should provide a `loader`
+   * function, which may return a promise if the tippy.js library is to be
+   * loaded asynchronously.
+   */
   create(target: HTMLElement, props?: Partial<TippyProps>) {
-    this._tippy$ = defer(() => {
+    // We use `shareReplay` to ensure that subsequent emissions are
+    // synchronous and to avoid triggering the `defer` callback repeatedly
+    // when new subscribers arrive.
+    this._tippyImpl$ ||= defer(() => {
       const maybeTippy = this._ngZone.runOutsideAngular(() => this._config.loader());
       return isPromise(maybeTippy) ? from(maybeTippy).pipe(map((tippy) => tippy.default)) : of(maybeTippy);
     }).pipe(shareReplay());
 
-    return this._tippy$.pipe(
+    return this._tippyImpl$.pipe(
       map((tippy) => {
         return this._ngZone.runOutsideAngular(() => tippy(target, props));
       })
