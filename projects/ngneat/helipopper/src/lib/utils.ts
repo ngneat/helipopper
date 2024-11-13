@@ -3,6 +3,8 @@ import { auditTime, map } from 'rxjs/operators';
 import { TippyElement } from './tippy.types';
 import { ElementRef } from '@angular/core';
 
+import { IntersectionObserver } from './intersection-observer';
+
 declare const ResizeObserver: any;
 
 let supportsIntersectionObserver = false;
@@ -48,7 +50,9 @@ export function isElementOverflow(host: HTMLElement): boolean {
   // Don't access the `offsetWidth` multiple times since it triggers layout updates.
   const hostOffsetWidth = host.offsetWidth;
 
-  return hostOffsetWidth > host.parentElement.offsetWidth || hostOffsetWidth < host.scrollWidth;
+  return (
+    hostOffsetWidth > host.parentElement.offsetWidth || hostOffsetWidth < host.scrollWidth
+  );
 }
 
 export function overflowChanges(host: TippyElement) {

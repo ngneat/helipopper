@@ -20,7 +20,15 @@ import { isPlatformServer } from '@angular/common';
 import type { Instance } from 'tippy.js';
 import { fromEvent, merge, Observable, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
-import { Content, isComponent, isString, isTemplateRef, ViewOptions, ViewRef, ViewService } from '@ngneat/overview';
+import {
+  Content,
+  isComponent,
+  isString,
+  isTemplateRef,
+  ViewOptions,
+  ViewRef,
+  ViewService,
+} from '@ngneat/overview';
 
 import {
   coerceCssPixelValue,
@@ -32,7 +40,14 @@ import {
   onlyTippyProps,
   overflowChanges,
 } from './utils';
-import { NgChanges, TIPPY_CONFIG, TIPPY_REF, TippyConfig, TippyInstance, TippyProps } from './tippy.types';
+import {
+  NgChanges,
+  TIPPY_CONFIG,
+  TIPPY_REF,
+  TippyConfig,
+  TippyInstance,
+  TippyProps,
+} from './tippy.types';
 import { TippyFactory } from './tippy.factory';
 
 @Directive({
@@ -60,13 +75,16 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   @Input('tpTriggerTarget') triggerTarget: TippyProps['triggerTarget'];
   @Input('tpZIndex') zIndex: TippyProps['zIndex'];
   @Input('tpAnimation') animation: TippyProps['animation'];
-  @Input({ transform: booleanAttribute, alias: 'tpUseTextContent' }) useTextContent: boolean;
+  @Input({ transform: booleanAttribute, alias: 'tpUseTextContent' })
+  useTextContent: boolean;
   @Input({ transform: booleanAttribute, alias: 'tpIsLazy' }) isLazy: boolean;
   @Input('tpVariation') variation: string;
   @Input('tpIsEnabled') isEnabled: boolean;
   @Input('tpClassName') className: string | string[];
-  @Input({ transform: booleanAttribute, alias: 'tpOnlyTextOverflow' }) onlyTextOverflow = false;
-  @Input({ transform: booleanAttribute, alias: 'tpStaticWidthHost' }) staticWidthHost = false;
+  @Input({ transform: booleanAttribute, alias: 'tpOnlyTextOverflow' }) onlyTextOverflow =
+    false;
+  @Input({ transform: booleanAttribute, alias: 'tpStaticWidthHost' }) staticWidthHost =
+    false;
   @Input('tpData') data: any;
   @Input({ transform: booleanAttribute, alias: 'tpUseHostWidth' }) useHostWidth = false;
   @Input({ transform: booleanAttribute, alias: 'tpHideOnEscape' }) hideOnEscape = false;
@@ -97,6 +115,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   private contentChanged = new Subject<void>();
 
   private tippyFactory = inject(TippyFactory);
+  private isServer = isPlatformServer(inject(PLATFORM_ID));
 
   constructor(
     @Inject(PLATFORM_ID) protected platformId: string,
@@ -109,7 +128,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   ) {}
 
   ngOnChanges(changes: NgChanges<TippyDirective>) {
-    if (this.isServerSide) return;
+    if (this.isServer) return;
 
     let props: Partial<TippyConfig> = Object.keys(changes).reduce((acc, change) => {
       if (change === 'isVisible') return acc;
@@ -159,36 +178,34 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   ngAfterViewInit() {
-    if (this.isServerSide) return;
+    if (this.isServer) return;
 
-    this.zone.runOutsideAngular(() => {
-      if (this.isLazy) {
-        if (this.onlyTextOverflow) {
-          inView(this.host)
-            .pipe(
-              switchMap(() => this.isOverflowing$()),
-              takeUntil(this.destroyed)
-            )
-            .subscribe((isElementOverflow) => {
-              this.checkOverflow(isElementOverflow);
-            });
-        } else {
-          inView(this.host)
-            .pipe(takeUntil(this.destroyed))
-            .subscribe(() => {
-              this.createInstance();
-            });
-        }
-      } else if (this.onlyTextOverflow) {
-        this.isOverflowing$()
-          .pipe(takeUntil(this.destroyed))
+    if (this.isLazy) {
+      if (this.onlyTextOverflow) {
+        inView(this.host)
+          .pipe(
+            switchMap(() => this.isOverflowing$()),
+            takeUntil(this.destroyed)
+          )
           .subscribe((isElementOverflow) => {
             this.checkOverflow(isElementOverflow);
           });
       } else {
-        this.createInstance();
+        inView(this.host)
+          .pipe(takeUntil(this.destroyed))
+          .subscribe(() => {
+            this.createInstance();
+          });
       }
-    });
+    } else if (this.onlyTextOverflow) {
+      this.isOverflowing$()
+        .pipe(takeUntil(this.destroyed))
+        .subscribe((isElementOverflow) => {
+          this.checkOverflow(isElementOverflow);
+        });
+    } else {
+      this.createInstance();
+    }
   }
 
   ngOnDestroy() {
@@ -210,7 +227,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
    * For example, if you have a grid row with an element that you toggle using the display CSS property on hover.
    */
   observeHostVisibility() {
-    if (this.isServerSide) return;
+    if (this.isServer) return;
     // We don't want to observe the host visibility if we are appending to the body.
     if (this.props.appendTo && this.props.appendTo !== document.body) {
       this.visibilityObserverCleanup?.();
@@ -219,8 +236,9 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         .pipe(takeUntil(this.destroyed))
         .subscribe((isVisible) => {
           if (isVisible) {
-            this.zone.runOutsideAngular(() => {
-              this.visibilityObserverCleanup = observeVisibility(this.instance.reference, () => {
+            this.visibilityObserverCleanup = observeVisibility(
+              this.instance.reference,
+              () => {
                 this.hide();
                 // Because we have animation on the popper it doesn't close immediately doesn't trigger the `tpVisible` event.
                 // Tippy is relying on the transitionend event to trigger the `onHidden` callback.
@@ -229,8 +247,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
                 if (this.props.animation) {
                   this.onHidden();
                 }
-              });
-            });
+              }
+            );
           } else {
             this.visibilityObserverCleanup?.();
           }
@@ -284,7 +302,9 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       .create(this.host, {
         allowHTML: true,
         appendTo: document.body,
-        ...(this.globalConfig.zIndexGetter ? { zIndex: this.globalConfig.zIndexGetter() } : {}),
+        ...(this.globalConfig.zIndexGetter
+          ? { zIndex: this.globalConfig.zIndexGetter() }
+          : {}),
         ...onlyTippyProps(this.globalConfig),
         ...onlyTippyProps(this.props),
         onMount: (instance) => {
@@ -297,7 +317,9 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
           this.globalConfig.onMount?.(instance);
         },
         onCreate: (instance) => {
-          instance.popper.classList.add(`tippy-variation-${this.variation || this.globalConfig.defaultVariation}`);
+          instance.popper.classList.add(
+            `tippy-variation-${this.variation || this.globalConfig.defaultVariation}`
+          );
           if (this.className) {
             for (const klass of normalizeClassName(this.className)) {
               instance.popper.classList.add(klass);
@@ -461,10 +483,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     (instance.popper.firstElementChild as HTMLElement).style.maxWidth = inPixels;
   }
 
-  private get isServerSide() {
-    return isPlatformServer(this.platformId);
-  }
-
   private onHidden(instance: TippyInstance = this.instance) {
     this.destroyView();
     this.isVisible = false;
@@ -502,6 +520,9 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 }
 
-function isChanged(key: keyof NgChanges<TippyDirective>, changes: NgChanges<TippyDirective>) {
+function isChanged(
+  key: keyof NgChanges<TippyDirective>,
+  changes: NgChanges<TippyDirective>
+) {
   return key in changes;
 }
