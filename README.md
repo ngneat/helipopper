@@ -38,8 +38,12 @@ If you're using v1 and don't want to migrate, you can find it [here](https://git
 
 ### Installation
 
-```
-npm install @ngneat/helipopper
+```sh
+$ npm i @ngneat/helipopper
+# Or if you're using yarn
+$ yarn add @ngneat/helipopper
+# Or if you're using pnpm
+$ pnpm i @ngneat/helipopper
 ```
 
 Configure it as shown below:
@@ -50,22 +54,33 @@ import { provideTippyConfig, tooltipVariation, popperVariation } from '@ngneat/h
 bootstrapApplication(AppComponent, {
   providers: [
     provideTippyConfig({
+      loader: () => import('tippy.js'),
       defaultVariation: 'tooltip',
       variations: {
         tooltip: tooltipVariation,
         popper: popperVariation,
-      }
-    })
-  ]
-})
+      },
+    }),
+  ],
+});
+```
+
+Please note that the `loader` property is required, as it specifies how Tippy is loaded - either synchronously or asynchronously. When dynamic import is used, the library will load only when the first Tippy directive is rendered. If we want it to load synchronously, we use the following:
+
+```ts
+import tippy from 'tippy.js';
+
+provideTippyConfig({
+  loader: () => tippy,
+});
 ```
 
 Add the styles you want to `styles.scss`:
 
 ```scss
-@import '~tippy.js/dist/tippy.css';
-@import '~tippy.js/themes/light.css';
-@import '~tippy.js/animations/scale.css';
+@import 'tippy.js/dist/tippy.css';
+@import 'tippy.js/themes/light.css';
+@import 'tippy.js/animations/scale.css';
 ```
 
 You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/) it if you need to.
@@ -73,9 +88,7 @@ You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/
 Import the standalone `TippyDirective` and use it in your templates:
 
 ```html
-<button tp="Helpful Message">
-  I have a tooltip
-</button>
+<button tp="Helpful Message">I have a tooltip</button>
 ```
 
 The library exposes default variations for `tooltip` and `popper`. You can use them, extend them, or pass your own
@@ -88,16 +101,14 @@ export const tooltipVariation = {
   arrow: false,
   animation: 'scale',
   trigger: 'mouseenter',
-  offset: [0, 5]
+  offset: [0, 5],
 };
 ```
 
 ### Use `TemplateRef` as content
 
 ```html
-<button [tp]="tpl" tpVariation="popper">
-  Click Me
-</button>
+<button [tp]="tpl" tpVariation="popper">Click Me</button>
 
 <ng-template #tpl let-hide>
   <h6>Popover title</h6>
@@ -117,9 +128,7 @@ class MyComponent {
 ```
 
 ```html
-<button [tp]="MyComponent">
-  Click Me
-</button>
+<button [tp]="MyComponent">Click Me</button>
 ```
 
 ### Text Overflow
@@ -128,9 +137,7 @@ You can pass the `onlyTextOverflow` input to show the tooltip only when the host
 
 ```html
 <div style="max-width: 100px;" class="overflow-hidden flex">
-  <p class="ellipsis" [tp]="text" tpPlacement="right" [tpOnlyTextOverflow]="true">
-    {{ text }}
-  </p>
+  <p class="ellipsis" [tp]="text" tpPlacement="right" [tpOnlyTextOverflow]="true">{{ text }}</p>
 </div>
 ```
 
@@ -140,7 +147,14 @@ You might have cases where the host has a static width and the content is dynami
 
 ```html
 <div style="max-width: 100px;" class="overflow-hidden flex">
-  <p style="width: 100px" class="ellipsis" [tp]="dynamicText" tpPlacement="right" [tpOnlyTextOverflow]="true" tpStaticWidthHost>
+  <p
+    style="width: 100px"
+    class="ellipsis"
+    [tp]="dynamicText"
+    tpPlacement="right"
+    [tpOnlyTextOverflow]="true"
+    tpStaticWidthHost
+  >
     {{ dynamicText }}
   </p>
 </div>
@@ -153,34 +167,25 @@ Note: when using `tpStaticWidthHost` you can't use `tpUseTextContent`, you need 
 You can instruct tippy to use the element textContent as the tooltip content:
 
 ```html
-<p tp tpUseTextContent>
-  {{ text }}
-</p>
+<p tp tpUseTextContent>{{ text }}</p>
 ```
-
 
 ### Lazy
 
 You can pass the `tpIsLazy` input when you want to defer the creation of tippy only when the element is in the view:
 
 ```html
-<div *ngFor="let item of items" 
-     [tp]="item.label" 
-     [tpIsLazy]="true">{{ item.label }}
-</div>
+<div *ngFor="let item of items" [tp]="item.label" [tpIsLazy]="true">{{ item.label }}</div>
 ```
 
 Note that it's using [`IntersectionObserver`](https://caniuse.com/intersectionobserver) api.
 
 ### Context Menu
+
 First, define the `contextMenu` variation:
+
 ```ts
-import { 
-  popperVariation, 
-  tooltipVariation, 
-  provideTippyConfig,
-  withContextMenuVariation 
-} from '@ngneat/helipopper';
+import { popperVariation, tooltipVariation, provideTippyConfig, withContextMenuVariation } from '@ngneat/helipopper';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -190,10 +195,10 @@ bootstrapApplication(AppComponent, {
         tooltip: tooltipVariation,
         popper: popperVariation,
         contextMenu: withContextMenuVariation(popperVariation),
-      }
-    })
-  ]
-})
+      },
+    }),
+  ],
+});
 ```
 
 Now you can use it in your template:
@@ -207,21 +212,14 @@ Now you can use it in your template:
 </ng-template>
 
 <ul>
-  <li *ngFor="let item of list" 
-      [tp]="contextMenu" 
-      [tpData]="item" 
-      tpVariation="contextMenu">
-    {{ item.label }}
-  </li>
+  <li *ngFor="let item of list" [tp]="contextMenu" [tpData]="item" tpVariation="contextMenu">{{ item.label }}</li>
 </ul>
 ```
 
 ### Manual Trigger
 
 ```html
-<div tp="Helpful Message" tpTrigger="manual" #tooltip="tippy">
-  Click Open to see me
-</div>
+<div tp="Helpful Message" tpTrigger="manual" #tooltip="tippy">Click Open to see me</div>
 
 <button (click)="tooltip.show()">Open</button>
 <button (click)="tooltip.hide()">Close</button>
@@ -232,9 +230,7 @@ Now you can use it in your template:
 Use isVisible to trigger show and hide. Set trigger to manual.
 
 ```html
-<div tp="Helpful Message" tpTrigger="manual" [tpIsVisible]="visibility">
-  Click Open to see me
-</div>
+<div tp="Helpful Message" tpTrigger="manual" [tpIsVisible]="visibility">Click Open to see me</div>
 
 <button (click)="visibility = true">Open</button>
 <button (click)="visibility = false">Close</button>
@@ -286,7 +282,8 @@ tpVisible = new EventEmitter<boolean>();
 ```
 
 ### Global Config
-- You can pass any `tippy` option at global config level. 
+
+- You can pass any `tippy` option at global config level.
 - `beforeRender` - Hook that'll be called before rendering the tooltip content ( applies only for string )
 
 ### Create `tippy` Programmatically
@@ -300,7 +297,7 @@ class Component {
   private tippyService = inject(TippyService);
 
   show() {
-    if(!this.tippy) {
+    if (!this.tippy) {
       this.tippy = this.tippyService.create(this.inputName, 'this field is required');
     }
 

@@ -88,7 +88,9 @@ export class PlaygroundComponent {
 
   useService(host: HTMLButtonElement) {
     if (!this.instance2) {
-      this.instance2 = this.service.create(host, 'Created');
+      this.service.create(host, 'Created').subscribe((instance) => {
+        this.instance2 = instance;
+      });
     }
   }
 
@@ -96,12 +98,16 @@ export class PlaygroundComponent {
 
   useServiceComponent(host2: HTMLButtonElement) {
     if (!this.instance) {
-      this.instance = this.service.create(host2, ExampleComponent, {
-        variation: 'popper',
-        data: {
-          name: 'ngneat',
-        },
-      });
+      this.service
+        .create(host2, ExampleComponent, {
+          variation: 'popper',
+          data: {
+            name: 'ngneat',
+          },
+        })
+        .subscribe((instance) => {
+          this.instance = instance;
+        });
     }
   }
 

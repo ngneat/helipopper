@@ -10,7 +10,7 @@ import {
   provideTippyConfig,
   TippyDirective,
   tooltipVariation,
-  withContextMenuVariation
+  withContextMenuVariation,
 } from '@ngneat/helipopper';
 import { PlaygroundComponent } from './playground/playground.component';
 import { IsVisibleComponent } from './is-visible/isVisible.component';
@@ -26,6 +26,7 @@ function getZIndex() {
   imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule, TippyDirective],
   providers: [
     provideTippyConfig({
+      loader: () => import('tippy.js'),
       defaultVariation: 'tooltip',
       zIndexGetter: getZIndex,
       variations: {
@@ -35,16 +36,16 @@ function getZIndex() {
           ...popperVariation,
           appendTo: 'parent',
           arrow: false,
-          offset: [0, 0]
+          offset: [0, 0],
         },
         contextMenu: withContextMenuVariation(popperVariation),
         popperBorder: {
           ...popperVariation,
-          theme: 'light-border'
-        }
-      }
-    })
+          theme: 'light-border',
+        },
+      },
+    }),
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
