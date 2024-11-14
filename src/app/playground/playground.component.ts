@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { UntypedFormBuilder } from '@angular/forms';
 import { ExampleComponent } from '../example/example.component';
-import { TippyDirective, TippyInstance, TippyService } from '@ngneat/helipopper';
+import { TippyInstance, TippyService } from '@ngneat/helipopper';
+import type { Placement } from 'tippy.js';
+import { startWith } from 'rxjs';
 
 @Component({
   selector: 'app-is-visible',
@@ -19,30 +22,30 @@ export class PlaygroundComponent {
 
   tooltipTypes = ['popper', 'tooltip', 'popperBorder'];
 
-  tooltipSettings = this.fb.group({
+  readonly tooltipSettingsForm = this.fb.group({
     type: this.fb.control('tooltip'),
     alignment: this.fb.control(''),
     position: this.fb.control('top'),
     hideOnEsc: this.fb.control(false),
   });
 
+  readonly tooltipSettings = toSignal(
+    this.tooltipSettingsForm.valueChanges.pipe(startWith(this.tooltipSettingsForm.value)),
+    { requireSync: true }
+  );
+
+  readonly tooltipPosition = computed(() => {
+    const { position, alignment } = this.tooltipSettings();
+    return `${position}${alignment}` as Placement;
+  });
+
+  readonly tooltipType = computed(() => this.tooltipSettings().type);
+
+  readonly hideOnEsc = computed(() => this.tooltipSettings().hideOnEsc);
+
   noContextText: string | undefined;
   maxWidth = 300;
   show = true;
-
-  get tooltipPosition() {
-    const { position, alignment } = this.tooltipSettings.value;
-
-    return `${position}${alignment}` as TippyDirective['placement'];
-  }
-
-  get tooltipType(): string {
-    return this.tooltipSettings.value.type;
-  }
-
-  get hideOnEsc(): boolean {
-    return this.tooltipSettings.value.hideOnEsc;
-  }
 
   items = Array.from({ length: 500 }, (_, i) => ({
     id: i,

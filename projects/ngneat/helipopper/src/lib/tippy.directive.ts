@@ -1,19 +1,23 @@
 import {
   AfterViewInit,
-  booleanAttribute,
+  computed,
   Directive,
+  effect,
   ElementRef,
   EventEmitter,
   inject,
   Inject,
   Injector,
-  Input,
+  input,
+  InputSignal,
+  model,
   NgZone,
   OnChanges,
   OnDestroy,
   OnInit,
   Output,
   PLATFORM_ID,
+  untracked,
   ViewContainerRef,
 } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
@@ -49,6 +53,7 @@ import {
   TippyProps,
 } from './tippy.types';
 import { TippyFactory } from './tippy.factory';
+import { coerceBooleanAttribute } from './coercion';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -57,41 +62,112 @@ import { TippyFactory } from './tippy.factory';
   standalone: true,
 })
 export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnInit {
-  @Input('tpAppendTo') set appendTo(appendTo: TippyProps['appendTo']) {
-    this.updateProps({ appendTo });
-  }
-  @Input('tp') content: Content | undefined | null;
-  @Input('tpDelay') delay: TippyProps['delay'];
-  @Input('tpDuration') duration: TippyProps['duration'];
-  @Input('tpHideOnClick') hideOnClick: TippyProps['hideOnClick'];
-  @Input('tpInteractive') interactive: TippyProps['interactive'];
-  @Input('tpInteractiveBorder') interactiveBorder: TippyProps['interactiveBorder'];
-  @Input('tpMaxWidth') maxWidth: TippyProps['maxWidth'];
-  @Input('tpOffset') offset: TippyProps['offset'];
-  @Input('tpPlacement') placement: TippyProps['placement'];
-  @Input('tpPopperOptions') popperOptions: TippyProps['popperOptions'];
-  @Input('tpShowOnCreate') showOnCreate: TippyProps['showOnCreate'];
-  @Input('tpTrigger') trigger: TippyProps['trigger'];
-  @Input('tpTriggerTarget') triggerTarget: TippyProps['triggerTarget'];
-  @Input('tpZIndex') zIndex: TippyProps['zIndex'];
-  @Input('tpAnimation') animation: TippyProps['animation'];
-  @Input({ transform: booleanAttribute, alias: 'tpUseTextContent' })
-  useTextContent: boolean;
-  @Input({ transform: booleanAttribute, alias: 'tpIsLazy' }) isLazy: boolean;
-  @Input('tpVariation') variation: string;
-  @Input('tpIsEnabled') isEnabled: boolean;
-  @Input('tpClassName') className: string | string[];
-  @Input({ transform: booleanAttribute, alias: 'tpOnlyTextOverflow' }) onlyTextOverflow =
-    false;
-  @Input({ transform: booleanAttribute, alias: 'tpStaticWidthHost' }) staticWidthHost =
-    false;
-  @Input('tpData') data: any;
-  @Input({ transform: booleanAttribute, alias: 'tpUseHostWidth' }) useHostWidth = false;
-  @Input({ transform: booleanAttribute, alias: 'tpHideOnEscape' }) hideOnEscape = false;
-  @Input('tpDetectChangesComponent') detectChangesComponent = true;
-  @Input('tpPopperWidth') popperWidth: number | string;
-  @Input('tpHost') customHost: HTMLElement;
-  @Input({ transform: booleanAttribute, alias: 'tpIsVisible' }) isVisible = false;
+  // Note that default values are not provided for these bindings because `tippy.js`
+  // has its own default values and checks whether the provided props are `undefined`.
+  // We should keep `undefined` as the default value.
+
+  readonly appendTo = input<TippyProps['appendTo']>(undefined, { alias: 'tpAppendTo' });
+
+  readonly content = input<Content | undefined | null>(undefined, { alias: 'tp' });
+
+  readonly delay = input<TippyProps['delay']>(undefined, { alias: 'tpDelay' });
+
+  readonly duration = input<TippyProps['duration']>(undefined, { alias: 'tpDuration' });
+
+  readonly hideOnClick = input<TippyProps['hideOnClick']>(undefined, {
+    alias: 'tpHideOnClick',
+  });
+
+  readonly interactive = input<TippyProps['interactive']>(undefined, {
+    alias: 'tpInteractive',
+  });
+
+  readonly interactiveBorder = input<TippyProps['interactiveBorder']>(undefined, {
+    alias: 'tpInteractiveBorder',
+  });
+
+  readonly maxWidth = input<TippyProps['maxWidth']>(undefined, { alias: 'tpMaxWidth' });
+
+  // Note that some of the input signal types are declared explicitly because the compiler
+  // also uses types from `@popperjs/core` and requires a type annotation.
+  readonly offset: InputSignal<TippyProps['offset']> = input<TippyProps['offset']>(
+    undefined,
+    { alias: 'tpOffset' }
+  );
+
+  readonly placement: InputSignal<TippyProps['placement']> = input<
+    TippyProps['placement']
+  >(undefined, {
+    alias: 'tpPlacement',
+  });
+
+  readonly popperOptions: InputSignal<TippyProps['popperOptions']> = input<
+    TippyProps['popperOptions']
+  >(undefined, {
+    alias: 'tpPopperOptions',
+  });
+
+  readonly showOnCreate = input<TippyProps['showOnCreate']>(undefined, {
+    alias: 'tpShowOnCreate',
+  });
+
+  readonly trigger = input<TippyProps['trigger']>(undefined, { alias: 'tpTrigger' });
+
+  readonly triggerTarget = input<TippyProps['triggerTarget']>(undefined, {
+    alias: 'tpTriggerTarget',
+  });
+
+  readonly zIndex = input<TippyProps['zIndex']>(undefined, { alias: 'tpZIndex' });
+
+  readonly animation = input<TippyProps['animation']>(undefined, {
+    alias: 'tpAnimation',
+  });
+
+  readonly useTextContent = input(false, {
+    transform: coerceBooleanAttribute,
+    alias: 'tpUseTextContent',
+  });
+
+  readonly isLazy = input(false, {
+    transform: coerceBooleanAttribute,
+    alias: 'tpIsLazy',
+  });
+
+  readonly variation = input<string>(undefined, { alias: 'tpVariation' });
+
+  readonly isEnabled = input<boolean>(undefined, { alias: 'tpIsEnabled' });
+
+  readonly className = input<string | string[]>(undefined, { alias: 'tpClassName' });
+
+  readonly onlyTextOverflow = input(false, {
+    transform: coerceBooleanAttribute,
+    alias: 'tpOnlyTextOverflow',
+  });
+
+  readonly staticWidthHost = input(false, {
+    transform: coerceBooleanAttribute,
+    alias: 'tpStaticWidthHost',
+  });
+
+  readonly data = input<any>(undefined, { alias: 'tpData' });
+
+  readonly useHostWidth = input(false, {
+    transform: coerceBooleanAttribute,
+    alias: 'tpUseHostWidth',
+  });
+
+  readonly hideOnEscape = input(false, {
+    transform: coerceBooleanAttribute,
+    alias: 'tpHideOnEscape',
+  });
+
+  readonly detectChangesComponent = input(true, { alias: 'tpDetectChangesComponent' });
+
+  readonly popperWidth = input<number | string>(undefined, { alias: 'tpPopperWidth' });
+
+  readonly customHost = input<HTMLElement>(undefined, { alias: 'tpHost' });
+
+  readonly isVisible = model(false, { alias: 'tpIsVisible' });
 
   @Output('tpVisible') visible = new EventEmitter<boolean>();
 
@@ -114,22 +190,37 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   private visibilityObserverCleanup: () => void | undefined;
   private contentChanged = new Subject<void>();
 
-  private tippyFactory = inject(TippyFactory);
+  private host = computed<HTMLElement>(
+    () => this.customHost() || this.hostRef.nativeElement
+  );
+
+  // It should be a getter because computations are cached until
+  // any of the producers change.
+  private get hostWidth() {
+    return this.host().getBoundingClientRect().width;
+  }
+
   private isServer = isPlatformServer(inject(PLATFORM_ID));
+  private tippyFactory = inject(TippyFactory);
 
   constructor(
-    @Inject(PLATFORM_ID) protected platformId: string,
     @Inject(TIPPY_CONFIG) protected globalConfig: TippyConfig,
     protected injector: Injector,
     protected viewService: ViewService,
     protected vcr: ViewContainerRef,
-    protected zone: NgZone,
+    protected ngZone: NgZone,
     protected hostRef: ElementRef
-  ) {}
+  ) {
+    this.setupListeners();
+  }
 
   ngOnChanges(changes: NgChanges<TippyDirective>) {
     if (this.isServer) return;
 
+    // TODO: we can update it later.
+    // We need to go over class properties, check whether it's a signal (`isSignal(prop)`)
+    // and construct a record where `Record<string, Signal>`.
+    // Follow-up changes would be to have a computation and an effect.
     let props: Partial<TippyConfig> = Object.keys(changes).reduce((acc, change) => {
       if (change === 'isVisible') return acc;
 
@@ -139,10 +230,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     }, {});
 
     let variation: string;
-
-    if (isChanged('content', changes)) {
-      this.contentChanged.next();
-    }
 
     if (isChanged('variation', changes)) {
       variation = changes.variation.currentValue;
@@ -159,20 +246,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       };
     }
 
-    if (isChanged('isEnabled', changes)) {
-      this.enabled = changes.isEnabled.currentValue;
-      this.setStatus();
-    }
-
-    if (isChanged('isVisible', changes)) {
-      this.isVisible ? this.show() : this.hide();
-    }
-
     this.updateProps(props);
   }
 
   ngOnInit() {
-    if (this.useHostWidth) {
+    if (this.useHostWidth()) {
       this.props.maxWidth = this.hostWidth;
     }
   }
@@ -180,9 +258,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   ngAfterViewInit() {
     if (this.isServer) return;
 
-    if (this.isLazy) {
-      if (this.onlyTextOverflow) {
-        inView(this.host)
+    if (this.isLazy()) {
+      const hostInView$ = inView(this.host());
+
+      if (this.onlyTextOverflow()) {
+        hostInView$
           .pipe(
             switchMap(() => this.isOverflowing$()),
             takeUntil(this.destroyed)
@@ -191,13 +271,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
             this.checkOverflow(isElementOverflow);
           });
       } else {
-        inView(this.host)
-          .pipe(takeUntil(this.destroyed))
-          .subscribe(() => {
-            this.createInstance();
-          });
+        hostInView$.pipe(takeUntil(this.destroyed)).subscribe(() => {
+          this.createInstance();
+        });
       }
-    } else if (this.onlyTextOverflow) {
+    } else if (this.onlyTextOverflow()) {
       this.isOverflowing$()
         .pipe(takeUntil(this.destroyed))
         .subscribe((isElementOverflow) => {
@@ -232,7 +310,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     if (this.props.appendTo && this.props.appendTo !== document.body) {
       this.visibilityObserverCleanup?.();
       return this.visibleInternal
-        .asObservable()
         .pipe(takeUntil(this.destroyed))
         .subscribe((isVisible) => {
           if (isVisible) {
@@ -285,21 +362,13 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     this.enabled ? this.instance?.enable() : this.instance?.disable();
   }
 
-  protected get host(): HTMLElement {
-    return this.customHost || this.hostRef.nativeElement;
-  }
-
-  protected get hostWidth(): number {
-    return this.host.getBoundingClientRect().width;
-  }
-
   protected createInstance() {
-    if (!this.content && !this.useTextContent) {
+    if (!this.content() && !this.useTextContent()) {
       return;
     }
 
     this.tippyFactory
-      .create(this.host, {
+      .create(this.host(), {
         allowHTML: true,
         appendTo: document.body,
         ...(this.globalConfig.zIndexGetter
@@ -308,49 +377,53 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         ...onlyTippyProps(this.globalConfig),
         ...onlyTippyProps(this.props),
         onMount: (instance) => {
-          this.isVisible = true;
-          this.visibleInternal.next(this.isVisible);
+          const isVisible = true;
+          this.isVisible.set(isVisible);
+          this.visibleInternal.next(isVisible);
           if (this.visible.observed) {
-            this.zone.run(() => this.visible.next(this.isVisible));
+            this.ngZone.run(() => this.visible.next(isVisible));
           }
-          this.useHostWidth && this.listenToHostResize();
+          this.useHostWidth() && this.listenToHostResize();
           this.globalConfig.onMount?.(instance);
         },
         onCreate: (instance) => {
           instance.popper.classList.add(
-            `tippy-variation-${this.variation || this.globalConfig.defaultVariation}`
+            `tippy-variation-${this.variation() || this.globalConfig.defaultVariation}`
           );
-          if (this.className) {
-            for (const klass of normalizeClassName(this.className)) {
+          if (this.className()) {
+            for (const klass of normalizeClassName(this.className())) {
               instance.popper.classList.add(klass);
             }
           }
           this.globalConfig.onCreate?.(instance);
-          if (this.isVisible === true) {
+          if (this.isVisible() === true) {
             instance.show();
           }
         },
         onShow: (instance) => {
           instance.reference.setAttribute('data-tippy-open', '');
-          this.zone.run(() => {
-            const content = this.resolveContent(instance);
-            if (isString(content)) {
-              instance.setProps({ allowHTML: false });
 
-              if (!content?.trim()) {
-                this.disable();
-              } else {
-                this.enable();
-              }
+          // We're re-entering because we might create an Angular component,
+          // which should be done within the zone.
+          const content = this.ngZone.run(() => this.resolveContent(instance));
+
+          if (isString(content)) {
+            instance.setProps({ allowHTML: false });
+
+            if (!content?.trim()) {
+              this.disable();
+            } else {
+              this.enable();
             }
+          }
 
-            instance.setContent(content);
-            this.hideOnEscape && this.handleEscapeButton();
-          });
-          if (this.useHostWidth) {
+          instance.setContent(content);
+          this.hideOnEscape() && this.handleEscapeButton();
+
+          if (this.useHostWidth()) {
             this.setInstanceWidth(instance, this.hostWidth);
-          } else if (this.popperWidth) {
-            this.setInstanceWidth(instance, this.popperWidth);
+          } else if (this.popperWidth()) {
+            this.setInstanceWidth(instance, this.popperWidth());
           }
           this.globalConfig.onShow?.(instance);
         },
@@ -368,12 +441,14 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         this.setStatus();
         this.setProps(this.props);
 
-        this.variation === 'contextMenu' && this.handleContextMenu();
+        this.variation() === 'contextMenu' && this.handleContextMenu();
       });
   }
 
   protected resolveContent(instance: TippyInstance) {
-    if (!this.viewOptions$ && !isString(this.content)) {
+    const content = this.content();
+
+    if (!this.viewOptions$ && !isString(content)) {
       const injector = Injector.create({
         providers: [
           {
@@ -383,48 +458,51 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         ],
         parent: this.injector,
       });
-      if (isComponent(this.content)) {
-        this.instance.data = this.data;
+
+      const data = this.data();
+
+      if (isComponent(content)) {
+        this.instance.data = data;
 
         this.viewOptions$ = {
           injector,
         };
-      } else if (isTemplateRef(this.content)) {
+      } else if (isTemplateRef(content)) {
         this.viewOptions$ = {
           injector,
           context: {
+            data,
             $implicit: this.hide.bind(this),
-            data: this.data,
           },
         };
       }
     }
 
-    this.viewRef = this.viewService.createView(this.content, {
+    this.viewRef = this.viewService.createView(content, {
       vcr: this.vcr,
       ...this.viewOptions$,
     });
 
     // We need to call detectChanges for onPush components to update the content
-    if (this.detectChangesComponent && isComponent(this.content)) {
+    if (this.detectChangesComponent() && isComponent(content)) {
       this.viewRef.detectChanges();
     }
 
-    let content = this.viewRef.getElement();
+    let newContent = this.viewRef.getElement();
 
-    if (this.useTextContent) {
-      content = instance.reference.textContent;
+    if (this.useTextContent()) {
+      newContent = instance.reference.textContent;
     }
 
-    if (isString(content) && this.globalConfig.beforeRender) {
-      content = this.globalConfig.beforeRender(content);
+    if (isString(newContent) && this.globalConfig.beforeRender) {
+      newContent = this.globalConfig.beforeRender(newContent);
     }
 
-    return content;
+    return newContent;
   }
 
   protected handleContextMenu() {
-    fromEvent(this.host, 'contextmenu')
+    fromEvent(this.host(), 'contextmenu')
       .pipe(takeUntil(this.destroyed))
       .subscribe((event: MouseEvent) => {
         event.preventDefault();
@@ -446,14 +524,12 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   protected handleEscapeButton(): void {
-    this.zone.runOutsideAngular(() => {
-      fromEvent(document.body, 'keydown')
-        .pipe(
-          filter(({ code }: KeyboardEvent) => code === 'Escape'),
-          takeUntil(merge(this.destroyed, this.visibleInternal.pipe(filter((v) => !v))))
-        )
-        .subscribe(() => this.hide());
-    });
+    fromEvent(document.body, 'keydown')
+      .pipe(
+        filter(({ code }: KeyboardEvent) => code === 'Escape'),
+        takeUntil(merge(this.destroyed, this.visibleInternal.pipe(filter((v) => !v))))
+      )
+      .subscribe(() => this.hide());
   }
 
   protected checkOverflow(isElementOverflow: boolean) {
@@ -469,7 +545,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   protected listenToHostResize() {
-    dimensionsChanges(this.host)
+    dimensionsChanges(this.host())
       .pipe(takeUntil(merge(this.destroyed, this.visibleInternal)))
       .subscribe(() => {
         this.setInstanceWidth(this.instance, this.hostWidth);
@@ -485,21 +561,23 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   private onHidden(instance: TippyInstance = this.instance) {
     this.destroyView();
-    this.isVisible = false;
-    this.visibleInternal.next(this.isVisible);
+    const isVisible = false;
+    this.isVisible.set(isVisible);
+    this.visibleInternal.next(isVisible);
     if (this.visible.observed) {
-      this.zone.run(() => this.visible.next(this.isVisible));
+      this.ngZone.run(() => this.visible.next(isVisible));
     }
     this.globalConfig.onHidden?.(instance);
   }
 
   private isOverflowing$() {
-    const notifiers$ = [overflowChanges(this.host)];
+    const host = this.host();
+    const notifiers$ = [overflowChanges(host)];
 
     // We need to handle cases where the host has a static width but the content might change
-    if (this.staticWidthHost) {
+    if (this.staticWidthHost()) {
       notifiers$.push(
-        this.contentChanged.asObservable().pipe(
+        this.contentChanged.pipe(
           // We need to wait for the content to be rendered before we can check if it's overflowing.
           switchMap(() => {
             return new Observable((subscriber) => {
@@ -511,12 +589,38 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
               return () => cancelAnimationFrame(id);
             });
           }),
-          map(() => isElementOverflow(this.host))
+          map(() => isElementOverflow(host))
         )
       );
     }
 
     return merge(...notifiers$);
+  }
+
+  private setupListeners(): void {
+    if (this.isServer) return;
+
+    effect(() => {
+      const appendTo = this.appendTo();
+      this.updateProps({ appendTo });
+    });
+
+    effect(() => {
+      // Capture signal read to track its changes.
+      this.content();
+      untracked(() => this.contentChanged.next());
+    });
+
+    effect(() => {
+      // Capture signal read to track its changes.
+      this.isEnabled();
+      this.setStatus();
+    });
+
+    effect(() => {
+      const isVisible = this.isVisible();
+      isVisible ? this.show() : this.hide();
+    });
   }
 }
 
