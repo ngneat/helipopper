@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   computed,
+  DestroyRef,
   Directive,
   effect,
   ElementRef,
@@ -13,7 +14,6 @@ import {
   model,
   NgZone,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
   PLATFORM_ID,
@@ -21,6 +21,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { Instance } from 'tippy.js';
 import { fromEvent, merge, Observable, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
@@ -61,7 +62,7 @@ import { coerceBooleanAttribute } from './coercion';
   exportAs: 'tippy',
   standalone: true,
 })
-export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnInit {
+export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
   // Note that default values are not provided for these bindings because `tippy.js`
   // has its own default values and checks whether the provided props are `undefined`.
   // We should keep `undefined` as the default value.
@@ -173,7 +174,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   protected instance: TippyInstance;
   protected viewRef: ViewRef;
-  protected destroyed = new Subject<void>();
   protected props: Partial<TippyConfig>;
   protected variationDefined = false;
   protected viewOptions$: ViewOptions;
@@ -199,6 +199,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     return this.host().getBoundingClientRect().width;
   }
 
+  private destroyRef = inject(DestroyRef);
   private isServer = isPlatformServer(inject(PLATFORM_ID));
   private tippyFactory = inject(TippyFactory);
 
@@ -210,7 +211,15 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     protected ngZone: NgZone,
     protected hostRef: ElementRef
   ) {
+    if (this.isServer) return;
+
     this.setupListeners();
+
+    this.destroyRef.onDestroy(() => {
+      this.instance?.destroy();
+      this.destroyView();
+      this.visibilityObserverCleanup?.();
+    });
   }
 
   ngOnChanges(changes: NgChanges<TippyDirective>) {
@@ -264,32 +273,25 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
         hostInView$
           .pipe(
             switchMap(() => this.isOverflowing$()),
-            takeUntil(this.destroyed)
+            takeUntilDestroyed(this.destroyRef)
           )
           .subscribe((isElementOverflow) => {
             this.checkOverflow(isElementOverflow);
           });
       } else {
-        hostInView$.pipe(takeUntil(this.destroyed)).subscribe(() => {
+        hostInView$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
           this.createInstance();
         });
       }
     } else if (this.onlyTextOverflow()) {
       this.isOverflowing$()
-        .pipe(takeUntil(this.destroyed))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((isElementOverflow) => {
           this.checkOverflow(isElementOverflow);
         });
     } else {
       this.createInstance();
     }
-  }
-
-  ngOnDestroy() {
-    this.destroyed.next();
-    this.instance?.destroy();
-    this.destroyView();
-    this.visibilityObserverCleanup?.();
   }
 
   destroyView() {
@@ -309,7 +311,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     if (this.props.appendTo && this.props.appendTo !== document.body) {
       this.visibilityObserverCleanup?.();
       return this.visibleInternal
-        .pipe(takeUntil(this.destroyed))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((isVisible) => {
           if (isVisible) {
             this.visibilityObserverCleanup = observeVisibility(
@@ -433,7 +435,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
           this.onHidden(instance);
         },
       })
-      .pipe(takeUntil(this.destroyed))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((instance) => {
         this.instance = instance;
 
@@ -502,7 +504,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   protected handleContextMenu() {
     fromEvent(this.host(), 'contextmenu')
-      .pipe(takeUntil(this.destroyed))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((event: MouseEvent) => {
         event.preventDefault();
 
@@ -526,7 +528,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     fromEvent(document.body, 'keydown')
       .pipe(
         filter(({ code }: KeyboardEvent) => code === 'Escape'),
-        takeUntil(merge(this.destroyed, this.visibleInternal.pipe(filter((v) => !v))))
+        takeUntil(this.visibleInternal.pipe(filter((v) => !v))),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => this.hide());
   }
@@ -545,7 +548,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   protected listenToHostResize() {
     dimensionsChanges(this.host())
-      .pipe(takeUntil(merge(this.destroyed, this.visibleInternal)))
+      .pipe(takeUntil(this.visibleInternal), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.setInstanceWidth(this.instance, this.hostWidth);
       });
@@ -597,8 +600,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   }
 
   private setupListeners(): void {
-    if (this.isServer) return;
-
     effect(() => {
       const appendTo = this.appendTo();
       this.updateProps({ appendTo });
