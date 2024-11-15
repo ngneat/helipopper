@@ -135,9 +135,9 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
 
   readonly variation = input<string>(undefined, { alias: 'tpVariation' });
 
-  readonly isEnabled = input<boolean>(undefined, { alias: 'tpIsEnabled' });
+  readonly isEnabled = input(true, { alias: 'tpIsEnabled' });
 
-  readonly className = input<string | string[]>(undefined, { alias: 'tpClassName' });
+  readonly className = input<string | string[]>('', { alias: 'tpClassName' });
 
   readonly onlyTextOverflow = input(false, {
     transform: coerceBooleanAttribute,
@@ -175,7 +175,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
   protected viewRef: ViewRef;
   protected destroyed = new Subject<void>();
   protected props: Partial<TippyConfig>;
-  protected enabled = true;
   protected variationDefined = false;
   protected viewOptions$: ViewOptions;
 
@@ -358,8 +357,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
     this.instance?.setProps(onlyTippyProps(props));
   }
 
-  protected setStatus() {
-    this.enabled ? this.instance?.enable() : this.instance?.disable();
+  protected setStatus(isEnabled: boolean) {
+    isEnabled ? this.instance?.enable() : this.instance?.disable();
   }
 
   protected createInstance() {
@@ -438,7 +437,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       .subscribe((instance) => {
         this.instance = instance;
 
-        this.setStatus();
+        this.setStatus(this.isEnabled());
         this.setProps(this.props);
 
         this.variation() === 'contextMenu' && this.handleContextMenu();
@@ -611,11 +610,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnDestroy, OnIn
       untracked(() => this.contentChanged.next());
     });
 
-    effect(() => {
-      // Capture signal read to track its changes.
-      this.isEnabled();
-      this.setStatus();
-    });
+    effect(() => this.setStatus(this.isEnabled()));
 
     effect(() => {
       const isVisible = this.isVisible();
