@@ -17,6 +17,7 @@ import {
   OnInit,
   Output,
   PLATFORM_ID,
+  SimpleChanges,
   untracked,
   ViewContainerRef,
 } from '@angular/core';
@@ -46,7 +47,6 @@ import {
   overflowChanges,
 } from './utils';
 import {
-  NgChanges,
   TIPPY_CONFIG,
   TIPPY_REF,
   TippyConfig,
@@ -56,6 +56,22 @@ import {
 import { TippyFactory } from './tippy.factory';
 import { coerceBooleanAttribute } from './coercion';
 
+// These are the default values used by `tippy.js`.
+// We are providing them as default input values.
+// The `tippy.js` repository has been archived and is unlikely to
+// change in the future, so it is safe to use these values as defaults.
+const defaultAppendTo: TippyProps['appendTo'] = () => document.body;
+const defaultDelay: TippyProps['delay'] = 0;
+const defaultDuration: TippyProps['duration'] = [300, 250];
+const defaultInteractiveBorder: TippyProps['interactiveBorder'] = 2;
+const defaultMaxWidth: TippyProps['maxWidth'] = 350;
+const defaultOffset: TippyProps['offset'] = [0, 10];
+const defaultPlacement: TippyProps['placement'] = 'top';
+const defaultTrigger: TippyProps['trigger'] = 'mouseenter focus';
+const defaultTriggerTarget: TippyProps['triggerTarget'] = null;
+const defaultZIndex: TippyProps['zIndex'] = 9999;
+const defaultAnimation: TippyProps['animation'] = 'fade';
+
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[tp]',
@@ -63,64 +79,70 @@ import { coerceBooleanAttribute } from './coercion';
   standalone: true,
 })
 export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
-  // Note that default values are not provided for these bindings because `tippy.js`
-  // has its own default values and checks whether the provided props are `undefined`.
-  // We should keep `undefined` as the default value.
+  readonly appendTo = input(defaultAppendTo, {
+    alias: 'tpAppendTo',
+  });
 
-  readonly appendTo = input<TippyProps['appendTo']>(undefined, { alias: 'tpAppendTo' });
+  readonly content = input<Content | undefined | null>('', { alias: 'tp' });
 
-  readonly content = input<Content | undefined | null>(undefined, { alias: 'tp' });
+  readonly delay = input(defaultDelay, {
+    alias: 'tpDelay',
+  });
 
-  readonly delay = input<TippyProps['delay']>(undefined, { alias: 'tpDelay' });
+  readonly duration = input(defaultDuration, {
+    alias: 'tpDuration',
+  });
 
-  readonly duration = input<TippyProps['duration']>(undefined, { alias: 'tpDuration' });
-
-  readonly hideOnClick = input<TippyProps['hideOnClick']>(undefined, {
+  readonly hideOnClick = input(true, {
     alias: 'tpHideOnClick',
   });
 
-  readonly interactive = input<TippyProps['interactive']>(undefined, {
+  readonly interactive = input(false, {
     alias: 'tpInteractive',
   });
 
-  readonly interactiveBorder = input<TippyProps['interactiveBorder']>(undefined, {
+  readonly interactiveBorder = input(defaultInteractiveBorder, {
     alias: 'tpInteractiveBorder',
   });
 
-  readonly maxWidth = input<TippyProps['maxWidth']>(undefined, { alias: 'tpMaxWidth' });
+  readonly maxWidth = input(defaultMaxWidth, {
+    alias: 'tpMaxWidth',
+  });
 
   // Note that some of the input signal types are declared explicitly because the compiler
   // also uses types from `@popperjs/core` and requires a type annotation.
-  readonly offset: InputSignal<TippyProps['offset']> = input<TippyProps['offset']>(
-    undefined,
-    { alias: 'tpOffset' }
-  );
+  readonly offset: InputSignal<TippyProps['offset']> = input(defaultOffset, {
+    alias: 'tpOffset',
+  });
 
-  readonly placement: InputSignal<TippyProps['placement']> = input<
-    TippyProps['placement']
-  >(undefined, {
+  readonly placement: InputSignal<TippyProps['placement']> = input(defaultPlacement, {
     alias: 'tpPlacement',
   });
 
-  readonly popperOptions: InputSignal<TippyProps['popperOptions']> = input<
-    TippyProps['popperOptions']
-  >(undefined, {
-    alias: 'tpPopperOptions',
-  });
+  readonly popperOptions: InputSignal<TippyProps['popperOptions']> = input(
+    {},
+    {
+      alias: 'tpPopperOptions',
+    }
+  );
 
-  readonly showOnCreate = input<TippyProps['showOnCreate']>(undefined, {
+  readonly showOnCreate = input(false, {
     alias: 'tpShowOnCreate',
   });
 
-  readonly trigger = input<TippyProps['trigger']>(undefined, { alias: 'tpTrigger' });
+  readonly trigger = input(defaultTrigger, {
+    alias: 'tpTrigger',
+  });
 
-  readonly triggerTarget = input<TippyProps['triggerTarget']>(undefined, {
+  readonly triggerTarget = input(defaultTriggerTarget, {
     alias: 'tpTriggerTarget',
   });
 
-  readonly zIndex = input<TippyProps['zIndex']>(undefined, { alias: 'tpZIndex' });
+  readonly zIndex = input(defaultZIndex, {
+    alias: 'tpZIndex',
+  });
 
-  readonly animation = input<TippyProps['animation']>(undefined, {
+  readonly animation = input(defaultAnimation, {
     alias: 'tpAnimation',
   });
 
@@ -134,7 +156,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     alias: 'tpIsLazy',
   });
 
-  readonly variation = input<string>(undefined, { alias: 'tpVariation' });
+  readonly variation = input<string | undefined>(undefined, { alias: 'tpVariation' });
 
   readonly isEnabled = input(true, { alias: 'tpIsEnabled' });
 
@@ -164,19 +186,21 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
 
   readonly detectChangesComponent = input(true, { alias: 'tpDetectChangesComponent' });
 
-  readonly popperWidth = input<number | string>(undefined, { alias: 'tpPopperWidth' });
+  readonly popperWidth = input<number | string | undefined>(undefined, {
+    alias: 'tpPopperWidth',
+  });
 
-  readonly customHost = input<HTMLElement>(undefined, { alias: 'tpHost' });
+  readonly customHost = input<HTMLElement | undefined>(undefined, { alias: 'tpHost' });
 
   readonly isVisible = model(false, { alias: 'tpIsVisible' });
 
   @Output('tpVisible') visible = new EventEmitter<boolean>();
 
-  protected instance: TippyInstance;
-  protected viewRef: ViewRef;
-  protected props: Partial<TippyConfig>;
+  protected instance!: TippyInstance;
+  protected viewRef: ViewRef | null = null;
+  protected props!: Partial<TippyConfig>;
   protected variationDefined = false;
-  protected viewOptions$: ViewOptions;
+  protected viewOptions$: ViewOptions | null = null;
 
   /**
    * We had use `visible` event emitter previously as a `takeUntil` subscriber in multiple places
@@ -186,7 +210,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
    * in the template (`<button [tippy]="..." (visible)="..."></button>`).
    */
   protected visibleInternal = new Subject<boolean>();
-  private visibilityObserverCleanup: () => void | undefined;
+  private visibilityObserverCleanup: VoidFunction | null = null;
   private contentChanged = new Subject<void>();
 
   private host = computed<HTMLElement>(
@@ -222,37 +246,18 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     });
   }
 
-  ngOnChanges(changes: NgChanges<TippyDirective>) {
+  ngOnChanges(changes: SimpleChanges) {
     if (this.isServer) return;
 
-    // TODO: we can update it later.
-    // We need to go over class properties, check whether it's a signal (`isSignal(prop)`)
-    // and construct a record where `Record<string, Signal>`.
-    // Follow-up changes would be to have a computation and an effect.
-    let props: Partial<TippyConfig> = Object.keys(changes).reduce((acc, change) => {
-      if (change === 'isVisible') return acc;
-
-      acc[change] = changes[change].currentValue;
-
-      return acc;
-    }, {});
-
-    let variation: string;
-
-    if (isChanged('variation', changes)) {
-      variation = changes.variation.currentValue;
-      this.variationDefined = true;
-    } else if (!this.variationDefined) {
-      variation = this.globalConfig.defaultVariation;
-      this.variationDefined = true;
-    }
-
-    if (variation) {
-      props = {
-        ...this.globalConfig.variations[variation],
-        ...props,
-      };
-    }
+    const variation = this.variation() || this.globalConfig.defaultVariation || '';
+    const props = Object.keys(changes)
+      // `isVisible` is not required as a prop since we update it manually
+      // in an effect-like manner.
+      .filter((key) => key !== 'isVisible')
+      .reduce(
+        (accumulator, key) => ({ ...accumulator, [key]: changes[key].currentValue }),
+        { ...this.globalConfig.variations?.[variation] }
+      );
 
     this.updateProps(props);
   }
@@ -424,7 +429,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
           if (this.useHostWidth()) {
             this.setInstanceWidth(instance, this.hostWidth);
           } else if (this.popperWidth()) {
-            this.setInstanceWidth(instance, this.popperWidth());
+            this.setInstanceWidth(instance, this.popperWidth()!);
           }
           this.globalConfig.onShow?.(instance);
         },
@@ -479,7 +484,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
       }
     }
 
-    this.viewRef = this.viewService.createView(content, {
+    this.viewRef = this.viewService.createView(content!, {
       vcr: this.vcr,
       ...this.viewOptions$,
     });
@@ -492,7 +497,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     let newContent = this.viewRef.getElement();
 
     if (this.useTextContent()) {
-      newContent = instance.reference.textContent;
+      newContent = instance.reference.textContent!;
     }
 
     if (isString(newContent) && this.globalConfig.beforeRender) {
@@ -503,7 +508,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
   }
 
   protected handleContextMenu() {
-    fromEvent(this.host(), 'contextmenu')
+    fromEvent<MouseEvent>(this.host(), 'contextmenu')
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((event: MouseEvent) => {
         event.preventDefault();
@@ -525,7 +530,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
   }
 
   protected handleEscapeButton(): void {
-    fromEvent(document.body, 'keydown')
+    fromEvent<KeyboardEvent>(document.body, 'keydown')
       .pipe(
         filter(({ code }: KeyboardEvent) => code === 'Escape'),
         takeUntil(this.visibleInternal.pipe(filter((v) => !v))),
@@ -601,11 +606,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
 
   private setupListeners(): void {
     effect(() => {
-      const appendTo = this.appendTo();
-      this.updateProps({ appendTo });
-    });
-
-    effect(() => {
       // Capture signal read to track its changes.
       this.content();
       untracked(() => this.contentChanged.next());
@@ -618,11 +618,4 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
       isVisible ? this.show() : this.hide();
     });
   }
-}
-
-function isChanged(
-  key: keyof NgChanges<TippyDirective>,
-  changes: NgChanges<TippyDirective>
-) {
-  return key in changes;
 }

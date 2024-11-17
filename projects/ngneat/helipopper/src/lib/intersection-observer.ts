@@ -6,4 +6,5 @@
 // allows us to remove `runOutsideAngular` calls and reduce indentation,
 // making the code a bit more readable.
 export const IntersectionObserver: typeof globalThis.IntersectionObserver =
-  globalThis['__zone_symbol__IntersectionObserver'] || globalThis.IntersectionObserver;
+  (globalThis as any)['__zone_symbol__IntersectionObserver'] ||
+  globalThis.IntersectionObserver;

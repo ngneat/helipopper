@@ -5,6 +5,7 @@
     "declarationMap": true,
     "declaration": true,
     "inlineSources": true,
+    "strict": true,
     "types": [],
     "lib": ["dom", "es2020"]
   },

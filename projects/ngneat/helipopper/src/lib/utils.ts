@@ -51,7 +51,8 @@ export function isElementOverflow(host: HTMLElement): boolean {
   const hostOffsetWidth = host.offsetWidth;
 
   return (
-    hostOffsetWidth > host.parentElement.offsetWidth || hostOffsetWidth < host.scrollWidth
+    hostOffsetWidth > host.parentElement!.offsetWidth ||
+    hostOffsetWidth < host.scrollWidth
   );
 }
 
@@ -83,7 +84,7 @@ function resizeObserverStrategy(target: HTMLElement): Observable<boolean> {
 }
 
 export function onlyTippyProps(allProps: any) {
-  const tippyProps = {};
+  const tippyProps: any = {};
 
   const ownProps = [
     'useTextContent',
