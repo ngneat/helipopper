@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/helipopper",
-  "version": "9.2.1",
+  "version": "10.0.0-alpha.0",
   "description": "A Powerful Tooltip and Popover for Angular Applications",
   "dependencies": {
     "tslib": "^2.3.0",

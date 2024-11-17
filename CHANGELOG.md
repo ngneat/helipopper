@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.0.0-alpha.0](https://github.com/ngneat/helipopper/compare/v9.2.1...v10.0.0-alpha.0) (2024-11-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* `tippy.js` must be explicitly passed to the loader function when calling `provideTippyConfig` (see README).
+
+### Features
+
+* allow lazy-loading `tippy.js` ([74a3ed6](https://github.com/ngneat/helipopper/commit/74a3ed6bffd66035cbcf7d90726420ef2a847452))
+* switch to signal inputs ([e698cca](https://github.com/ngneat/helipopper/commit/e698ccad53c3de4c285faae484602cf10eaa96a9))
+
 ### [9.2.1](https://github.com/ngneat/helipopper/compare/v9.2.0...v9.2.1) (2023-12-13)
 
 
