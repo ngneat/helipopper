@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.0.0-alpha.1](https://github.com/ngneat/helipopper/compare/v10.0.0-alpha.0...v10.0.0-alpha.1) (2024-11-17)
+
+
+### Fixes
+
+* enable strict mode ([419bf97](https://github.com/ngneat/helipopper/commit/419bf97219281cf77e824c167d1bea3bd1a11cc6))
+
 ### [10.0.0-alpha.0](https://github.com/ngneat/helipopper/compare/v9.2.1...v10.0.0-alpha.0) (2024-11-17)
 
 
