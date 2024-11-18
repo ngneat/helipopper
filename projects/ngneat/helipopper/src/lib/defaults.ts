@@ -1,22 +1,22 @@
-import { TippyConfig } from './tippy.types';
+import type { TippyProps } from './tippy.types';
 
-type Variation = TippyConfig['variations'][0];
+type Variation = Partial<TippyProps>;
 
 export const tooltipVariation: Variation = {
-  theme: null,
+  theme: undefined,
   arrow: false,
   animation: 'scale',
   trigger: 'mouseenter',
-  offset: [0, 5]
+  offset: [0, 5],
 };
 
 export const popperVariation: Variation = {
   theme: 'light',
   arrow: true,
   offset: [0, 10],
-  animation: null,
+  animation: undefined,
   trigger: 'click',
-  interactive: true
+  interactive: true,
 };
 
 export function withContextMenuVariation(baseVariation: Variation): Variation {
@@ -25,6 +25,6 @@ export function withContextMenuVariation(baseVariation: Variation): Variation {
     placement: 'right-start',
     trigger: 'manual',
     arrow: false,
-    offset: [0, 0]
+    offset: [0, 0],
   };
 }

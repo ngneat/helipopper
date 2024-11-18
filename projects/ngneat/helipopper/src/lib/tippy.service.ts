@@ -1,9 +1,21 @@
 import { inject, Inject, Injectable, Injector } from '@angular/core';
-import { isComponent, isTemplateRef, ViewService } from '@ngneat/overview';
+import {
+  isComponent,
+  isTemplateRef,
+  ResolveViewRef,
+  ViewService,
+} from '@ngneat/overview';
 import { Content } from '@ngneat/overview';
 import type { Observable } from 'rxjs';
 
-import { CreateOptions, ExtendedTippyInstance, TIPPY_CONFIG, TIPPY_REF, TippyConfig } from './tippy.types';
+import {
+  CreateOptions,
+  ExtendedTippyInstance,
+  TIPPY_CONFIG,
+  TIPPY_REF,
+  TippyConfig,
+  TippyInstance,
+} from './tippy.types';
 import { normalizeClassName, onlyTippyProps } from './utils';
 import { TippyFactory } from './tippy.factory';
 
@@ -22,24 +34,22 @@ export class TippyService {
     content: T,
     options: Partial<CreateOptions> = {}
   ): Observable<ExtendedTippyInstance<T>> {
-    const variation = options.variation || this.globalConfig.defaultVariation;
+    const variation = options.variation || this.globalConfig.defaultVariation || '';
     const config = {
-      onShow: (instance) => {
+      onShow: (instance: ExtendedTippyInstance<T>) => {
         host.setAttribute('data-tippy-open', '');
         if (!instance.$viewOptions) {
-          instance.$viewOptions = {};
-
-          const injector = Injector.create({
-            providers: [
-              {
-                provide: TIPPY_REF,
-                useValue: instance,
-              },
-            ],
-            parent: options.injector || this.injector,
-          });
-
-          instance.$viewOptions.injector = injector;
+          instance.$viewOptions = {
+            injector: Injector.create({
+              providers: [
+                {
+                  provide: TIPPY_REF,
+                  useValue: instance,
+                },
+              ],
+              parent: options.injector || this.injector,
+            }),
+          };
 
           if (isTemplateRef(content)) {
             instance.$viewOptions.context = {
@@ -51,25 +61,28 @@ export class TippyService {
             instance.data = options.data;
           }
         }
-        if (!instance.view) {
-          instance.view = this.view.createView(content, { ...options, ...instance.$viewOptions });
-        }
+
+        instance.view ||= this.view.createView(content, {
+          ...options,
+          ...instance.$viewOptions,
+        }) as ResolveViewRef<T>;
+
         instance.setContent(instance.view.getElement());
         options?.onShow?.(instance);
       },
-      onHidden: (instance) => {
+      onHidden: (instance: ExtendedTippyInstance<T>) => {
         host.removeAttribute('data-tippy-open');
 
         if (!options.preserveView) {
-          instance.view.destroy();
+          instance.view?.destroy();
           instance.view = null;
         }
         options?.onHidden?.(instance);
       },
       ...onlyTippyProps(this.globalConfig),
-      ...this.globalConfig.variations[variation],
+      ...this.globalConfig.variations?.[variation],
       ...onlyTippyProps(options),
-      onCreate: (instance) => {
+      onCreate: (instance: TippyInstance) => {
         instance.popper.classList.add(`tippy-variation-${variation}`);
         if (options.className) {
           for (const klass of normalizeClassName(options.className)) {
@@ -81,6 +94,8 @@ export class TippyService {
       },
     };
 
-    return this._tippyFactory.create(host, config) as Observable<ExtendedTippyInstance<T>>;
+    return this._tippyFactory.create(host, config) as Observable<
+      ExtendedTippyInstance<T>
+    >;
   }
 }

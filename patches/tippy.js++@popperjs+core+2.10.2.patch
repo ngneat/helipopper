@@ -1,0 +1,13 @@
+diff --git a/node_modules/tippy.js/node_modules/@popperjs/core/lib/types.d.ts b/node_modules/tippy.js/node_modules/@popperjs/core/lib/types.d.ts
+index 11f9219..f971927 100644
+--- a/node_modules/tippy.js/node_modules/@popperjs/core/lib/types.d.ts
++++ b/node_modules/tippy.js/node_modules/@popperjs/core/lib/types.d.ts
+@@ -114,7 +114,7 @@ export declare type ModifierArguments<Options extends Obj> = {
+     options: Partial<Options>;
+     name: string;
+ };
+-export declare type Modifier<Name, Options> = {
++export declare type Modifier<Name, Options extends object> = {
+     name: Name;
+     enabled: boolean;
+     phase: ModifierPhases;

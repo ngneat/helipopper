@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  ViewChild,
+  computed,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UntypedFormBuilder } from '@angular/forms';
 import { ExampleComponent } from '../example/example.component';
@@ -63,14 +69,16 @@ export class PlaygroundComponent {
   text3 = `Short`;
   comp = ExampleComponent;
 
-  @ViewChild('inputName', { static: true }) inputName: ElementRef;
-  @ViewChild('inputNameComp', { static: true }) inputNameComp: ElementRef;
+  @ViewChild('inputName', { static: true }) inputName!: ElementRef;
+  @ViewChild('inputNameComp', { static: true }) inputNameComp!: ElementRef;
 
   constructor(private fb: UntypedFormBuilder, private service: TippyService) {}
 
   toggleText(text: string, index: number) {
     const resolved =
-      text === `Only shown when text is overflowed ${index}` ? `Short` : `Only shown when text is overflowed`;
+      text === `Only shown when text is overflowed ${index}`
+        ? `Short`
+        : `Only shown when text is overflowed`;
 
     return `${resolved} ${index}`;
   }
@@ -87,7 +95,7 @@ export class PlaygroundComponent {
     console.log('show tooltip', $event);
   }
 
-  instance2: TippyInstance;
+  instance2!: TippyInstance;
 
   useService(host: HTMLButtonElement) {
     if (!this.instance2) {
@@ -97,7 +105,7 @@ export class PlaygroundComponent {
     }
   }
 
-  instance: TippyInstance;
+  instance!: TippyInstance;
 
   useServiceComponent(host2: HTMLButtonElement) {
     if (!this.instance) {
