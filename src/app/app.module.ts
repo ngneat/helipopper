@@ -5,13 +5,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ExampleComponent } from './example/example.component';
+import { TippyDirective } from '@ngneat/helipopper';
 import {
   popperVariation,
-  provideTippyConfig,
-  TippyDirective,
   tooltipVariation,
   withContextMenuVariation,
-} from '@ngneat/helipopper';
+  provideTippyConfig,
+  provideTippyLoader,
+} from '@ngneat/helipopper/config';
 import { PlaygroundComponent } from './playground/playground.component';
 import { IsVisibleComponent } from './is-visible/isVisible.component';
 
@@ -22,11 +23,17 @@ function getZIndex() {
 }
 
 @NgModule({
-  declarations: [AppComponent, ExampleComponent, PlaygroundComponent, ExampleComponent, IsVisibleComponent],
+  declarations: [
+    AppComponent,
+    ExampleComponent,
+    PlaygroundComponent,
+    ExampleComponent,
+    IsVisibleComponent,
+  ],
   imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule, TippyDirective],
   providers: [
+    provideTippyLoader(() => import('tippy.js')),
     provideTippyConfig({
-      loader: () => import('tippy.js'),
       defaultVariation: 'tooltip',
       zIndexGetter: getZIndex,
       variations: {

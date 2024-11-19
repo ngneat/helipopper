@@ -15,7 +15,7 @@ import {
   TIPPY_REF,
   TippyConfig,
   TippyInstance,
-} from './tippy.types';
+} from '@ngneat/helipopper/config';
 import { normalizeClassName, onlyTippyProps } from './utils';
 import { TippyFactory } from './tippy.factory';
 

@@ -14,6 +14,9 @@
     "module": "es2020",
     "lib": ["es2020", "dom"],
     "paths": {
+      "@ngneat/helipopper/config": [
+        "projects/ngneat/helipopper/config/src/public-api.ts"
+      ],
       "@ngneat/helipopper": ["projects/ngneat/helipopper/src/public-api.ts"]
     },
     "useDefineForClassFields": false

@@ -1,5 +1,6 @@
 import type { TippyProps } from './tippy.types';
 
+// A variation is a set of predefined tippy properties.
 type Variation = Partial<TippyProps>;
 
 export const tooltipVariation: Variation = {

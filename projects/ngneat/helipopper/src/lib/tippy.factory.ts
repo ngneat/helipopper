@@ -1,8 +1,7 @@
 import type tippy from 'tippy.js';
 import { inject, Injectable, NgZone } from '@angular/core';
 import { defer, from, map, type Observable, of, shareReplay } from 'rxjs';
-
-import { TIPPY_CONFIG, type TippyProps } from './tippy.types';
+import { TIPPY_LOADER, type TippyProps } from '@ngneat/helipopper/config';
 
 // We need to use `isPromise` instead of checking whether
 // `value instanceof Promise`. In zone.js patched environments, `global.Promise`
@@ -17,7 +16,7 @@ function isPromise<T>(value: any): value is Promise<T> {
 export class TippyFactory {
   private readonly _ngZone = inject(NgZone);
 
-  private readonly _config = inject(TIPPY_CONFIG);
+  private readonly _loader = inject(TIPPY_LOADER);
 
   private _tippyImpl$: Observable<typeof tippy> | null = null;
 
@@ -31,8 +30,10 @@ export class TippyFactory {
     // synchronous and to avoid triggering the `defer` callback repeatedly
     // when new subscribers arrive.
     this._tippyImpl$ ||= defer(() => {
-      const maybeTippy = this._ngZone.runOutsideAngular(() => this._config.loader());
-      return isPromise(maybeTippy) ? from(maybeTippy).pipe(map((tippy) => tippy.default)) : of(maybeTippy);
+      const maybeTippy = this._ngZone.runOutsideAngular(() => this._loader());
+      return isPromise(maybeTippy)
+        ? from(maybeTippy).pipe(map((tippy) => tippy.default))
+        : of(maybeTippy);
     }).pipe(shareReplay());
 
     return this._tippyImpl$.pipe(

@@ -49,12 +49,12 @@ $ pnpm i @ngneat/helipopper
 Configure it as shown below:
 
 ```ts
-import { provideTippyConfig, tooltipVariation, popperVariation } from '@ngneat/helipopper';
+import { provideTippyLoader provideTippyConfig, tooltipVariation, popperVariation } from '@ngneat/helipopper/config';
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideTippyLoader(() => import('tippy.js')),
     provideTippyConfig({
-      loader: () => import('tippy.js'),
       defaultVariation: 'tooltip',
       variations: {
         tooltip: tooltipVariation,
@@ -65,14 +65,12 @@ bootstrapApplication(AppComponent, {
 });
 ```
 
-Please note that the `loader` property is required, as it specifies how Tippy is loaded - either synchronously or asynchronously. When dynamic import is used, the library will load only when the first Tippy directive is rendered. If we want it to load synchronously, we use the following:
+Please note that the `provideTippyLoader` is required, as it specifies how Tippy is loaded - either synchronously or asynchronously. When dynamic import is used, the library will load only when the first Tippy directive is rendered. If we want it to load synchronously, we use the following:
 
 ```ts
 import tippy from 'tippy.js';
 
-provideTippyConfig({
-  loader: () => tippy,
-});
+provideTippyLoader(() => tippy);
 ```
 
 Add the styles you want to `styles.scss`:
@@ -85,7 +83,19 @@ Add the styles you want to `styles.scss`:
 
 You have the freedom to [customize](https://atomiks.github.io/tippyjs/v6/themes/) it if you need to.
 
-Import the standalone `TippyDirective` and use it in your templates:
+Import the standalone `TippyDirective` in your components:
+
+```ts
+import { TippyDirective } from '@ngneat/helipopper';
+
+@Component({
+  standalone: true,
+  imports: [TippyDirective],
+})
+class ExampleComponent {}
+```
+
+And use it in your templates:
 
 ```html
 <button tp="Helpful Message">I have a tooltip</button>
@@ -119,11 +129,11 @@ export const tooltipVariation = {
 ### Use `Component` as content
 
 ```ts
-import { TIPPY_REF, TippyInstance } from '@ngneat/helipopper';
+import { injectTippyRef, TippyInstance } from '@ngneat/helipopper/config';
 
 @Component()
 class MyComponent {
-  tippy = inject(TIPPY_REF);
+  tippy = injectTippyRef();
 }
 ```
 
@@ -137,7 +147,9 @@ You can pass the `onlyTextOverflow` input to show the tooltip only when the host
 
 ```html
 <div style="max-width: 100px;" class="overflow-hidden flex">
-  <p class="ellipsis" [tp]="text" tpPlacement="right" [tpOnlyTextOverflow]="true">{{ text }}</p>
+  <p class="ellipsis" [tp]="text" tpPlacement="right" [tpOnlyTextOverflow]="true">
+    {{ text }}
+  </p>
 </div>
 ```
 
@@ -185,7 +197,12 @@ Note that it's using [`IntersectionObserver`](https://caniuse.com/intersectionob
 First, define the `contextMenu` variation:
 
 ```ts
-import { popperVariation, tooltipVariation, provideTippyConfig, withContextMenuVariation } from '@ngneat/helipopper';
+import {
+  popperVariation,
+  tooltipVariation,
+  provideTippyConfig,
+  withContextMenuVariation,
+} from '@ngneat/helipopper/config';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -212,7 +229,14 @@ Now you can use it in your template:
 </ng-template>
 
 <ul>
-  <li *ngFor="let item of list" [tp]="contextMenu" [tpData]="item" tpVariation="contextMenu">{{ item.label }}</li>
+  <li
+    *ngFor="let item of list"
+    [tp]="contextMenu"
+    [tpData]="item"
+    tpVariation="contextMenu"
+  >
+    {{ item.label }}
+  </li>
 </ul>
 ```
 
@@ -230,7 +254,9 @@ Now you can use it in your template:
 Use isVisible to trigger show and hide. Set trigger to manual.
 
 ```html
-<div tp="Helpful Message" tpTrigger="manual" [tpIsVisible]="visibility">Click Open to see me</div>
+<div tp="Helpful Message" tpTrigger="manual" [tpIsVisible]="visibility">
+  Click Open to see me
+</div>
 
 <button (click)="visibility = true">Open</button>
 <button (click)="visibility = false">Close</button>
@@ -296,9 +322,11 @@ class Component {
   tippy: TippyInstance;
   private tippyService = inject(TippyService);
 
-  show() {
+  async show() {
     if (!this.tippy) {
-      this.tippy = this.tippyService.create(this.inputName, 'this field is required');
+      this.tippy = await firstValueFrom(
+        this.tippyService.create(this.inputName, 'this field is required')
+      );
     }
 
     this.tippy.show();
