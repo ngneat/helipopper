@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.1.0-alpha.0](https://github.com/ngneat/helipopper/compare/v10.0.0-alpha.1...v10.1.0-alpha.0)(2024-11-20)
+
+
+### Features
+
+* add `@ngneat/helipopper/config` ([fe59df7](https://github.com/ngneat/helipopper/commit/fe59df74269e8ee59d8328a48672783256c16761))
+
 ### [10.0.0-alpha.1](https://github.com/ngneat/helipopper/compare/v10.0.0-alpha.0...v10.0.0-alpha.1) (2024-11-17)
 
 
