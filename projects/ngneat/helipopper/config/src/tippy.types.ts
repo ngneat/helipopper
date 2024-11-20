@@ -1,6 +1,6 @@
 import type tippy from 'tippy.js';
 import type { Instance, Props } from 'tippy.js';
-import { ElementRef, InjectionToken, type InputSignal } from '@angular/core';
+import { ElementRef, InjectionToken } from '@angular/core';
 import type { ResolveViewRef, ViewOptions } from '@ngneat/overview';
 
 export interface CreateOptions extends Partial<TippyProps>, ViewOptions {
@@ -9,8 +9,6 @@ export interface CreateOptions extends Partial<TippyProps>, ViewOptions {
   className: string | string[];
   data: any;
 }
-
-export const TIPPY_REF = new InjectionToken<TippyInstance>('TIPPY_REF');
 
 export interface TippyInstance extends Instance {
   data?: any;
@@ -33,8 +31,12 @@ export interface ExtendedTippyInstance<T> extends TippyInstance {
   context?: ViewOptions['context'];
 }
 
-export interface TippyConfig extends Partial<ExtendedTippyProps> {
-  loader: () => typeof tippy | Promise<{ default: typeof tippy }>;
-}
+export type TippyConfig = Partial<ExtendedTippyProps>;
+
+export type TippyLoader = () => typeof tippy | Promise<{ default: typeof tippy }>;
+
+export const TIPPY_LOADER = new InjectionToken<TippyLoader>('TIPPY_LOADER');
+
+export const TIPPY_REF = /* @__PURE__ */ new InjectionToken<TippyInstance>('TIPPY_REF');
 
 export const TIPPY_CONFIG = new InjectionToken<TippyConfig>('Tippy config');

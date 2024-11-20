@@ -52,7 +52,7 @@ import {
   TippyConfig,
   TippyInstance,
   TippyProps,
-} from './tippy.types';
+} from '@ngneat/helipopper/config';
 import { TippyFactory } from './tippy.factory';
 import { coerceBooleanAttribute } from './coercion';
 

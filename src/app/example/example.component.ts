@@ -1,6 +1,5 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { TIPPY_REF, TippyInstance } from '@ngneat/helipopper';
-import { injectTippyRef } from 'projects/ngneat/helipopper/src/lib/providers';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { injectTippyRef } from '@ngneat/helipopper';
 
 @Component({
   selector: 'app-example',
