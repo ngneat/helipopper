@@ -1,31 +1,56 @@
 <!-- <button (click)="show = !show">Toggle All</button> -->
 
 <ng-container *ngIf="show">
-  <div id="tippy-playground" [formGroup]="tooltipSettingsForm" style="text-transform: capitalize">
+  <div
+    id="tippy-playground"
+    [formGroup]="tooltipSettingsForm"
+    style="text-transform: capitalize"
+  >
     <div *ngFor="let option of tooltipTypes" class="flex items-center">
-      <input type="radio" formControlName="type" name="type" [value]="option" class="mr-4" />
+      <input
+        type="radio"
+        formControlName="type"
+        name="type"
+        [value]="option"
+        class="mr-4"
+      />
       {{ option }}
     </div>
 
     <hr />
 
     <div *ngFor="let option of tooltipPositions" class="flex items-center">
-      <input type="radio" formControlName="position" name="position" [value]="option" class="mr-4" />{{ option }}
+      <input
+        type="radio"
+        formControlName="position"
+        name="position"
+        [value]="option"
+        class="mr-4"
+      />{{ option }}
     </div>
 
     <hr />
 
     <div *ngFor="let option of tooltipAlignments" class="flex items-center">
-      <input type="radio" formControlName="alignment" name="alignment" [value]="option.value" class="mr-4" />{{
-        option.label
-      }}
+      <input
+        type="radio"
+        formControlName="alignment"
+        name="alignment"
+        [value]="option.value"
+        class="mr-4"
+      />{{ option.label }}
     </div>
 
     <hr />
 
     <label>
-      <input type="checkbox" formControlName="hideOnEsc" id="hideOnEsc-toggle" class="mr-4" /> Hide on press escape
-      button
+      <input
+        type="checkbox"
+        formControlName="hideOnEsc"
+        id="hideOnEsc-toggle"
+        class="mr-4"
+      />
+      Hide on press escape button
     </label>
 
     <div class="btn-container">
@@ -55,7 +80,11 @@
     <h6>NIL values</h6>
 
     <div class="btn-container" id="tippy-value-non-nil">
-      <button [tp]="'I have a tooltip value different from nil'" tpVariation="popper" class="btn btn-outline-secondary">
+      <button
+        [tp]="'I have a tooltip value different from nil'"
+        tpVariation="popper"
+        class="btn btn-outline-secondary"
+      >
         Click me to see my tooltip
       </button>
     </div>
@@ -79,7 +108,14 @@
     <h6>Custom Template</h6>
 
     <div class="btn-container" id="custom-template">
-      <button [tp]="tpl" tpVariation="popper" class="btn btn-outline-secondary" #tippy2="tippy">Click Me</button>
+      <button
+        [tp]="tpl"
+        tpVariation="popper"
+        class="btn btn-outline-secondary"
+        #tippy2="tippy"
+      >
+        Click Me
+      </button>
       Visible: {{ tippy2.isVisible() }}
     </div>
 
@@ -94,7 +130,9 @@
 
     <h6>ng-container</h6>
     <div class="btn-container">
-      <button [tp]="tpl2" tpVariation="popper" class="btn btn-outline-secondary">Click Me</button>
+      <button [tp]="tpl2" tpVariation="popper" class="btn btn-outline-secondary">
+        Click Me
+      </button>
     </div>
 
     <ng-template #tpl2>
@@ -135,7 +173,9 @@
     <h6>Manual Trigger</h6>
 
     <div class="btn-container items-center">
-      <p tp="Helpful Message" tpTrigger="manual" #tippy="tippy" class="mr-4">Click open to see me</p>
+      <p tp="Helpful Message" tpTrigger="manual" #tippy="tippy" class="mr-4">
+        Click open to see me
+      </p>
 
       <button (click)="tippy.show()" class="btn btn-outline-dark">Open</button>
       <button (click)="tippy.hide()" class="btn btn-outline-dark">Close</button>
@@ -147,7 +187,9 @@
   <div id="lazy">
     <h6>Lazy</h6>
     <div style="height: 300px; overflow-y: auto">
-      <div *ngFor="let item of items" [tp]="item.label" [tpIsLazy]="true">{{ item.label }}</div>
+      <div *ngFor="let item of items" [tp]="item.label" [tpIsLazy]="true">
+        {{ item.label }}
+      </div>
     </div>
   </div>
 
@@ -157,7 +199,9 @@
     <h6>Disabled</h6>
 
     <div class="btn-container">
-      <button [tpIsEnabled]="isEnabled" tp="Tooltip" class="btn btn-outline-dark">Element</button>
+      <button [tpIsEnabled]="isEnabled" tp="Tooltip" class="btn btn-outline-dark">
+        Element
+      </button>
     </div>
 
     <button (click)="toggleEnabled()" class="btn btn-outline-primary btn-sm">
@@ -172,12 +216,22 @@
 
     <p>Start with overflow and change to not overflow</p>
     <div style="max-width: 100px" class="overflow-hidden flex">
-      <p class="ellipsis" [tp]="text" tpPlacement="right" [tpOnlyTextOverflow]="true" data-cy="overflow-case-1">
+      <p
+        class="ellipsis"
+        [tp]="text"
+        tpPlacement="right"
+        [tpOnlyTextOverflow]="true"
+        data-cy="overflow-case-1"
+      >
         {{ text }}
       </p>
     </div>
 
-    <button data-cy="content-toggler" (click)="text = toggleText(text, 1)" class="btn btn-outline-info btn-sm mt-2">
+    <button
+      data-cy="content-toggler"
+      (click)="text = toggleText(text, 1)"
+      class="btn btn-outline-info btn-sm mt-2"
+    >
       Change content
     </button>
 
@@ -185,15 +239,29 @@
 
     <p>Start with not overflow and change to overflow by decreasing the host width</p>
     <div [style.maxWidth.px]="maxWidth" class="overflow-hidden flex">
-      <p class="ellipsis" [tp]="text2" tpPlacement="right" [tpOnlyTextOverflow]="true" data-cy="overflow-case-2">
+      <p
+        class="ellipsis"
+        [tp]="text2"
+        tpPlacement="right"
+        [tpOnlyTextOverflow]="true"
+        data-cy="overflow-case-2"
+      >
         {{ text2 }}
       </p>
     </div>
 
-    <button data-cy="width-toggler" (click)="toggleMaxWidth()" class="btn btn-outline-info btn-sm mt-2">
+    <button
+      data-cy="width-toggler"
+      (click)="toggleMaxWidth()"
+      class="btn btn-outline-info btn-sm mt-2"
+    >
       Change max width
     </button>
-    <button data-cy="content-toggler" (click)="text2 = toggleText(text2, 2)" class="btn btn-outline-info btn-sm mt-2">
+    <button
+      data-cy="content-toggler"
+      (click)="text2 = toggleText(text2, 2)"
+      class="btn btn-outline-info btn-sm mt-2"
+    >
       Change content
     </button>
 
@@ -212,7 +280,11 @@
       </p>
     </div>
 
-    <button data-cy="content-toggler" (click)="text3 = toggleText(text3, 3)" class="btn btn-outline-info btn-sm mt-2">
+    <button
+      data-cy="content-toggler"
+      (click)="text3 = toggleText(text3, 3)"
+      class="btn btn-outline-info btn-sm mt-2"
+    >
       Change content
     </button>
   </div>
@@ -222,7 +294,11 @@
   <h6>Show on Create</h6>
 
   <div class="btn-container">
-    <button tp="Shown immediately when created" [tpShowOnCreate]="true" class="btn btn-outline-secondary">
+    <button
+      tp="Shown immediately when created"
+      [tpShowOnCreate]="true"
+      class="btn btn-outline-secondary"
+    >
       Show on Create
     </button>
   </div>
@@ -245,7 +321,11 @@
     </button>
   </div>
 
-  <button (click)="visibility = !visibility" data-cy="trigger-declarative" class="btn btn-outline-info btn-sm mt-2">
+  <button
+    (click)="visibility = !visibility"
+    data-cy="trigger-declarative"
+    class="btn btn-outline-info btn-sm mt-2"
+  >
     Toggle tooltip
   </button>
 
@@ -256,7 +336,9 @@
 
     <div class="btn-container">
       <button class="btn btn-outline-dark" (click)="useService(host)" #host>Text</button>
-      <button class="btn btn-outline-dark" (click)="useServiceComponent(host2)" #host2>Component</button>
+      <button class="btn btn-outline-dark" (click)="useServiceComponent(host2)" #host2>
+        Component
+      </button>
     </div>
   </div>
 
@@ -305,14 +387,25 @@
     <h6>Menu</h6>
 
     <div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" type="button" [tp]="one" tpVariation="menu">
+      <button
+        class="btn btn-secondary dropdown-toggle"
+        type="button"
+        [tp]="one"
+        tpVariation="menu"
+      >
         Dropdown button
       </button>
 
       <ng-template #one>
         <div>
           <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#" [tp]="two" tpPlacement="right" tpVariation="menu" tpTrigger="mouseenter"
+          <a
+            class="dropdown-item"
+            href="#"
+            [tp]="two"
+            tpPlacement="right"
+            tpVariation="menu"
+            tpTrigger="mouseenter"
             >Another action</a
           >
           <a class="dropdown-item" href="#">Something else here</a>
@@ -323,7 +416,13 @@
         <div>
           <a class="dropdown-item" href="#">Action 2</a>
           <a class="dropdown-item" href="#">Another action 2</a>
-          <a class="dropdown-item" href="#" [tp]="three" tpPlacement="right" tpVariation="menu" tpTrigger="mouseenter"
+          <a
+            class="dropdown-item"
+            href="#"
+            [tp]="three"
+            tpPlacement="right"
+            tpVariation="menu"
+            tpTrigger="mouseenter"
             >Something else here 2</a
           >
         </div>
@@ -343,14 +442,24 @@
 <div>
   <h6>Sanitize</h6>
 
-  <input style="max-width: 600px" type="text" placeholder="Sanitize" tp="<img src='empty.gif' onerror='alert(1);' />" />
+  <input
+    style="max-width: 600px"
+    type="text"
+    placeholder="Sanitize"
+    tp="<img src='empty.gif' onerror='alert(1);' />"
+  />
 </div>
 
 <hr />
 
 <div>
   <h6>No Content</h6>
-  <input style="max-width: 600px" type="text" placeholder="No content" [tp]="noContextText" />
+  <input
+    style="max-width: 600px"
+    type="text"
+    placeholder="No content"
+    [tp]="noContextText"
+  />
 </div>
 
 <hr />
