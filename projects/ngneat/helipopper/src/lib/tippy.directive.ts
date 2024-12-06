@@ -226,6 +226,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
   private destroyRef = inject(DestroyRef);
   private isServer = isPlatformServer(inject(PLATFORM_ID));
   private tippyFactory = inject(TippyFactory);
+  private destroyed = false;
 
   constructor(
     @Inject(TIPPY_CONFIG) protected globalConfig: TippyConfig,
@@ -240,6 +241,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     this.setupListeners();
 
     this.destroyRef.onDestroy(() => {
+      this.destroyed = true;
       this.instance?.destroy();
       this.destroyView();
       this.visibilityObserverCleanup?.();
@@ -569,7 +571,12 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
   private onHidden(instance: TippyInstance = this.instance) {
     this.destroyView();
     const isVisible = false;
-    this.isVisible.set(isVisible);
+    // `model()` uses `OutputEmitterRef` internally to emit events when the
+    // signal changes. If the directive is destroyed, it will throw an error:
+    // "Unexpected emit for destroyed `OutputRef`".
+    if (!this.destroyed) {
+      this.isVisible.set(isVisible);
+    }
     this.visibleInternal.next(isVisible);
     if (this.visible.observed) {
       this.ngZone.run(() => this.visible.next(isVisible));
