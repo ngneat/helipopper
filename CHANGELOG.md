@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.2.0-alpha.0](https://github.com/ngneat/helipopper/compare/v10.1.0-alpha.0...v10.2.0-alpha.0)(2024-12-07)
+
+
+### Features
+
+* upgrade to Angular 19 ([d33b7b2](https://github.com/ngneat/helipopper/commit/d33b7b284c2808aab15667a7759ff4e299454894))
+
+
+### Fixes
+
+* do not update `isVisible` signal when view is destroyed ([7c43af9](https://github.com/ngneat/helipopper/commit/7c43af98599463a18858354fb31d33572d1dee9b))
+
 ### [10.1.0-alpha.0](https://github.com/ngneat/helipopper/compare/v10.0.0-alpha.1...v10.1.0-alpha.0)(2024-11-20)
 
 
