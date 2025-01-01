@@ -3,10 +3,6 @@ import type { Instance, Props } from 'tippy.js';
 import { ElementRef, InjectionToken } from '@angular/core';
 import type { ResolveViewRef, ViewOptions } from '@ngneat/overview';
 
-export const enum TippyErrorCode {
-  TippyNotProvided = 1,
-}
-
 export interface CreateOptions extends Partial<TippyProps>, ViewOptions {
   variation: string;
   preserveView: boolean;
@@ -41,10 +37,6 @@ export type TippyLoader = () => typeof tippy | Promise<{ default: typeof tippy }
 
 export const TIPPY_LOADER = new InjectionToken<TippyLoader>(
   typeof ngDevMode !== 'undefined' && ngDevMode ? 'TIPPY_LOADER' : ''
-);
-
-export const TIPPY_REF = /* @__PURE__ */ new InjectionToken<TippyInstance>(
-  typeof ngDevMode !== 'undefined' && ngDevMode ? 'TIPPY_REF' : ''
 );
 
 export const TIPPY_CONFIG = new InjectionToken<TippyConfig>(

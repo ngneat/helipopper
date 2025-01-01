@@ -15,6 +15,10 @@ if (typeof window !== 'undefined') {
   supportsResizeObserver = 'ResizeObserver' in window;
 }
 
+export const enum TippyErrorCode {
+  TippyNotProvided = 1,
+}
+
 export function inView(
   host: TippyElement,
   options: IntersectionObserverInit = {
@@ -66,11 +70,7 @@ export function overflowChanges(host: TippyElement) {
 }
 
 export function dimensionsChanges(target: HTMLElement) {
-  return resizeObserverStrategy(target);
-}
-
-function resizeObserverStrategy(target: HTMLElement): Observable<boolean> {
-  return new Observable((subscriber) => {
+  return new Observable<boolean>((subscriber) => {
     if (!supportsResizeObserver) {
       subscriber.next();
       subscriber.complete();
@@ -122,25 +122,17 @@ export function onlyTippyProps(allProps: any) {
 }
 
 export function normalizeClassName(className: string | string[]): string[] {
-  const classes = isString(className) ? className.split(' ') : className;
+  const classes = typeof className === 'string' ? className.split(' ') : className;
 
   return classes.map((klass) => klass?.trim()).filter(Boolean);
 }
 
 export function coerceCssPixelValue<T>(value: T): string {
-  if (isNil(value)) {
+  if (value == null) {
     return '';
   }
 
   return typeof value === 'string' ? value : `${value}px`;
-}
-
-function isString(value: unknown): value is string {
-  return typeof value === 'string';
-}
-
-function isNil(value: any): value is undefined | null {
-  return value === undefined || value === null;
 }
 
 function coerceElement(element: TippyElement) {
