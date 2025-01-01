@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.2.0-alpha.1](https://github.com/ngneat/helipopper/compare/v10.2.0-alpha.0...v10.2.0-alpha.1)(2025-01-01)
+
+
+### Refactor
+
+* tree-shake injection token names ([ff51f57](https://github.com/ngneat/helipopper/commit/ff51f5759787ffbe0dc6cbe7291b71ffe0c81c31))
+
 ### [10.2.0-alpha.0](https://github.com/ngneat/helipopper/compare/v10.1.0-alpha.0...v10.2.0-alpha.0)(2024-12-07)
 
 
