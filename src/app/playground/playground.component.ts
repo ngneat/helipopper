@@ -8,7 +8,8 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { ExampleComponent } from '../example/example.component';
-import { TippyDirective, TippyInstance, TippyService } from '@ngneat/helipopper';
+import type { TippyInstance } from '@ngneat/helipopper/config';
+import { TippyDirective, TippyService } from '@ngneat/helipopper';
 import type { Placement } from 'tippy.js';
 import { startWith } from 'rxjs';
 import { CommonModule } from '@angular/common';

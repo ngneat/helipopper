@@ -12,12 +12,13 @@ import {
   CreateOptions,
   ExtendedTippyInstance,
   TIPPY_CONFIG,
-  TIPPY_REF,
   TippyConfig,
   TippyInstance,
 } from '@ngneat/helipopper/config';
-import { normalizeClassName, onlyTippyProps } from './utils';
+
+import { TIPPY_REF } from './inject-tippy';
 import { TippyFactory } from './tippy.factory';
+import { normalizeClassName, onlyTippyProps } from './utils';
 
 @Injectable({ providedIn: 'root' })
 export class TippyService {

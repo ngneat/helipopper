@@ -48,13 +48,13 @@ import {
 } from './utils';
 import {
   TIPPY_CONFIG,
-  TIPPY_REF,
   TippyConfig,
   TippyInstance,
   TippyProps,
 } from '@ngneat/helipopper/config';
 import { TippyFactory } from './tippy.factory';
 import { coerceBooleanAttribute } from './coercion';
+import { TIPPY_REF } from './inject-tippy';
 
 // These are the default values used by `tippy.js`.
 // We are providing them as default input values.
@@ -183,8 +183,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     transform: coerceBooleanAttribute,
     alias: 'tpHideOnEscape',
   });
-
-  readonly detectChangesComponent = input(true, { alias: 'tpDetectChangesComponent' });
 
   readonly popperWidth = input<number | string | undefined>(undefined, {
     alias: 'tpPopperWidth',
@@ -491,9 +489,16 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
       ...this.viewOptions$,
     });
 
-    // We need to call detectChanges for onPush components to update the content
-    if (this.detectChangesComponent() && isComponent(content)) {
-      this.viewRef.detectChanges();
+    // We need to call `detectChanges` for OnPush components to update their content.
+    if (isComponent(content)) {
+      // `ɵcmp` is a component defition set for any component.
+      // Checking the `onPush` property of the component definition is a
+      // smarter way to determine whether we need to call `detectChanges()`,
+      // as users may be unaware of setting the binding.
+      const isOnPush = (content as { ɵcmp?: { onPush: boolean } }).ɵcmp?.onPush;
+      if (isOnPush) {
+        this.viewRef.detectChanges();
+      }
     }
 
     let newContent = this.viewRef.getElement();
