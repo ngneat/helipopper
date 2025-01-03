@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.2.0-alpha.2](https://github.com/ngneat/helipopper/compare/v10.2.0-alpha.1...v10.2.0-alpha.2)(2025-01-03)
+
+
+### Refactor
+
+* do not export config entry and do some cleanups ([aed43fc](https://github.com/ngneat/helipopper/commit/aed43fc177bfc2d9864a157de70e18ae562d2505))
+
 ### [10.2.0-alpha.1](https://github.com/ngneat/helipopper/compare/v10.2.0-alpha.0...v10.2.0-alpha.1)(2025-01-01)
 
 
