@@ -49,7 +49,7 @@ $ pnpm i @ngneat/helipopper
 Configure it as shown below:
 
 ```ts
-import { provideTippyLoader provideTippyConfig, tooltipVariation, popperVariation } from '@ngneat/helipopper/config';
+import { provideTippyLoader, provideTippyConfig, tooltipVariation, popperVariation } from '@ngneat/helipopper/config';
 
 bootstrapApplication(AppComponent, {
   providers: [
