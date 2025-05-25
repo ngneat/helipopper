@@ -587,13 +587,13 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     // "Unexpected emit for destroyed `OutputRef`".
     if (!this.destroyed) {
       this.isVisible.set(isVisible);
+      this.onHide.emit();
     }
     this.visibleInternal.next(isVisible);
     if (this.visible.observed) {
       this.ngZone.run(() => this.visible.next(isVisible));
     }
     this.globalConfig.onHidden?.(instance);
-    this.onHide.emit();
   }
 
   private isOverflowing$() {
