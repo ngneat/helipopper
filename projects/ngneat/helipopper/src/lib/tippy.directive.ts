@@ -15,6 +15,7 @@ import {
   NgZone,
   OnChanges,
   OnInit,
+  output,
   Output,
   PLATFORM_ID,
   SimpleChanges,
@@ -189,6 +190,10 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
   });
 
   readonly customHost = input<HTMLElement | undefined>(undefined, { alias: 'tpHost' });
+
+  readonly onShow = output<void>({ alias: 'tpOnShow' });
+
+  readonly onHide = output<void>({ alias: 'tpOnHide' });
 
   readonly isVisible = model(false, { alias: 'tpIsVisible' });
 
@@ -432,6 +437,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
             this.setInstanceWidth(instance, this.popperWidth()!);
           }
           this.globalConfig.onShow?.(instance);
+          this.onShow.emit();
         },
         onHide(instance) {
           instance.reference.removeAttribute('data-tippy-open');
@@ -587,6 +593,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
       this.ngZone.run(() => this.visible.next(isVisible));
     }
     this.globalConfig.onHidden?.(instance);
+    this.onHide.emit();
   }
 
   private isOverflowing$() {
