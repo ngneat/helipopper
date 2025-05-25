@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.2.0](https://github.com/ngneat/helipopper/compare/v9.2.1...v10.2.0) (2025-05-25)
+
+
+### Features
+
+* add `@ngneat/helipopper/config` ([fe59df7](https://github.com/ngneat/helipopper/commit/fe59df74269e8ee59d8328a48672783256c16761))
+* allow lazy-loading `tippy.js` ([3913322](https://github.com/ngneat/helipopper/commit/3913322b43f7b23f4ebd51df93bf2dd306e7e169))
+* expose onShow and onHide from tippyJS ([05ef2ee](https://github.com/ngneat/helipopper/commit/05ef2eee5f68122a690a132789e1c782f7d24ffd))
+* switch to signal inputs ([a7b6512](https://github.com/ngneat/helipopper/commit/a7b6512ea91fd4a767c7751a19b77b9482e59703))
+* upgrade to Angular 19 ([d33b7b2](https://github.com/ngneat/helipopper/commit/d33b7b284c2808aab15667a7759ff4e299454894))
+
+
+### Bug Fixes
+
+* do not update `isVisible` signal when view is destroyed ([7c43af9](https://github.com/ngneat/helipopper/commit/7c43af98599463a18858354fb31d33572d1dee9b))
+* enable strict mode ([419bf97](https://github.com/ngneat/helipopper/commit/419bf97219281cf77e824c167d1bea3bd1a11cc6))
+* watch `isEnabled` changes ([c8e1a4f](https://github.com/ngneat/helipopper/commit/c8e1a4f35ebe7fc9207ffbc6372cf4a4d3613259))
+
 ### [10.2.0-alpha.2](https://github.com/ngneat/helipopper/compare/v10.2.0-alpha.1...v10.2.0-alpha.2)(2025-01-03)
 
 
