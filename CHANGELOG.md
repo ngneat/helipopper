@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.2.1](https://github.com/ngneat/helipopper/compare/v10.2.0...v10.2.1) (2025-05-27)
+
+
+### Bug Fixes
+
+* onHide emit only if ref is not destroyed ([300c4f0](https://github.com/ngneat/helipopper/commit/300c4f0c05536f44ae4e7b78396e98753f9192ca))
+
 ## [10.2.0](https://github.com/ngneat/helipopper/compare/v9.2.1...v10.2.0) (2025-05-25)
 
 
