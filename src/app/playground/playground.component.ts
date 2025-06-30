@@ -53,6 +53,7 @@ export class PlaygroundComponent {
   readonly hideOnEsc = computed(() => this.tooltipSettings().hideOnEsc);
 
   noContextText: string | undefined;
+  dynamicContent: string | null | undefined;
   maxWidth = 300;
   show = true;
 
@@ -131,6 +132,10 @@ export class PlaygroundComponent {
 
   copy(item: any) {
     console.log('copy', item);
+  }
+
+  setDynamicContent(content: string | null | undefined) {
+    this.dynamicContent = content;
   }
 
   visibility = false;

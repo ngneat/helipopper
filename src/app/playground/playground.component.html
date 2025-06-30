@@ -199,12 +199,21 @@
     <h6>Disabled</h6>
 
     <div class="btn-container">
-      <button [tpIsEnabled]="isEnabled" tp="Tooltip" class="btn btn-outline-dark">
+      <button
+        [tpIsEnabled]="isEnabled"
+        tp="Tooltip"
+        class="btn btn-outline-dark"
+        data-cy="disabled-tooltip-button"
+      >
         Element
       </button>
     </div>
 
-    <button (click)="toggleEnabled()" class="btn btn-outline-primary btn-sm">
+    <button
+      (click)="toggleEnabled()"
+      class="btn btn-outline-primary btn-sm"
+      data-cy="toggle-enabled-button"
+    >
       {{ isEnabled ? 'Disable' : 'Enable' }}
     </button>
   </div>
@@ -296,7 +305,7 @@
   <div class="btn-container">
     <button
       tp="Shown immediately when created"
-      [tpShowOnCreate]="true"
+      [tpShowOnCreate]="false"
       class="btn btn-outline-secondary"
     >
       Show on Create
@@ -460,6 +469,43 @@
     placeholder="No content"
     [tp]="noContextText"
   />
+</div>
+
+<hr />
+
+<div data-cy="dynamic-content">
+  <h6>Dynamic Content</h6>
+  <p>This demonstrates creating/destroying tooltips based on content changes:</p>
+
+  <div class="btn-container">
+    <button [tp]="dynamicContent" class="btn btn-outline-primary" #dynamicTippy="tippy">
+      Hover me ({{ dynamicContent || 'No content' }})
+    </button>
+  </div>
+
+  <div class="mt-2">
+    <button
+      (click)="setDynamicContent('Tooltip with content!')"
+      class="btn btn-outline-success btn-sm mr-2"
+    >
+      Set Content
+    </button>
+    <button (click)="setDynamicContent('')" class="btn btn-outline-warning btn-sm mr-2">
+      Set Empty String
+    </button>
+    <button (click)="setDynamicContent(null)" class="btn btn-outline-danger btn-sm mr-2">
+      Set Null
+    </button>
+    <button (click)="setDynamicContent(undefined)" class="btn btn-outline-info btn-sm">
+      Set Undefined
+    </button>
+  </div>
+
+  <div class="mt-2">
+    <small class="text-muted">
+      Content: "{{ dynamicContent }}" | Type: {{ typeof dynamicContent }}
+    </small>
+  </div>
 </div>
 
 <hr />

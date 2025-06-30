@@ -5,9 +5,7 @@ import {
   Directive,
   effect,
   ElementRef,
-  EventEmitter,
   inject,
-  Inject,
   Injector,
   input,
   InputSignal,
@@ -16,7 +14,6 @@ import {
   OnChanges,
   OnInit,
   output,
-  Output,
   PLATFORM_ID,
   SimpleChanges,
   untracked,
@@ -197,7 +194,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
 
   readonly isVisible = model(false, { alias: 'tpIsVisible' });
 
-  @Output('tpVisible') visible = new EventEmitter<boolean>();
+  visible = output<boolean>({ alias: 'tpVisible' });
 
   protected instance!: TippyInstance;
   protected viewRef: ViewRef | null = null;
@@ -230,15 +227,16 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
   private isServer = isPlatformServer(inject(PLATFORM_ID));
   private tippyFactory = inject(TippyFactory);
   private destroyed = false;
+  private created = false;
 
-  constructor(
-    @Inject(TIPPY_CONFIG) protected globalConfig: TippyConfig,
-    protected injector: Injector,
-    protected viewService: ViewService,
-    protected vcr: ViewContainerRef,
-    protected ngZone: NgZone,
-    protected hostRef: ElementRef
-  ) {
+  protected globalConfig = inject(TIPPY_CONFIG);
+  protected injector = inject(Injector);
+  protected viewService = inject(ViewService);
+  protected vcr = inject(ViewContainerRef);
+  protected ngZone = inject(NgZone);
+  protected hostRef = inject(ElementRef);
+
+  constructor() {
     if (this.isServer) return;
 
     this.setupListeners();
@@ -373,10 +371,16 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     isEnabled ? this.instance?.enable() : this.instance?.disable();
   }
 
+  protected hasContent(): boolean {
+    return !!(this.content() || this.useTextContent());
+  }
+
   protected createInstance() {
-    if (!this.content() && !this.useTextContent()) {
+    if (this.created || !this.hasContent()) {
       return;
     }
+
+    this.created = true;
 
     this.tippyFactory
       .create(this.host(), {
@@ -391,9 +395,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
           const isVisible = true;
           this.isVisible.set(isVisible);
           this.visibleInternal.next(isVisible);
-          if (this.visible.observed) {
-            this.ngZone.run(() => this.visible.next(isVisible));
-          }
+          this.ngZone.run(() => this.visible.emit(isVisible));
           this.useHostWidth() && this.listenToHostResize();
           this.globalConfig.onMount?.(instance);
         },
@@ -590,9 +592,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
       this.onHide.emit();
     }
     this.visibleInternal.next(isVisible);
-    if (this.visible.observed) {
-      this.ngZone.run(() => this.visible.next(isVisible));
-    }
+    this.ngZone.run(() => this.visible.emit(isVisible));
     this.globalConfig.onHidden?.(instance);
   }
 
@@ -635,6 +635,19 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     effect(() => {
       const isVisible = this.isVisible();
       isVisible ? this.show() : this.hide();
+    });
+
+    effect(() => {
+      const hasContent = this.hasContent();
+
+      if (hasContent && !this.instance && !this.isLazy() && !this.onlyTextOverflow()) {
+        this.createInstance();
+      } else if (!hasContent && this.instance) {
+        this.instance.destroy();
+        this.instance = null as any;
+        this.destroyView();
+        this.created = false;
+      }
     });
   }
 }
