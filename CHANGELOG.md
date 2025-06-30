@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.0.0](https://github.com/ngneat/helipopper/compare/v10.2.1...v11.0.0) (2025-06-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* visible output is no longer an observable. use outputToObservable if you
+need
+
+### Bug Fixes
+
+* 🐛 create tippy when changing from empty to content ([247d13c](https://github.com/ngneat/helipopper/commit/247d13c7bd0c8696353e8e7c6dd448f52d94c1d9)), closes [#138](https://github.com/ngneat/helipopper/issues/138)
+
 ### [10.2.1](https://github.com/ngneat/helipopper/compare/v10.2.0...v10.2.1) (2025-05-27)
 
 
