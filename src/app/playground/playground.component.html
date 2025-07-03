@@ -516,3 +516,31 @@
 </div>
 
 <hr />
+
+<div>
+  <h6>Fullscreen Tooltip Test</h6>
+  <p>This demonstrates tooltips working correctly in fullscreen mode:</p>
+
+  <div class="btn-container">
+    <button
+      (click)="toggleFullscreen()"
+      class="btn btn-outline-primary"
+      tp="fullscreenTooltip"
+      tpPlacement="bottom"
+    >
+      Toggle full screen
+    </button>
+  </div>
+
+  <div class="mt-3">
+    <button
+      class="btn btn-outline-secondary"
+      tp="This tooltip should work in both normal and fullscreen modes!"
+      tpPlacement="top"
+    >
+      Hover me (works in fullscreen)
+    </button>
+  </div>
+</div>
+
+<hr />

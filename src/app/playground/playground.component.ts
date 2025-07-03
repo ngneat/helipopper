@@ -139,4 +139,12 @@ export class PlaygroundComponent {
   }
 
   visibility = false;
+
+  toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
 }

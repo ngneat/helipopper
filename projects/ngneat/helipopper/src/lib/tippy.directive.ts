@@ -385,7 +385,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     this.tippyFactory
       .create(this.host(), {
         allowHTML: true,
-        appendTo: document.body,
+        appendTo: document.fullscreenElement || document.body,
         ...(this.globalConfig.zIndexGetter
           ? { zIndex: this.globalConfig.zIndexGetter() }
           : {}),
