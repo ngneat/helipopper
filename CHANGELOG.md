@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.1.0](https://github.com/ngneat/helipopper/compare/v11.0.0...v11.1.0) (2025-07-03)
+
+
+### Features
+
+* 🎸 support fullscreenElement when active ([a59695d](https://github.com/ngneat/helipopper/commit/a59695d5c0d0f983c23453219e00e8a431bc2f34))
+
 ## [11.0.0](https://github.com/ngneat/helipopper/compare/v10.2.1...v11.0.0) (2025-06-30)
 
 
