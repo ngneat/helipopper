@@ -385,7 +385,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     this.tippyFactory
       .create(this.host(), {
         allowHTML: true,
-        appendTo: document.fullscreenElement || document.body,
+        appendTo: () => document.fullscreenElement || document.body,
         ...(this.globalConfig.zIndexGetter
           ? { zIndex: this.globalConfig.zIndexGetter() }
           : {}),
@@ -589,10 +589,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     // "Unexpected emit for destroyed `OutputRef`".
     if (!this.destroyed) {
       this.isVisible.set(isVisible);
+      this.ngZone.run(() => this.visible.emit(isVisible));
       this.onHide.emit();
     }
     this.visibleInternal.next(isVisible);
-    this.ngZone.run(() => this.visible.emit(isVisible));
+
     this.globalConfig.onHidden?.(instance);
   }
 
