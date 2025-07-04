@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.1.1](https://github.com/ngneat/helipopper/compare/v11.1.0...v11.1.1) (2025-07-04)
+
+
+### Bug Fixes
+
+* 🐛 use function in appendTo ([16a48bb](https://github.com/ngneat/helipopper/commit/16a48bb2db1f1b98c91efa364ca80d0c48659709))
+
 ## [11.1.0](https://github.com/ngneat/helipopper/compare/v11.0.0...v11.1.0) (2025-07-03)
 
 
