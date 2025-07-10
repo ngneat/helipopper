@@ -22,8 +22,8 @@ import {
 import { isPlatformServer } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { Instance } from 'tippy.js';
-import { fromEvent, merge, Observable, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { merge, Observable, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import {
   Content,
   isComponent,
@@ -69,6 +69,9 @@ const defaultTrigger: TippyProps['trigger'] = 'mouseenter focus';
 const defaultTriggerTarget: TippyProps['triggerTarget'] = null;
 const defaultZIndex: TippyProps['zIndex'] = 9999;
 const defaultAnimation: TippyProps['animation'] = 'fade';
+
+// Available since Angular 20.
+declare const ngServerMode: boolean;
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -224,7 +227,10 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
   }
 
   private destroyRef = inject(DestroyRef);
-  private isServer = isPlatformServer(inject(PLATFORM_ID));
+  private isServer =
+    // Drop `isPlatformServer` once `ngServeMode` is available during compilation.
+    (typeof ngServerMode !== 'undefined' && ngServerMode) ||
+    isPlatformServer(inject(PLATFORM_ID));
   private tippyFactory = inject(TippyFactory);
   private destroyed = false;
   private created = false;
@@ -523,35 +529,52 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
   }
 
   protected handleContextMenu() {
-    fromEvent<MouseEvent>(this.host(), 'contextmenu')
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((event: MouseEvent) => {
-        event.preventDefault();
+    const host = this.host();
+    const onContextMenu = (event: MouseEvent) => {
+      event.preventDefault();
 
-        this.instance.setProps({
-          getReferenceClientRect: () =>
-            ({
-              width: 0,
-              height: 0,
-              top: event.clientY,
-              bottom: event.clientY,
-              left: event.clientX,
-              right: event.clientX,
-            } as DOMRectReadOnly),
-        });
-
-        this.instance.show();
+      this.instance.setProps({
+        getReferenceClientRect: () =>
+          ({
+            width: 0,
+            height: 0,
+            top: event.clientY,
+            bottom: event.clientY,
+            left: event.clientX,
+            right: event.clientX,
+          } as DOMRectReadOnly),
       });
+
+      this.instance.show();
+    };
+
+    host.addEventListener('contextmenu', onContextMenu);
+    this.destroyRef.onDestroy(() =>
+      host.removeEventListener('contextmenu', onContextMenu)
+    );
   }
 
   protected handleEscapeButton(): void {
-    fromEvent<KeyboardEvent>(document.body, 'keydown')
-      .pipe(
-        filter(({ code }: KeyboardEvent) => code === 'Escape'),
-        takeUntil(this.visibleInternal.pipe(filter((v) => !v))),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe(() => this.hide());
+    const onKeydown = (event: KeyboardEvent) => {
+      if (event.code === 'Escape') {
+        this.hide();
+      }
+    };
+
+    document.body.addEventListener('keydown', onKeydown);
+
+    // Remove listener when `visibleInternal` becomes false.
+    const visibleSubscription = this.visibleInternal.subscribe((v) => {
+      if (!v) {
+        document.body.removeEventListener('keydown', onKeydown);
+        visibleSubscription.unsubscribe();
+      }
+    });
+
+    this.destroyRef.onDestroy(() => {
+      document.body.removeEventListener('keydown', onKeydown);
+      visibleSubscription.unsubscribe();
+    });
   }
 
   protected checkOverflow(isElementOverflow: boolean) {
@@ -607,16 +630,15 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
         this.contentChanged.pipe(
           // We need to wait for the content to be rendered before we can check if it's overflowing.
           switchMap(() => {
-            return new Observable((subscriber) => {
+            return new Observable<boolean>((subscriber) => {
               const id = window.requestAnimationFrame(() => {
-                subscriber.next();
+                subscriber.next(isElementOverflow(host));
                 subscriber.complete();
               });
 
               return () => cancelAnimationFrame(id);
             });
-          }),
-          map(() => isElementOverflow(host))
+          })
         )
       );
     }
