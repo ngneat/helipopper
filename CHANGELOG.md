@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.1.3](https://github.com/ngneat/helipopper/compare/v11.1.2...v11.1.3) (2025-07-11)
+
+
+### Refactor
+
+* reduce RxJS overhead ([15fbf4d](https://github.com/ngneat/helipopper/commit/15fbf4dc10435f51407a0fd173ef3dfa99201d06))
+
 ### [11.1.2](https://github.com/ngneat/helipopper/compare/v11.1.1...v11.1.2) (2025-07-10)
 
 
