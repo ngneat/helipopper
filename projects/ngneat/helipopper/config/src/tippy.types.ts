@@ -1,6 +1,6 @@
 import type tippy from 'tippy.js';
 import type { Instance, Props } from 'tippy.js';
-import { ElementRef, InjectionToken } from '@angular/core';
+import { ElementRef, InjectionToken, isDevMode } from '@angular/core';
 import type { ResolveViewRef, ViewOptions } from '@ngneat/overview';
 
 export interface CreateOptions extends Partial<TippyProps>, ViewOptions {
@@ -36,17 +36,9 @@ export type TippyConfig = Partial<ExtendedTippyProps>;
 export type TippyLoader = () => typeof tippy | Promise<{ default: typeof tippy }>;
 
 export const TIPPY_LOADER = new InjectionToken<TippyLoader>(
-  typeof ngDevMode !== 'undefined' && ngDevMode ? 'TIPPY_LOADER' : ''
+  isDevMode() ? 'TIPPY_LOADER' : ''
 );
 
 export const TIPPY_CONFIG = new InjectionToken<TippyConfig>(
-  typeof ngDevMode !== 'undefined' && ngDevMode ? 'TIPPY_CONFIG' : ''
+  isDevMode() ? 'TIPPY_CONFIG' : ''
 );
-
-/** @internal */
-declare global {
-  // Indicates whether the application is operating in development mode.
-  // `ngDevMode` is a global flag set by Angular CLI.
-  // https://github.com/angular/angular-cli/blob/9b883fe28862c96720c7899b431174e9b47ad7e4/packages/angular/build/src/tools/esbuild/application-code-bundle.ts#L604
-  const ngDevMode: boolean;
-}
