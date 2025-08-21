@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [11.1.4](https://github.com/ngneat/helipopper/compare/v11.1.1...v11.1.4) (2025-08-21)
+
+
+### Bug Fixes
+
+* **release:** change ngDevMode to isDevMode() ([b9b0b04](https://github.com/ngneat/helipopper/commit/b9b0b0476e33d0f710d018a79db761f8b12d9c99)), closes [#186](https://github.com/ngneat/helipopper/issues/186) [#178](https://github.com/ngneat/helipopper/issues/178)
+
 ### [11.1.3](https://github.com/ngneat/helipopper/compare/v11.1.2...v11.1.3) (2025-07-11)
 
 
