@@ -1,6 +1,6 @@
 import type tippy from 'tippy.js';
 import type { Instance, Props } from 'tippy.js';
-import { ElementRef, InjectionToken, isDevMode } from '@angular/core';
+import { ElementRef, InjectionToken } from '@angular/core';
 import type { ResolveViewRef, ViewOptions } from '@ngneat/overview';
 
 export interface CreateOptions extends Partial<TippyProps>, ViewOptions {
@@ -36,9 +36,9 @@ export type TippyConfig = Partial<ExtendedTippyProps>;
 export type TippyLoader = () => typeof tippy | Promise<{ default: typeof tippy }>;
 
 export const TIPPY_LOADER = new InjectionToken<TippyLoader>(
-  isDevMode() ? 'TIPPY_LOADER' : ''
+  ngDevMode ? 'TIPPY_LOADER' : '',
 );
 
 export const TIPPY_CONFIG = new InjectionToken<TippyConfig>(
-  isDevMode() ? 'TIPPY_CONFIG' : ''
+  ngDevMode ? 'TIPPY_CONFIG' : '',
 );
