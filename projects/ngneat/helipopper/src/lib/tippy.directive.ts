@@ -70,9 +70,6 @@ const defaultTriggerTarget: TippyProps['triggerTarget'] = null;
 const defaultZIndex: TippyProps['zIndex'] = 9999;
 const defaultAnimation: TippyProps['animation'] = 'fade';
 
-// Available since Angular 20.
-declare const ngServerMode: boolean;
-
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[tp]',
@@ -124,7 +121,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     {},
     {
       alias: 'tpPopperOptions',
-    }
+    },
   );
 
   readonly showOnCreate = input(false, {
@@ -217,7 +214,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
   private contentChanged = new Subject<void>();
 
   private host = computed<HTMLElement>(
-    () => this.customHost() || this.hostRef.nativeElement
+    () => this.customHost() || this.hostRef.nativeElement,
   );
 
   // It should be a getter because computations are cached until
@@ -265,7 +262,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
       .filter((key) => key !== 'isVisible')
       .reduce(
         (accumulator, key) => ({ ...accumulator, [key]: changes[key].currentValue }),
-        { ...this.globalConfig.variations?.[variation] }
+        { ...this.globalConfig.variations?.[variation] },
       );
 
     this.updateProps(props);
@@ -287,7 +284,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
         hostInView$
           .pipe(
             switchMap(() => this.isOverflowing$()),
-            takeUntilDestroyed(this.destroyRef)
+            takeUntilDestroyed(this.destroyRef),
           )
           .subscribe((isElementOverflow) => {
             this.checkOverflow(isElementOverflow);
@@ -339,7 +336,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
                 if (this.props.animation) {
                   this.onHidden();
                 }
-              }
+              },
             );
           } else {
             this.visibilityObserverCleanup?.();
@@ -407,7 +404,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
         },
         onCreate: (instance) => {
           instance.popper.classList.add(
-            `tippy-variation-${this.variation() || this.globalConfig.defaultVariation}`
+            `tippy-variation-${this.variation() || this.globalConfig.defaultVariation}`,
           );
           if (this.className()) {
             for (const klass of normalizeClassName(this.className())) {
@@ -542,7 +539,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
             bottom: event.clientY,
             left: event.clientX,
             right: event.clientX,
-          } as DOMRectReadOnly),
+          }) as DOMRectReadOnly,
       });
 
       this.instance.show();
@@ -550,7 +547,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
 
     host.addEventListener('contextmenu', onContextMenu);
     this.destroyRef.onDestroy(() =>
-      host.removeEventListener('contextmenu', onContextMenu)
+      host.removeEventListener('contextmenu', onContextMenu),
     );
   }
 
@@ -638,8 +635,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
 
               return () => cancelAnimationFrame(id);
             });
-          })
-        )
+          }),
+        ),
       );
     }
 

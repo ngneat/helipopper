@@ -1,4 +1,4 @@
-import { inject, Inject, Injectable, Injector } from '@angular/core';
+import { inject, Injectable, Injector } from '@angular/core';
 import {
   isComponent,
   isTemplateRef,
@@ -12,7 +12,6 @@ import {
   CreateOptions,
   ExtendedTippyInstance,
   TIPPY_CONFIG,
-  TippyConfig,
   TippyInstance,
 } from '@ngneat/helipopper/config';
 
@@ -22,20 +21,17 @@ import { normalizeClassName, onlyTippyProps } from './utils';
 
 @Injectable({ providedIn: 'root' })
 export class TippyService {
+  private readonly _injector = inject(Injector);
+  private readonly _globalConfig = inject(TIPPY_CONFIG, { optional: true });
+  private readonly _viewService = inject(ViewService);
   private readonly _tippyFactory = inject(TippyFactory);
-
-  constructor(
-    @Inject(TIPPY_CONFIG) private globalConfig: TippyConfig,
-    private view: ViewService,
-    private injector: Injector
-  ) {}
 
   create<T extends Content>(
     host: HTMLElement,
     content: T,
-    options: Partial<CreateOptions> = {}
+    options: Partial<CreateOptions> = {},
   ): Observable<ExtendedTippyInstance<T>> {
-    const variation = options.variation || this.globalConfig.defaultVariation || '';
+    const variation = options.variation || this._globalConfig?.defaultVariation || '';
     const config = {
       onShow: (instance: ExtendedTippyInstance<T>) => {
         host.setAttribute('data-tippy-open', '');
@@ -48,7 +44,7 @@ export class TippyService {
                   useValue: instance,
                 },
               ],
-              parent: options.injector || this.injector,
+              parent: options.injector || this._injector,
             }),
           };
 
@@ -63,7 +59,7 @@ export class TippyService {
           }
         }
 
-        instance.view ||= this.view.createView(content, {
+        instance.view ||= this._viewService.createView(content, {
           ...options,
           ...instance.$viewOptions,
         }) as ResolveViewRef<T>;
@@ -80,8 +76,8 @@ export class TippyService {
         }
         options?.onHidden?.(instance);
       },
-      ...onlyTippyProps(this.globalConfig),
-      ...this.globalConfig.variations?.[variation],
+      ...onlyTippyProps(this._globalConfig),
+      ...this._globalConfig?.variations?.[variation],
       ...onlyTippyProps(options),
       onCreate: (instance: TippyInstance) => {
         instance.popper.classList.add(`tippy-variation-${variation}`);
@@ -90,7 +86,7 @@ export class TippyService {
             instance.popper.classList.add(klass);
           }
         }
-        this.globalConfig.onCreate?.(instance);
+        this._globalConfig?.onCreate?.(instance);
         options.onCreate?.(instance);
       },
     };
