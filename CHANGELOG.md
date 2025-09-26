@@ -2,7 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [11.1.4](https://github.com/ngneat/helipopper/compare/v11.1.1...v11.1.4) (2025-08-21)
+## [12.0.0](https://github.com/ngneat/helipopper/compare/v11.1.3...v12.0.0) (2025-09-26)
+
+
+### Features
+
+* upgrade to Angular 20 ([2814218](https://github.com/ngneat/helipopper/commit/281421825d2e3e1bf52a8b019af7611cc9150a60))
 
 
 ### Bug Fixes
