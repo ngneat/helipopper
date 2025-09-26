@@ -5,8 +5,6 @@ import type { TippyElement } from '@ngneat/helipopper/config';
 
 import { IntersectionObserver } from './intersection-observer';
 
-declare const ResizeObserver: any;
-
 let supportsIntersectionObserver = false;
 let supportsResizeObserver = false;
 
@@ -24,7 +22,7 @@ export function inView(
   options: IntersectionObserverInit = {
     root: null,
     threshold: 0.3,
-  }
+  },
 ) {
   const element = coerceElement(host);
 
@@ -65,7 +63,7 @@ export function overflowChanges(host: TippyElement) {
 
   return dimensionsChanges(element).pipe(
     auditTime(150),
-    map(() => isElementOverflow(element))
+    map(() => isElementOverflow(element)),
   );
 }
 
@@ -85,6 +83,10 @@ export function dimensionsChanges(target: HTMLElement) {
 
 export function onlyTippyProps(allProps: any) {
   const tippyProps: any = {};
+
+  if (!allProps) {
+    return tippyProps;
+  }
 
   const ownProps = [
     'useTextContent',
