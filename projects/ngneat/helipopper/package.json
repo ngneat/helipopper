@@ -4,7 +4,7 @@
   "description": "A Powerful Tooltip and Popover for Angular Applications",
   "dependencies": {
     "tslib": "^2.3.0",
-    "@ngneat/overview": "^6.1.0",
+    "@ngneat/overview": "^7.0.0",
     "tippy.js": "6.3.7"
   },
   "peerDependencies": {

@@ -74,7 +74,6 @@ const defaultAnimation: TippyProps['animation'] = 'fade';
   // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[tp]',
   exportAs: 'tippy',
-  standalone: true,
 })
 export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
   readonly appendTo = input(defaultAppendTo, {
