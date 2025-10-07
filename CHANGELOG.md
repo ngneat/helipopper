@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [12.1.0](https://github.com/ngneat/helipopper/compare/v12.0.0...v12.1.0) (2025-10-07)
+
+
+### Features
+
+* 🎸 upgrade overview ([c689f24](https://github.com/ngneat/helipopper/commit/c689f242898da0cd33d6ca30cc7723188aeae9d0))
+
 ## [12.0.0](https://github.com/ngneat/helipopper/compare/v11.1.3...v12.0.0) (2025-09-26)
 
 
