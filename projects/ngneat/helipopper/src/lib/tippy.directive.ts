@@ -54,6 +54,17 @@ import { TippyFactory } from './tippy.factory';
 import { coerceBooleanAttribute } from './coercion';
 import { TIPPY_REF } from './inject-tippy';
 
+// An arrow function defined inside a method closes over the method's lexical scope,
+// causing V8 to allocate a Context object that indirectly references the directive
+// instance — keeping it alive after destroy.
+//
+// A bound function (JSBoundFunction) has no [[context]] field in V8's heap layout;
+// it only stores { bound_target_function, bound_this, bound_arguments }.
+// Binding to `null` produces a context-free callable, breaking the retention chain.
+const appendTo = function appendTo() {
+  return document.fullscreenElement || document.body;
+}.bind(null);
+
 // These are the default values used by `tippy.js`.
 // We are providing them as default input values.
 // The `tippy.js` repository has been archived and is unlikely to
@@ -386,8 +397,8 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
 
     this.tippyFactory
       .create(this.host(), {
+        appendTo,
         allowHTML: true,
-        appendTo: () => document.fullscreenElement || document.body,
         ...(this.globalConfig.zIndexGetter
           ? { zIndex: this.globalConfig.zIndexGetter() }
           : {}),
