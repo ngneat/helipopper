@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [12.1.2](https://github.com/ngneat/helipopper/compare/v12.1.0...v12.1.2) (2026-04-12)
+
+
+### Bug Fixes
+
+* **tippy:** break appendTo closure to prevent directive memory leak ([#196](https://github.com/ngneat/helipopper/issues/196)) ([747b62e](https://github.com/ngneat/helipopper/commit/747b62e268fd9694b7b6e9ee45e99e1820bd8c2e))
+
 ### [12.1.1](https://github.com/ngneat/helipopper/compare/v12.1.0...v12.1.1) (2026-04-12)
 
 
