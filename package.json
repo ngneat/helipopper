@@ -30,8 +30,7 @@
     "e2e:chrome": "start-test serve:playground 4200 cy:run:chrome",
     "e2e:chromium": "start-test serve:playground 4200 cy:run:chromium",
     "// - CI": "CI Testing",
-    "test:ci:e2e": "start-test serve:playground:static 4200 cy:run",
-    "test:playground:ci": "cross-env CI=true npm run test:playground -- --watch=false --browsers=ChromeHeadlessCustom"
+    "test:ci:e2e": "start-test serve:playground:static 4200 cy:run"
   },
   "private": true,
   "dependencies": {
