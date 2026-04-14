@@ -40,7 +40,7 @@ export class PlaygroundComponent {
 
   readonly tooltipSettings = toSignal(
     this.tooltipSettingsForm.valueChanges.pipe(startWith(this.tooltipSettingsForm.value)),
-    { requireSync: true }
+    { requireSync: true },
   );
 
   readonly tooltipPosition = computed(() => {
@@ -68,6 +68,7 @@ export class PlaygroundComponent {
   }));
 
   isEnabled = true;
+  allEnabled = true;
   text = `Only shown when text is overflowed 1`;
   text2 = `Short`;
   text3 = `Short`;
@@ -76,7 +77,10 @@ export class PlaygroundComponent {
   @ViewChild('inputName', { static: true }) inputName!: ElementRef;
   @ViewChild('inputNameComp', { static: true }) inputNameComp!: ElementRef;
 
-  constructor(private fb: UntypedFormBuilder, private service: TippyService) {}
+  constructor(
+    private fb: UntypedFormBuilder,
+    private service: TippyService,
+  ) {}
 
   toggleText(text: string, index: number) {
     const resolved =
@@ -93,6 +97,11 @@ export class PlaygroundComponent {
 
   toggleEnabled() {
     this.isEnabled = !this.isEnabled;
+  }
+
+  toggleAllEnabled() {
+    this.allEnabled = !this.allEnabled;
+    this.allEnabled ? this.service.enableAll() : this.service.disableAll();
   }
 
   handleStatus($event: boolean): void {

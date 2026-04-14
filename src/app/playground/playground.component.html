@@ -510,6 +510,39 @@
 
 <hr />
 
+<div id="disable-all" data-cy="disable-all-section">
+  <h6>Disable All / Enable All</h6>
+
+  <div class="btn-container">
+    <button tp="Tooltip A" class="btn btn-outline-dark" data-cy="disable-all-tooltip-a">
+      Tooltip A
+    </button>
+
+    <button tp="Tooltip B" class="btn btn-outline-dark" data-cy="disable-all-tooltip-b">
+      Tooltip B
+    </button>
+
+    <button
+      tp="Locally disabled"
+      [tpIsEnabled]="false"
+      class="btn btn-outline-dark"
+      data-cy="disable-all-tooltip-local"
+    >
+      Always disabled
+    </button>
+  </div>
+
+  <button
+    (click)="toggleAllEnabled()"
+    class="btn btn-outline-primary btn-sm mt-2"
+    data-cy="toggle-all-button"
+  >
+    {{ allEnabled ? 'Disable All' : 'Enable All' }}
+  </button>
+</div>
+
+<hr />
+
 <div>
   <h6>Use text content</h6>
   <span tp tpUseTextContent>{{ text }}</span>
