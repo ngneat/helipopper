@@ -49,12 +49,14 @@ export function inView(
 }
 
 export function isElementOverflow(host: HTMLElement): boolean {
-  // Don't access the `offsetWidth` multiple times since it triggers layout updates.
+  // Don't access the `offsetWidth`/`offsetHeight` multiple times since it triggers layout updates.
   const hostOffsetWidth = host.offsetWidth;
+  const hostOffsetHeight = host.offsetHeight;
 
   return (
     hostOffsetWidth > host.parentElement!.offsetWidth ||
-    hostOffsetWidth < host.scrollWidth
+    hostOffsetWidth < host.scrollWidth ||
+    hostOffsetHeight < host.scrollHeight
   );
 }
 
