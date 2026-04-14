@@ -12,7 +12,6 @@ import {
   model,
   NgZone,
   OnChanges,
-  OnInit,
   output,
   PLATFORM_ID,
   SimpleChanges,
@@ -87,7 +86,7 @@ const defaultAnimation: TippyProps['animation'] = 'fade';
   selector: '[tp]',
   exportAs: 'tippy',
 })
-export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
+export class TippyDirective implements OnChanges, AfterViewInit {
   readonly appendTo = input(defaultAppendTo, {
     alias: 'tpAppendTo',
   });
@@ -280,12 +279,6 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     this.updateProps(props);
   }
 
-  ngOnInit() {
-    if (this.useHostWidth()) {
-      this.props.maxWidth = this.hostWidth;
-    }
-  }
-
   ngAfterViewInit() {
     if (this.isServer) return;
 
@@ -448,6 +441,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
           instance.setContent(content);
           this.hideOnEscape() && this.handleEscapeButton();
 
+          this.clearInstanceWidth(instance);
           if (this.useHostWidth()) {
             this.setInstanceWidth(instance, this.hostWidth);
           } else if (this.popperWidth()) {
@@ -606,6 +600,12 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
       });
   }
 
+  protected clearInstanceWidth(instance: Instance) {
+    instance.popper.style.width = '';
+    instance.popper.style.maxWidth = '';
+    (instance.popper.firstElementChild as HTMLElement).style.maxWidth = '';
+  }
+
   protected setInstanceWidth(instance: Instance, width: string | number) {
     const inPixels = coerceCssPixelValue(width);
     instance.popper.style.width = inPixels;
@@ -663,6 +663,11 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
     });
 
     effect(() => this.setStatus(this.tippyService.enabled() && this.isEnabled()));
+
+    effect(() => {
+      const maxWidth = this.useHostWidth() ? this.hostWidth : defaultMaxWidth;
+      untracked(() => this.setProps({ ...this.props, maxWidth }));
+    });
 
     effect(() => {
       const isVisible = this.isVisible();
