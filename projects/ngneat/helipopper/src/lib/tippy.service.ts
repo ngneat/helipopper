@@ -1,4 +1,4 @@
-import { inject, Injectable, Injector } from '@angular/core';
+import { inject, Injectable, Injector, signal } from '@angular/core';
 import {
   isComponent,
   isTemplateRef,
@@ -25,6 +25,16 @@ export class TippyService {
   private readonly _globalConfig = inject(TIPPY_CONFIG, { optional: true });
   private readonly _viewService = inject(ViewService);
   private readonly _tippyFactory = inject(TippyFactory);
+
+  readonly enabled = signal(true);
+
+  enableAll(): void {
+    this.enabled.set(true);
+  }
+
+  disableAll(): void {
+    this.enabled.set(false);
+  }
 
   create<T extends Content>(
     host: HTMLElement,

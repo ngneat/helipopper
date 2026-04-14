@@ -51,6 +51,7 @@ import {
   TippyProps,
 } from '@ngneat/helipopper/config';
 import { TippyFactory } from './tippy.factory';
+import { TippyService } from './tippy.service';
 import { coerceBooleanAttribute } from './coercion';
 import { TIPPY_REF } from './inject-tippy';
 
@@ -234,6 +235,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
   }
 
   private destroyRef = inject(DestroyRef);
+  private tippyService = inject(TippyService);
   private isServer =
     // Drop `isPlatformServer` once `ngServeMode` is available during compilation.
     (typeof ngServerMode !== 'undefined' && ngServerMode) ||
@@ -660,7 +662,7 @@ export class TippyDirective implements OnChanges, AfterViewInit, OnInit {
       untracked(() => this.contentChanged.next());
     });
 
-    effect(() => this.setStatus(this.isEnabled()));
+    effect(() => this.setStatus(this.tippyService.enabled() && this.isEnabled()));
 
     effect(() => {
       const isVisible = this.isVisible();
