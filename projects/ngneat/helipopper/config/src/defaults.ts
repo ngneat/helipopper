@@ -7,7 +7,7 @@ export const tooltipVariation: Variation = {
   theme: undefined,
   arrow: false,
   animation: 'scale',
-  trigger: 'mouseenter',
+  trigger: 'mouseenter focus',
   offset: [0, 5],
 };
 
