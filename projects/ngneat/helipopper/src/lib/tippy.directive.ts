@@ -266,17 +266,30 @@ export class TippyDirective implements OnChanges, AfterViewInit {
   ngOnChanges(changes: SimpleChanges) {
     if (this.isServer) return;
 
-    const variation = this.variation() || this.globalConfig.defaultVariation || '';
-    const props = Object.keys(changes)
-      // `isVisible` is not required as a prop since we update it manually
-      // in an effect-like manner.
+    // `isVisible` is not required as a prop since we update it manually
+    // in an effect-like manner.
+    const changedProps = Object.keys(changes)
       .filter((key) => key !== 'isVisible')
       .reduce(
         (accumulator, key) => ({ ...accumulator, [key]: changes[key].currentValue }),
-        { ...this.globalConfig.variations?.[variation] },
+        {} as Partial<TippyConfig>,
       );
 
-    this.updateProps(props);
+    // Variation defaults are applied only on the first call or when the variation
+    // input itself changes. Re-applying them on every ngOnChanges call would
+    // overwrite explicitly-bound inputs (e.g. tpTrigger) with variation defaults
+    // whenever any other input (e.g. tpData, tpIsEnabled) changes.
+    if (!this.variationDefined || 'variation' in changes) {
+      this.variationDefined = true;
+      const variation = this.variation() || this.globalConfig.defaultVariation || '';
+      this.setProps({
+        ...this.globalConfig.variations?.[variation],
+        ...this.props,
+        ...changedProps,
+      });
+    } else {
+      this.updateProps(changedProps);
+    }
   }
 
   ngAfterViewInit() {
