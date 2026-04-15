@@ -26,7 +26,7 @@ export function inView(
 ) {
   const element = coerceElement(host);
 
-  return new Observable((subscriber) => {
+  return new Observable<void>((subscriber) => {
     if (!supportsIntersectionObserver) {
       subscriber.next();
       subscriber.complete();
@@ -70,14 +70,14 @@ export function overflowChanges(host: TippyElement) {
 }
 
 export function dimensionsChanges(target: HTMLElement) {
-  return new Observable<boolean>((subscriber) => {
+  return new Observable<void>((subscriber) => {
     if (!supportsResizeObserver) {
       subscriber.next();
       subscriber.complete();
       return;
     }
 
-    const observer = new ResizeObserver(() => subscriber.next(true));
+    const observer = new ResizeObserver(() => subscriber.next());
     observer.observe(target);
     return () => observer.disconnect();
   });

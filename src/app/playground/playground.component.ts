@@ -12,14 +12,13 @@ import type { TippyInstance } from '@ngneat/helipopper/config';
 import { TippyDirective, TippyService } from '@ngneat/helipopper';
 import type { Placement } from 'tippy.js';
 import { startWith } from 'rxjs';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-is-visible',
   templateUrl: './playground.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TippyDirective, ExampleComponent],
+  imports: [ReactiveFormsModule, TippyDirective, ExampleComponent],
 })
 export class PlaygroundComponent {
   tooltipPositions = ['auto', 'top', 'right', 'bottom', 'left'];
