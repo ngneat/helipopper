@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [12.2.0](https://github.com/ngneat/helipopper/compare/v12.1.2...v12.2.0) (2026-04-15)
+
+
+### Features
+
+* add disableAll/enableAll to TippyService ([#198](https://github.com/ngneat/helipopper/issues/198)) ([12fbad5](https://github.com/ngneat/helipopper/commit/12fbad5cd8f1a878b1ea1de8acd5187c1887f358)), closes [#117](https://github.com/ngneat/helipopper/issues/117)
+
+
+### Bug Fixes
+
+* detect vertical overflow for line-clamp truncation ([#201](https://github.com/ngneat/helipopper/issues/201)) ([502997a](https://github.com/ngneat/helipopper/commit/502997a6c1ab803d7dd73e4bbba6b25aede2ad92)), closes [#195](https://github.com/ngneat/helipopper/issues/195)
+* preserve explicit inputs across ngOnChanges updates ([#202](https://github.com/ngneat/helipopper/issues/202)) ([5b95cb1](https://github.com/ngneat/helipopper/commit/5b95cb1f406fad62045ddaf46412ab9953088797)), closes [#191](https://github.com/ngneat/helipopper/issues/191)
+* restore focus trigger in tooltipVariation ([#200](https://github.com/ngneat/helipopper/issues/200)) ([d3a3d58](https://github.com/ngneat/helipopper/commit/d3a3d58f8db0919bba3bb9b00d2403cc0d7d6193)), closes [#187](https://github.com/ngneat/helipopper/issues/187)
+* **tippy:** react to useHostWidth input changes after init ([#199](https://github.com/ngneat/helipopper/issues/199)) ([b126342](https://github.com/ngneat/helipopper/commit/b126342da66e1203ecc386e20e302b4e5c998259)), closes [#155](https://github.com/ngneat/helipopper/issues/155)
+
 ### [12.1.2](https://github.com/ngneat/helipopper/compare/v12.1.0...v12.1.2) (2026-04-12)
 
 
