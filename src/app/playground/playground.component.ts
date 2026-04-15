@@ -4,10 +4,13 @@ import {
   ElementRef,
   ViewChild,
   computed,
+  inputBinding,
+  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { ExampleComponent } from '../example/example.component';
+import { BindingsExampleComponent } from '../bindings-example/bindings-example.component';
 import type { TippyInstance } from '@ngneat/helipopper/config';
 import { TippyDirective, TippyService } from '@ngneat/helipopper';
 import type { Placement } from 'tippy.js';
@@ -72,6 +75,12 @@ export class PlaygroundComponent {
   text2 = `Short`;
   text3 = `Short`;
   comp = ExampleComponent;
+
+  bindingsComp = BindingsExampleComponent;
+  readonly bindingsGreeting = signal('Hello from inputBinding!');
+  readonly bindingsExampleBindings = [
+    inputBinding('greeting', () => this.bindingsGreeting()),
+  ];
 
   @ViewChild('inputName', { static: true }) inputName!: ElementRef;
   @ViewChild('inputNameComp', { static: true }) inputNameComp!: ElementRef;

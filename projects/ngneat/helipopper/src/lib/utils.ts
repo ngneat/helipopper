@@ -112,6 +112,8 @@ export function onlyTippyProps(allProps: any) {
     'popperWidth',
     'zIndexGetter',
     'staticWidthHost',
+    'bindings',
+    'directives',
   ];
 
   const overriddenMethods = ['onShow', 'onHidden', 'onCreate'];

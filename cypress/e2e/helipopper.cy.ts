@@ -149,6 +149,16 @@ describe('@ngneat/helipopper', () => {
     });
   });
 
+  describe('Component bindings (tpBindings)', () => {
+    it('should pass inputBinding values to the component', () => {
+      cy.get('[data-cy="bindings-example-button"]')
+        .click({ force: true })
+        .get('app-bindings-example')
+        .contains('Greeting: Hello from inputBinding!')
+        .should('exist');
+    });
+  });
+
   describe('Dynamic content', () => {
     const dynamicButtonSelector = '[data-cy="dynamic-content"] .btn-container button';
     const setContentButton = '[data-cy="dynamic-content"] button:contains("Set Content")';

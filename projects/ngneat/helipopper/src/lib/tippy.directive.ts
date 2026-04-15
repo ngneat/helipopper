@@ -183,6 +183,14 @@ export class TippyDirective implements OnChanges, AfterViewInit {
 
   readonly data = input<any>(undefined, { alias: 'tpData' });
 
+  /** Angular `inputBinding`/`outputBinding`/`twoWayBinding` descriptors forwarded to `createComponent`. */
+  readonly bindings = input<ViewOptions['bindings']>(undefined, { alias: 'tpBindings' });
+
+  /** Host directives (with optional bindings) forwarded to `createComponent`. */
+  readonly directives = input<ViewOptions['directives']>(undefined, {
+    alias: 'tpDirectives',
+  });
+
   readonly useHostWidth = input(false, {
     transform: coerceBooleanAttribute,
     alias: 'tpUseHostWidth',
@@ -526,6 +534,8 @@ export class TippyDirective implements OnChanges, AfterViewInit {
 
         this.viewOptions$ = {
           injector,
+          bindings: this.bindings(),
+          directives: this.directives(),
         };
       } else if (isTemplateRef(content)) {
         this.viewOptions$ = {
