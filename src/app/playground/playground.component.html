@@ -1,48 +1,48 @@
 <button (click)="show = !show">Toggle All</button>
 
-<ng-container *ngIf="show">
+@if (show) {
   <div
     id="tippy-playground"
     [formGroup]="tooltipSettingsForm"
     style="text-transform: capitalize"
   >
-    <div *ngFor="let option of tooltipTypes" class="flex items-center">
-      <input
-        type="radio"
-        formControlName="type"
-        name="type"
-        [value]="option"
-        class="mr-4"
-      />
-      {{ option }}
-    </div>
-
+    @for (option of tooltipTypes; track option) {
+      <div class="flex items-center">
+        <input
+          type="radio"
+          formControlName="type"
+          name="type"
+          [value]="option"
+          class="mr-4"
+        />
+        {{ option }}
+      </div>
+    }
     <hr />
-
-    <div *ngFor="let option of tooltipPositions" class="flex items-center">
-      <input
-        type="radio"
-        formControlName="position"
-        name="position"
-        [value]="option"
-        class="mr-4"
-      />{{ option }}
-    </div>
-
+    @for (option of tooltipPositions; track option) {
+      <div class="flex items-center">
+        <input
+          type="radio"
+          formControlName="position"
+          name="position"
+          [value]="option"
+          class="mr-4"
+        />{{ option }}
+      </div>
+    }
     <hr />
-
-    <div *ngFor="let option of tooltipAlignments" class="flex items-center">
-      <input
-        type="radio"
-        formControlName="alignment"
-        name="alignment"
-        [value]="option.value"
-        class="mr-4"
-      />{{ option.label }}
-    </div>
-
+    @for (option of tooltipAlignments; track option) {
+      <div class="flex items-center">
+        <input
+          type="radio"
+          formControlName="alignment"
+          name="alignment"
+          [value]="option.value"
+          class="mr-4"
+        />{{ option.label }}
+      </div>
+    }
     <hr />
-
     <label>
       <input
         type="checkbox"
@@ -52,7 +52,6 @@
       />
       Hide on press escape button
     </label>
-
     <div class="btn-container">
       <button
         class="btn btn-outline-primary"
@@ -65,11 +64,8 @@
       </button>
     </div>
   </div>
-
   <hr />
-
   <h6>Default variation</h6>
-
   <div class="btn-container">
     <button
       tp="Default tooltip"
@@ -79,12 +75,9 @@
       Click Me
     </button>
   </div>
-
   <hr />
-
   <div>
     <h6>NIL values</h6>
-
     <div class="btn-container" id="tippy-value-non-nil">
       <button
         [tp]="'I have a tooltip value different from nil'"
@@ -94,25 +87,20 @@
         Click me to see my tooltip
       </button>
     </div>
-
     <div class="btn-container" id="tippy-value-null">
       <button [tp]="null" tpVariation="popper" class="btn btn-outline-secondary">
         Click me but I won't show a tooltip
       </button>
     </div>
-
     <div class="btn-container" id="tippy-value-undefined">
       <button [tp]="undefined" tpVariation="popper" class="btn btn-outline-secondary">
         Click me but I won't show a tooltip
       </button>
     </div>
   </div>
-
   <hr />
-
   <div>
     <h6>Custom Template</h6>
-
     <div class="btn-container" id="custom-template">
       <button
         [tp]="tpl"
@@ -124,42 +112,36 @@
       </button>
       Visible: {{ tippy2.isVisible() }}
     </div>
-
     <ng-template #tpl let-hide>
       <app-example />
-      <div *ngFor="let item of tooltipPositions" class="positions">
-        {{ item }}
-      </div>
+      @for (item of tooltipPositions; track item) {
+        <div class="positions">
+          {{ item }}
+        </div>
+      }
     </ng-template>
-
     <hr />
-
     <h6>ng-container</h6>
     <div class="btn-container">
       <button [tp]="tpl2" tpVariation="popper" class="btn btn-outline-secondary">
         Click Me
       </button>
     </div>
-
     <ng-template #tpl2>
       <ng-container>
         <div>Hello</div>
       </ng-container>
     </ng-template>
   </div>
-
   <hr />
-
   <div id="custom-component">
     <h6>Custom Component</h6>
-
     <div>
       <label>
         Name:
         <input type="text" #input (keyup)="(true)" value="ngneat" />
       </label>
     </div>
-
     <div class="btn-container">
       <button
         class="btn btn-outline-danger"
@@ -172,38 +154,31 @@
       </button>
     </div>
   </div>
-
   <hr />
-
   <div id="manual-trigger" class="block">
     <h6>Manual Trigger</h6>
-
     <div class="btn-container items-center">
       <p tp="Helpful Message" tpTrigger="manual" #tippy="tippy" class="mr-4">
         Click open to see me
       </p>
-
       <button (click)="tippy.show()" class="btn btn-outline-dark">Open</button>
       <button (click)="tippy.hide()" class="btn btn-outline-dark">Close</button>
     </div>
   </div>
-
   <hr />
-
   <div id="lazy">
     <h6>Lazy</h6>
     <div style="height: 300px; overflow-y: auto">
-      <div *ngFor="let item of items" [tp]="item.label" [tpIsLazy]="true">
-        {{ item.label }}
-      </div>
+      @for (item of items; track item) {
+        <div [tp]="item.label" [tpIsLazy]="true">
+          {{ item.label }}
+        </div>
+      }
     </div>
   </div>
-
   <hr />
-
   <div id="disabled">
     <h6>Disabled</h6>
-
     <div class="btn-container">
       <button
         [tpIsEnabled]="isEnabled"
@@ -214,7 +189,6 @@
         Element
       </button>
     </div>
-
     <button
       (click)="toggleEnabled()"
       class="btn btn-outline-primary btn-sm"
@@ -223,12 +197,9 @@
       {{ isEnabled ? 'Disable' : 'Enable' }}
     </button>
   </div>
-
   <hr />
-
   <div id="text-overflow">
     <h6>Text Overflow</h6>
-
     <p>Start with overflow and change to not overflow</p>
     <div style="max-width: 100px" class="overflow-hidden flex">
       <p
@@ -241,7 +212,6 @@
         {{ text }}
       </p>
     </div>
-
     <button
       data-cy="content-toggler"
       (click)="text = toggleText(text, 1)"
@@ -249,9 +219,7 @@
     >
       Change content
     </button>
-
     <hr />
-
     <p>Start with not overflow and change to overflow by decreasing the host width</p>
     <div [style.maxWidth.px]="maxWidth" class="overflow-hidden flex">
       <p
@@ -264,7 +232,6 @@
         {{ text2 }}
       </p>
     </div>
-
     <button
       data-cy="width-toggler"
       (click)="toggleMaxWidth()"
@@ -279,7 +246,6 @@
     >
       Change content
     </button>
-
     <p>Start with not overflow and change to overflow by changing the content</p>
     <div style="max-width: 100px" class="overflow-hidden flex">
       <p
@@ -294,7 +260,6 @@
         {{ text3 }}
       </p>
     </div>
-
     <button
       data-cy="content-toggler"
       (click)="text3 = toggleText(text3, 3)"
@@ -303,11 +268,8 @@
       Change content
     </button>
   </div>
-
   <hr />
-
   <h6>Show on Create</h6>
-
   <div class="btn-container">
     <button
       tp="Shown immediately when created"
@@ -317,11 +279,8 @@
       Show on Create
     </button>
   </div>
-
   <hr />
-
   <h6>Declaritive visibility (already set true before render in the component)</h6>
-
   <div class="btn-container">
     <button
       tp="I'm a declarative tooltip"
@@ -335,7 +294,6 @@
       Declaritive Tooltip
     </button>
   </div>
-
   <button
     (click)="visibility = !visibility"
     data-cy="trigger-declarative"
@@ -343,12 +301,9 @@
   >
     Toggle tooltip
   </button>
-
   <hr />
-
   <div id="service">
     <h6>Using the Service</h6>
-
     <div class="btn-container">
       <button class="btn btn-outline-dark" (click)="useService(host)" #host>Text</button>
       <button class="btn btn-outline-dark" (click)="useServiceComponent(host2)" #host2>
@@ -356,32 +311,28 @@
       </button>
     </div>
   </div>
-
   <ng-template #contextMenu let-hide let-item="data">
     <ul class="list-group list-group-flush">
       <li class="list-group-item" (click)="copy(item); hide()">Copy</li>
       <li class="list-group-item" (click)="duplicate(item); hide()">Duplicate</li>
     </ul>
   </ng-template>
-
   <div id="context-menu">
     <h6>Context menu</h6>
-
     <ul class="list-group">
-      <li
-        class="list-group-item"
-        *ngFor="let item of list"
-        [tp]="contextMenu"
-        [tpData]="item"
-        tpVariation="contextMenu"
-      >
-        {{ item.label }}
-      </li>
+      @for (item of list; track item) {
+        <li
+          class="list-group-item"
+          [tp]="contextMenu"
+          [tpData]="item"
+          tpVariation="contextMenu"
+        >
+          {{ item.label }}
+        </li>
+      }
     </ul>
   </div>
-
   <hr />
-
   <div>
     <h6>Use host width</h6>
     <div class="flex">
@@ -395,12 +346,9 @@
       />
     </div>
   </div>
-
   <hr />
-
   <div>
     <h6>Menu</h6>
-
     <div class="dropdown">
       <button
         class="btn btn-secondary dropdown-toggle"
@@ -410,7 +358,6 @@
       >
         Dropdown button
       </button>
-
       <ng-template #one>
         <div>
           <a class="dropdown-item" href="#">Action</a>
@@ -426,7 +373,6 @@
           <a class="dropdown-item" href="#">Something else here</a>
         </div>
       </ng-template>
-
       <ng-template #two>
         <div>
           <a class="dropdown-item" href="#">Action 2</a>
@@ -442,7 +388,6 @@
           >
         </div>
       </ng-template>
-
       <ng-template #three>
         <div>
           <a class="dropdown-item" href="#">Action 3</a>
@@ -452,7 +397,7 @@
       </ng-template>
     </div>
   </div>
-</ng-container>
+}
 
 <div>
   <h6>Sanitize</h6>

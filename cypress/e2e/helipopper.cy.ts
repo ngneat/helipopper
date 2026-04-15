@@ -102,6 +102,11 @@ describe('@ngneat/helipopper', () => {
         .get(tippyTriggerSelector)
         .click({ force: true })
         .get(popperSelector)
+        .should('exist')
+        .then(() => {
+          cy.get('body').trigger('keydown', { code: 'Escape', bubbles: true });
+        })
+        .get(popperSelector)
         .should('not.exist');
     });
   });
@@ -116,11 +121,15 @@ describe('@ngneat/helipopper', () => {
 
       cy.get('[data-cy="content-toggler"]').first().click();
 
+      // Tippy removes .tippy-box from the DOM only after the hide animation
+      // (transitionend). Wait here so that: (a) the animating element is gone
+      // before we re-trigger, and (b) Angular's zoneless scheduler has had time
+      // to flush CD and disable the instance via checkOverflow().
+      cy.get('.tippy-content').should('not.exist');
+
       cy.get('[data-cy="overflow-case-1"]').trigger('mouseenter');
 
-      cy.get('.tippy-content')
-        .contains('Only shown when text is overflowed 1')
-        .should('not.exist');
+      cy.get('.tippy-content').should('not.exist');
     });
 
     it('should show tooltip when decreasing the tp host width', () => {

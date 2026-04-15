@@ -1,4 +1,4 @@
-import { inject, InjectionToken, isDevMode } from '@angular/core';
+import { inject, InjectionToken } from '@angular/core';
 import type { TippyInstance } from '@ngneat/helipopper/config';
 
 import { TippyErrorCode } from './utils';

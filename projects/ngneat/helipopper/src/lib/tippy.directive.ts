@@ -1,4 +1,5 @@
 import {
+  afterEveryRender,
   AfterViewInit,
   computed,
   DestroyRef,
@@ -255,6 +256,19 @@ export class TippyDirective implements OnChanges, AfterViewInit {
 
     this.setupListeners();
 
+    // `afterEveryRender` fires synchronously within Angular's CD cycle.
+    // This lets us update the enabled/disabled state of the instance BEFORE a
+    // synthetic mouseenter event is dispatched, which fixes test timing when
+    // Angular-triggered changes (content/style bindings) cause the overflow
+    // state to change. ResizeObserver (`overflowChanges`) remains as a fallback
+    // for non-Angular-triggered resize events (browser window resize, etc.).
+    afterEveryRender({
+      read: () => {
+        if (!this.onlyTextOverflow()) return;
+        untracked(() => this.checkOverflow(isElementOverflow(this.host())));
+      },
+    });
+
     this.destroyRef.onDestroy(() => {
       this.destroyed = true;
       this.instance?.destroy();
@@ -435,6 +449,16 @@ export class TippyDirective implements OnChanges, AfterViewInit {
           }
         },
         onShow: (instance) => {
+          // In onlyTextOverflow mode the tooltip must not appear when the host is
+          // not overflowing. Returning false from onShow prevents tippy from
+          // showing regardless of the instance's enabled/disabled state. This
+          // acts as a last-resort guard for cases where checkOverflow() hasn't
+          // been called yet (e.g. Angular's scheduler hasn't flushed CD between
+          // the content/width change and the trigger event).
+          if (this.onlyTextOverflow() && !isElementOverflow(this.host())) {
+            return false;
+          }
+
           instance.reference.setAttribute('data-tippy-open', '');
 
           // We're re-entering because we might create an Angular component,

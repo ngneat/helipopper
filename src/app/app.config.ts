@@ -1,4 +1,4 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import {
   popperVariation,
@@ -18,8 +18,7 @@ function getZIndex() {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    // TODO: some e2e tests are failing with zoneless enabled.
-    // provideExperimentalZonelessChangeDetection(),
+    provideZonelessChangeDetection(),
 
     provideRouter(routes),
 
