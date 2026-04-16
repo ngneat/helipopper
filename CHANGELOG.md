@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [13.0.0](https://github.com/ngneat/helipopper/compare/v12.2.0...v13.0.0) (2026-04-16)
+
+
+### Features
+
+* support inputBinding/outputBinding for dynamic components ([#204](https://github.com/ngneat/helipopper/issues/204)) ([72c27d9](https://github.com/ngneat/helipopper/commit/72c27d94b84c23fc17abe8a8c8873584caffe450)), closes [#154](https://github.com/ngneat/helipopper/issues/154)
+
 ## [12.2.0](https://github.com/ngneat/helipopper/compare/v12.1.2...v12.2.0) (2026-04-15)
 
 
