@@ -11,7 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { ExampleComponent } from '../example/example.component';
 import { BindingsExampleComponent } from '../bindings-example/bindings-example.component';
-import type { TippyInstance } from '@ngneat/helipopper/config';
+import type { TippyContent, TippyInstance } from '@ngneat/helipopper/config';
 import { TippyDirective, TippyService } from '@ngneat/helipopper';
 import type { Placement } from 'tippy.js';
 import { startWith } from 'rxjs';
@@ -75,6 +75,9 @@ export class PlaygroundComponent {
   text2 = `Short`;
   text3 = `Short`;
   comp = ExampleComponent;
+
+  readonly lazyComp: TippyContent = () =>
+    import('../lazy-dummy/lazy-dummy.component').then((m) => m.LazyDummyComponent);
 
   bindingsComp = BindingsExampleComponent;
   readonly bindingsGreeting = signal('Hello from inputBinding!');
