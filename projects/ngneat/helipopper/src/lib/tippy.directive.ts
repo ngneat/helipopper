@@ -18,12 +18,13 @@ import {
   SimpleChanges,
   untracked,
   ViewContainerRef,
+  type Type,
 } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { Instance } from 'tippy.js';
-import { merge, Observable, Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { combineLatest, firstValueFrom, from, merge, Observable, Subject } from 'rxjs';
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import {
   Content,
   isComponent,
@@ -46,9 +47,12 @@ import {
 } from './utils';
 import {
   TIPPY_CONFIG,
-  TippyConfig,
-  TippyInstance,
-  TippyProps,
+  TIPPY_LOADER_COMPONENT,
+  TIPPY_LOADER_TIMING,
+  type TippyConfig,
+  type TippyContent,
+  type TippyInstance,
+  type TippyProps,
 } from '@ngneat/helipopper/config';
 import { TippyFactory } from './tippy.factory';
 import { TippyService } from './tippy.service';
@@ -92,7 +96,7 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     alias: 'tpAppendTo',
   });
 
-  readonly content = input<Content | undefined | null>('', { alias: 'tp' });
+  readonly content = input<TippyContent | undefined | null>('', { alias: 'tp' });
 
   readonly delay = input(defaultDelay, {
     alias: 'tpDelay',
@@ -183,6 +187,8 @@ export class TippyDirective implements OnChanges, AfterViewInit {
 
   readonly data = input<any>(undefined, { alias: 'tpData' });
 
+  readonly loader = input<Type<unknown> | undefined>(undefined, { alias: 'tpLoader' });
+
   /** Angular `inputBinding`/`outputBinding`/`twoWayBinding` descriptors forwarded to `createComponent`. */
   readonly bindings = input<ViewOptions['bindings']>(undefined, { alias: 'tpBindings' });
 
@@ -258,6 +264,10 @@ export class TippyDirective implements OnChanges, AfterViewInit {
   protected vcr = inject(ViewContainerRef);
   protected ngZone = inject(NgZone);
   protected hostRef = inject(ElementRef);
+
+  private loaderViewRef: ViewRef | null = null;
+  private globalLoaderComponent = inject(TIPPY_LOADER_COMPONENT);
+  private loaderTiming = inject(TIPPY_LOADER_TIMING);
 
   constructor() {
     if (this.isServer) return;
@@ -349,6 +359,8 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     this.viewOptions$ = null;
     this.viewRef?.destroy();
     this.viewRef = null;
+    this.loaderViewRef?.destroy();
+    this.loaderViewRef = null;
   }
 
   /**
@@ -456,7 +468,7 @@ export class TippyDirective implements OnChanges, AfterViewInit {
             instance.show();
           }
         },
-        onShow: (instance) => {
+        onShow: async (instance) => {
           // In onlyTextOverflow mode the tooltip must not appear when the host is
           // not overflowing. Returning false from onShow prevents tippy from
           // showing regardless of the instance's enabled/disabled state. This
@@ -469,17 +481,61 @@ export class TippyDirective implements OnChanges, AfterViewInit {
 
           instance.reference.setAttribute('data-tippy-open', '');
 
+          const maybeContent = this.content();
+          const isLazyFactory =
+            !isComponentClass(maybeContent) && typeof maybeContent === 'function';
+
+          let resolvedContent: Type<unknown> | undefined;
+          if (isLazyFactory) {
+            // Show the loader immediately so the tooltip isn't empty while the
+            // dynamic import is in-flight.
+            const loaderComponent = this.loader() ?? this.globalLoaderComponent;
+            const loaderElement = this.ngZone.run(() => {
+              this.loaderViewRef = this.viewService.createView(loaderComponent, {
+                vcr: this.vcr,
+              });
+              return this.loaderViewRef.getElement();
+            });
+            instance.setContent(loaderElement);
+
+            const cancelled = Symbol();
+            // combineLatest ensures we swap the loader only when both the component
+            // is ready AND the timing observable has emitted — guaranteeing the spinner
+            // is visible for at least the configured duration regardless of import speed.
+            // takeUntil + takeUntilDestroyed cancel if the tooltip hides or the
+            // directive is destroyed mid-flight.
+            const result = await firstValueFrom(
+              combineLatest([
+                from((maybeContent as () => Promise<Type<unknown>>)()),
+                this.loaderTiming,
+              ]).pipe(
+                map(([component]) => component),
+                takeUntil(this.visibleInternal.pipe(filter((v) => !v))),
+                takeUntilDestroyed(this.destroyRef),
+              ),
+              { defaultValue: cancelled },
+            );
+
+            this.loaderViewRef?.destroy();
+            this.loaderViewRef = null;
+
+            if (result === cancelled) return;
+            resolvedContent = result as Type<unknown>;
+          }
+
           // We're re-entering because we might create an Angular component,
-          // which should be done within the zone.
-          const content = this.ngZone.run(() => this.resolveContent(instance));
+          // which should be done within the zone. For non-lazy content this call
+          // is fully synchronous — skipping the await avoids a microtask tick
+          // that would otherwise cause a visible flicker.
+          const content = this.resolveContent(instance, resolvedContent);
 
           if (isString(content)) {
             instance.setProps({ allowHTML: false });
 
-            if (!content?.trim()) {
-              this.disable();
-            } else {
+            if (content?.trim()) {
               this.enable();
+            } else {
+              this.disable();
             }
           }
 
@@ -513,8 +569,11 @@ export class TippyDirective implements OnChanges, AfterViewInit {
       });
   }
 
-  protected resolveContent(instance: TippyInstance) {
-    const content = this.content();
+  // `resolvedContent` is provided when the caller already awaited a lazy factory.
+  // Passing it here avoids re-reading `this.content()`, which would still carry
+  // the raw factory function type and require another cast.
+  protected resolveContent(instance: TippyInstance, resolvedContent?: Type<unknown>) {
+    const content = (resolvedContent ?? this.content()) as Content | undefined | null;
 
     if (!this.viewOptions$ && !isString(content)) {
       const injector = Injector.create({
@@ -548,24 +607,26 @@ export class TippyDirective implements OnChanges, AfterViewInit {
       }
     }
 
-    this.viewRef = this.viewService.createView(content!, {
-      vcr: this.vcr,
-      ...this.viewOptions$,
-    });
+    let newContent = this.ngZone.run(() => {
+      this.viewRef = this.viewService.createView(content!, {
+        vcr: this.vcr,
+        ...this.viewOptions$,
+      });
 
-    // We need to call `detectChanges` for OnPush components to update their content.
-    if (isComponent(content)) {
-      // `ɵcmp` is a component defition set for any component.
-      // Checking the `onPush` property of the component definition is a
-      // smarter way to determine whether we need to call `detectChanges()`,
-      // as users may be unaware of setting the binding.
-      const isOnPush = (content as { ɵcmp?: { onPush: boolean } }).ɵcmp?.onPush;
-      if (isOnPush) {
-        this.viewRef.detectChanges();
+      // We need to call `detectChanges` for OnPush components to update their content.
+      if (isComponent(content)) {
+        // `ɵcmp` is a component defition set for any component.
+        // Checking the `onPush` property of the component definition is a
+        // smarter way to determine whether we need to call `detectChanges()`,
+        // as users may be unaware of setting the binding.
+        const isOnPush = (content as { ɵcmp?: { onPush: boolean } }).ɵcmp?.onPush;
+        if (isOnPush) {
+          this.viewRef.detectChanges();
+        }
       }
-    }
 
-    let newContent = this.viewRef.getElement();
+      return this.viewRef.getElement();
+    });
 
     if (this.useTextContent()) {
       newContent = instance.reference.textContent!;
@@ -734,4 +795,13 @@ export class TippyDirective implements OnChanges, AfterViewInit {
       }
     });
   }
+}
+
+function isComponentClass(
+  content: TippyContent | null | undefined,
+): content is Type<any> {
+  return (
+    typeof content === 'function' &&
+    /^class\s/.test(Function.prototype.toString.call(content))
+  );
 }

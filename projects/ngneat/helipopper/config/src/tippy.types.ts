@@ -1,7 +1,9 @@
 import type tippy from 'tippy.js';
 import type { Instance, Props } from 'tippy.js';
-import { ElementRef, InjectionToken } from '@angular/core';
-import type { ResolveViewRef, ViewOptions } from '@ngneat/overview';
+import { ElementRef, InjectionToken, Type } from '@angular/core';
+import { Observable } from 'rxjs';
+import { TippyLoaderComponent } from './tippy-loader.component';
+import type { Content, ResolveViewRef, ViewOptions } from '@ngneat/overview';
 
 export interface CreateOptions extends Partial<TippyProps>, ViewOptions {
   variation: string;
@@ -33,6 +35,8 @@ export interface ExtendedTippyInstance<T> extends TippyInstance {
 
 export type TippyConfig = Partial<ExtendedTippyProps>;
 
+export type TippyContent = Content | (() => Promise<Type<any>>);
+
 export type TippyLoader = () => typeof tippy | Promise<{ default: typeof tippy }>;
 
 export const TIPPY_LOADER = new InjectionToken<TippyLoader>(
@@ -41,4 +45,34 @@ export const TIPPY_LOADER = new InjectionToken<TippyLoader>(
 
 export const TIPPY_CONFIG = new InjectionToken<TippyConfig>(
   ngDevMode ? 'TIPPY_CONFIG' : '',
+);
+
+export const TIPPY_LOADER_COMPONENT = new InjectionToken<Type<unknown>>(
+  ngDevMode ? 'TIPPY_LOADER_COMPONENT' : '',
+  { factory: () => TippyLoaderComponent },
+);
+
+export type TippyLoaderTiming = Observable<void>;
+
+export const TIPPY_LOADER_TIMING = new InjectionToken<TippyLoaderTiming>(
+  ngDevMode ? 'TIPPY_LOADER_TIMING' : '',
+  {
+    factory: () =>
+      new Observable((subscriber) => {
+        let rafId: number;
+        // The timeout ensures the loader has rendered at least one full frame
+        // before we swap it; without it a fast import could resolve before
+        // the browser ever paints the spinner.
+        const timerId = setTimeout(() => {
+          rafId = requestAnimationFrame(() => {
+            subscriber.next();
+            subscriber.complete();
+          });
+        }, 500);
+        return () => {
+          clearTimeout(timerId);
+          cancelAnimationFrame(rafId);
+        };
+      }),
+  },
 );

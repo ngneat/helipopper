@@ -177,6 +177,19 @@
     </div>
   </div>
   <hr />
+  <div id="lazy-factory">
+    <h6>Lazy factory</h6>
+    <button
+      data-cy="lazy-factory-trigger"
+      class="btn btn-outline-primary"
+      [tp]="lazyComp"
+      tpTrigger="click"
+      tpVariation="popper"
+    >
+      Load component lazily
+    </button>
+  </div>
+  <hr />
   <div id="disabled">
     <h6>Disabled</h6>
     <div class="btn-container">
