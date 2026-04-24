@@ -1,8 +1,7 @@
 import type tippy from 'tippy.js';
 import type { Instance, Props } from 'tippy.js';
 import { ElementRef, InjectionToken, Type } from '@angular/core';
-import { Observable } from 'rxjs';
-import { TippyLoaderComponent } from './tippy-loader.component';
+import { Observable, of } from 'rxjs';
 import type { Content, ResolveViewRef, ViewOptions } from '@ngneat/overview';
 
 export interface CreateOptions extends Partial<TippyProps>, ViewOptions {
@@ -49,30 +48,11 @@ export const TIPPY_CONFIG = new InjectionToken<TippyConfig>(
 
 export const TIPPY_LOADER_COMPONENT = new InjectionToken<Type<unknown>>(
   ngDevMode ? 'TIPPY_LOADER_COMPONENT' : '',
-  { factory: () => TippyLoaderComponent },
 );
 
 export type TippyLoaderTiming = Observable<void>;
 
 export const TIPPY_LOADER_TIMING = new InjectionToken<TippyLoaderTiming>(
   ngDevMode ? 'TIPPY_LOADER_TIMING' : '',
-  {
-    factory: () =>
-      new Observable((subscriber) => {
-        let rafId: number;
-        // The timeout ensures the loader has rendered at least one full frame
-        // before we swap it; without it a fast import could resolve before
-        // the browser ever paints the spinner.
-        const timerId = setTimeout(() => {
-          rafId = requestAnimationFrame(() => {
-            subscriber.next();
-            subscriber.complete();
-          });
-        }, 500);
-        return () => {
-          clearTimeout(timerId);
-          cancelAnimationFrame(rafId);
-        };
-      }),
-  },
+  { factory: () => of(undefined) },
 );

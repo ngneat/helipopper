@@ -187,8 +187,6 @@ export class TippyDirective implements OnChanges, AfterViewInit {
 
   readonly data = input<any>(undefined, { alias: 'tpData' });
 
-  readonly loader = input<Type<unknown> | undefined>(undefined, { alias: 'tpLoader' });
-
   /** Angular `inputBinding`/`outputBinding`/`twoWayBinding` descriptors forwarded to `createComponent`. */
   readonly bindings = input<ViewOptions['bindings']>(undefined, { alias: 'tpBindings' });
 
@@ -266,7 +264,7 @@ export class TippyDirective implements OnChanges, AfterViewInit {
   protected hostRef = inject(ElementRef);
 
   private loaderViewRef: ViewRef | null = null;
-  private globalLoaderComponent = inject(TIPPY_LOADER_COMPONENT);
+  private globalLoaderComponent = inject(TIPPY_LOADER_COMPONENT, { optional: true });
   private loaderTiming = inject(TIPPY_LOADER_TIMING);
 
   constructor() {
@@ -487,16 +485,16 @@ export class TippyDirective implements OnChanges, AfterViewInit {
 
           let resolvedContent: Type<unknown> | undefined;
           if (isLazyFactory) {
-            // Show the loader immediately so the tooltip isn't empty while the
-            // dynamic import is in-flight.
-            const loaderComponent = this.loader() ?? this.globalLoaderComponent;
-            const loaderElement = this.ngZone.run(() => {
-              this.loaderViewRef = this.viewService.createView(loaderComponent, {
-                vcr: this.vcr,
+            const loaderComponent = this.globalLoaderComponent;
+            if (loaderComponent) {
+              const loaderElement = this.ngZone.run(() => {
+                this.loaderViewRef = this.viewService.createView(loaderComponent, {
+                  vcr: this.vcr,
+                });
+                return this.loaderViewRef.getElement();
               });
-              return this.loaderViewRef.getElement();
-            });
-            instance.setContent(loaderElement);
+              instance.setContent(loaderElement);
+            }
 
             const cancelled = Symbol();
             // combineLatest ensures we swap the loader only when both the component
