@@ -21,4 +21,3 @@ export {
   withTippyLoaderComponent,
   withTippyLoaderTiming,
 } from './providers';
-export { TippyLoaderComponent } from './tippy-loader.component';
