@@ -205,6 +205,10 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     alias: 'tpHideOnEscape',
   });
 
+  readonly tippyProps = input<Record<string, unknown> | undefined>(undefined, {
+    alias: 'tpTippyProps',
+  });
+
   readonly popperWidth = input<number | string | undefined>(undefined, {
     alias: 'tpPopperWidth',
   });
@@ -296,10 +300,10 @@ export class TippyDirective implements OnChanges, AfterViewInit {
   ngOnChanges(changes: SimpleChanges) {
     if (this.isServer) return;
 
-    // `isVisible` is not required as a prop since we update it manually
-    // in an effect-like manner.
+    // `isVisible` and `tippyProps` are not merged into `this.props`; they are
+    // handled separately (model signal and direct-spread effect respectively).
     const changedProps = Object.keys(changes)
-      .filter((key) => key !== 'isVisible')
+      .filter((key) => key !== 'isVisible' && key !== 'tippyProps')
       .reduce(
         (accumulator, key) => ({ ...accumulator, [key]: changes[key].currentValue }),
         {} as Partial<TippyConfig>,
@@ -418,7 +422,7 @@ export class TippyDirective implements OnChanges, AfterViewInit {
 
   protected setProps(props: Partial<TippyConfig>) {
     this.props = props;
-    this.instance?.setProps(onlyTippyProps(props));
+    this.instance?.setProps({ ...onlyTippyProps(props), ...(this.tippyProps() ?? {}) });
   }
 
   protected setStatus(isEnabled: boolean) {
@@ -455,9 +459,10 @@ export class TippyDirective implements OnChanges, AfterViewInit {
           : {}),
         ...onlyTippyProps(this.globalConfig),
         ...onlyTippyProps(this.props),
+        ...(this.tippyProps() ?? {}),
         // Arrow functions or inline callbacks close over the method's lexical scope,
         // causing V8 to allocate a Context object that indirectly retains the directive
-        // instance inside tippy.js after destroy. A JSBoundFunction has no [[Environment]]
+        // instance inside tippy.js after destroy. A JSBoundFunction has no [[Context]]
         // slot — only { bound_target_function, bound_this, bound_arguments } — so no
         // closure context is created. onHide is bound to null because it needs no `this`
         // at all, fully breaking the retention chain (same reasoning as `appendTo` above).
@@ -814,6 +819,11 @@ export class TippyDirective implements OnChanges, AfterViewInit {
         this.destroyView();
         this.created = false;
       }
+    });
+
+    effect(() => {
+      const tippyProps = this.tippyProps();
+      untracked(() => this.instance?.setProps(tippyProps ?? {}));
     });
   }
 }

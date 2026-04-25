@@ -425,6 +425,23 @@
 
 <hr />
 
+<div id="tippy-props">
+  <h6>tpTippyProps (pass-through tippy props)</h6>
+  <div class="btn-container">
+    <button
+      tp="tpTippyProps tooltip"
+      tpTrigger="click"
+      [tpTippyProps]="{ animation: 'shift-away' }"
+      class="btn btn-outline-secondary"
+      data-cy="tippy-props-button"
+    >
+      Click me (animation: shift-away)
+    </button>
+  </div>
+</div>
+
+<hr />
+
 <div>
   <h6>No Content</h6>
   <input
