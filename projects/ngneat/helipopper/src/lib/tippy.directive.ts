@@ -74,17 +74,17 @@ const appendTo = function appendTo() {
 // We are providing them as default input values.
 // The `tippy.js` repository has been archived and is unlikely to
 // change in the future, so it is safe to use these values as defaults.
-const defaultAppendTo: TippyProps['appendTo'] = () => document.body;
-const defaultDelay: TippyProps['delay'] = 0;
-const defaultDuration: TippyProps['duration'] = [300, 250];
-const defaultInteractiveBorder: TippyProps['interactiveBorder'] = 2;
-const defaultMaxWidth: TippyProps['maxWidth'] = 350;
-const defaultOffset: TippyProps['offset'] = [0, 10];
-const defaultPlacement: TippyProps['placement'] = 'top';
-const defaultTrigger: TippyProps['trigger'] = 'mouseenter focus';
-const defaultTriggerTarget: TippyProps['triggerTarget'] = null;
-const defaultZIndex: TippyProps['zIndex'] = 9999;
-const defaultAnimation: TippyProps['animation'] = 'fade';
+const defaultAppendTo = (() => document.body) as TippyProps['appendTo'];
+const defaultDelay = 0 as TippyProps['delay'];
+const defaultDuration = [300, 250] as TippyProps['duration'];
+const defaultInteractiveBorder = 2 as TippyProps['interactiveBorder'];
+const defaultMaxWidth = 350 as TippyProps['maxWidth'];
+const defaultOffset = [0, 10] as TippyProps['offset'];
+const defaultPlacement = 'top' as TippyProps['placement'];
+const defaultTrigger = 'mouseenter focus' as TippyProps['trigger'];
+const defaultTriggerTarget = null as TippyProps['triggerTarget'];
+const defaultZIndex = 9999 as TippyProps['zIndex'];
+const defaultAnimation = 'fade' as TippyProps['animation'];
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -325,10 +325,11 @@ export class TippyDirective implements OnChanges, AfterViewInit {
   ngAfterViewInit() {
     if (this.isServer) return;
 
+    const onlyTextOverflow = this.onlyTextOverflow();
     if (this.isLazy()) {
       const hostInView$ = inView(this.host());
 
-      if (this.onlyTextOverflow()) {
+      if (onlyTextOverflow) {
         hostInView$
           .pipe(
             switchMap(() => this.isOverflowing$()),
@@ -342,7 +343,7 @@ export class TippyDirective implements OnChanges, AfterViewInit {
           this.createInstance();
         });
       }
-    } else if (this.onlyTextOverflow()) {
+    } else if (onlyTextOverflow) {
       this.isOverflowing$()
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((isElementOverflow) => {
@@ -466,7 +467,7 @@ export class TippyDirective implements OnChanges, AfterViewInit {
             instance.show();
           }
         },
-        onShow: async (instance) => {
+        onShow: (instance) => {
           // In onlyTextOverflow mode the tooltip must not appear when the host is
           // not overflowing. Returning false from onShow prevents tippy from
           // showing regardless of the instance's enabled/disabled state. This
@@ -477,77 +478,10 @@ export class TippyDirective implements OnChanges, AfterViewInit {
             return false;
           }
 
-          instance.reference.setAttribute('data-tippy-open', '');
-
-          const maybeContent = this.content();
-          const isLazyFactory =
-            !isComponentClass(maybeContent) && typeof maybeContent === 'function';
-
-          let resolvedContent: Type<unknown> | undefined;
-          if (isLazyFactory) {
-            const loaderComponent = this.globalLoaderComponent;
-            if (loaderComponent) {
-              const loaderElement = this.ngZone.run(() => {
-                this.loaderViewRef = this.viewService.createView(loaderComponent, {
-                  vcr: this.vcr,
-                });
-                return this.loaderViewRef.getElement();
-              });
-              instance.setContent(loaderElement);
-            }
-
-            const cancelled = Symbol();
-            // combineLatest ensures we swap the loader only when both the component
-            // is ready AND the timing observable has emitted — guaranteeing the spinner
-            // is visible for at least the configured duration regardless of import speed.
-            // takeUntil + takeUntilDestroyed cancel if the tooltip hides or the
-            // directive is destroyed mid-flight.
-            const result = await firstValueFrom(
-              combineLatest([
-                from((maybeContent as () => Promise<Type<unknown>>)()),
-                this.loaderTiming,
-              ]).pipe(
-                map(([component]) => component),
-                takeUntil(this.visibleInternal.pipe(filter((v) => !v))),
-                takeUntilDestroyed(this.destroyRef),
-              ),
-              { defaultValue: cancelled },
-            );
-
-            this.loaderViewRef?.destroy();
-            this.loaderViewRef = null;
-
-            if (result === cancelled) return;
-            resolvedContent = result as Type<unknown>;
-          }
-
-          // We're re-entering because we might create an Angular component,
-          // which should be done within the zone. For non-lazy content this call
-          // is fully synchronous — skipping the await avoids a microtask tick
-          // that would otherwise cause a visible flicker.
-          const content = this.resolveContent(instance, resolvedContent);
-
-          if (isString(content)) {
-            instance.setProps({ allowHTML: false });
-
-            if (content?.trim()) {
-              this.enable();
-            } else {
-              this.disable();
-            }
-          }
-
-          instance.setContent(content);
-          this.hideOnEscape() && this.handleEscapeButton();
-
-          this.clearInstanceWidth(instance);
-          if (this.useHostWidth()) {
-            this.setInstanceWidth(instance, this.hostWidth);
-          } else if (this.popperWidth()) {
-            this.setInstanceWidth(instance, this.popperWidth()!);
-          }
-          this.globalConfig.onShow?.(instance);
-          this.onShow.emit();
+          // The outer `onShow` must be synchronous so that `return false` above
+          // is seen as a boolean by tippy.js (an `async` function always returns
+          // a Promise, which is truthy and would never suppress the show).
+          this.handleOnShow(instance);
         },
         onHide(instance) {
           instance.reference.removeAttribute('data-tippy-open');
@@ -733,6 +667,78 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     this.visibleInternal.next(isVisible);
 
     this.globalConfig.onHidden?.(instance);
+  }
+
+  private async handleOnShow(instance: Instance) {
+    instance.reference.setAttribute('data-tippy-open', '');
+
+    const maybeContent = this.content();
+    const isLazyFactory =
+      !isComponentClass(maybeContent) && typeof maybeContent === 'function';
+
+    let resolvedContent: Type<unknown> | undefined;
+    if (isLazyFactory) {
+      const loaderComponent = this.globalLoaderComponent;
+      if (loaderComponent) {
+        const loaderElement = this.ngZone.run(() => {
+          this.loaderViewRef = this.viewService.createView(loaderComponent, {
+            vcr: this.vcr,
+          });
+          return this.loaderViewRef.getElement();
+        });
+        instance.setContent(loaderElement);
+      }
+
+      const cancelled = Symbol();
+      // combineLatest ensures we swap the loader only when both the component
+      // is ready AND the timing observable has emitted — guaranteeing the spinner
+      // is visible for at least the configured duration regardless of import speed.
+      // takeUntil + takeUntilDestroyed cancel if the tooltip hides or the
+      // directive is destroyed mid-flight.
+      const result = await firstValueFrom(
+        combineLatest([
+          from((maybeContent as () => Promise<Type<unknown>>)()),
+          this.loaderTiming,
+        ]).pipe(
+          map(([component]) => component),
+          takeUntil(this.visibleInternal.pipe(filter((v) => !v))),
+          takeUntilDestroyed(this.destroyRef),
+        ),
+        { defaultValue: cancelled },
+      );
+
+      this.loaderViewRef?.destroy();
+      this.loaderViewRef = null;
+
+      if (result === cancelled) return;
+      resolvedContent = result as Type<unknown>;
+    }
+
+    // For non-lazy content this call is fully synchronous — skipping the
+    // await avoids a microtask tick that would otherwise cause a visible flicker.
+    const content = this.resolveContent(instance, resolvedContent);
+
+    if (isString(content)) {
+      instance.setProps({ allowHTML: false });
+
+      if (content?.trim()) {
+        this.enable();
+      } else {
+        this.disable();
+      }
+    }
+
+    instance.setContent(content);
+    this.hideOnEscape() && this.handleEscapeButton();
+
+    this.clearInstanceWidth(instance);
+    if (this.useHostWidth()) {
+      this.setInstanceWidth(instance, this.hostWidth);
+    } else if (this.popperWidth()) {
+      this.setInstanceWidth(instance, this.popperWidth()!);
+    }
+    this.globalConfig.onShow?.(instance);
+    this.onShow.emit();
   }
 
   private isOverflowing$() {
