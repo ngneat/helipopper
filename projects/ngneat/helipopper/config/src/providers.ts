@@ -1,4 +1,9 @@
-import { EnvironmentProviders, makeEnvironmentProviders, Type } from '@angular/core';
+import {
+  EnvironmentProviders,
+  makeEnvironmentProviders,
+  Provider,
+  Type,
+} from '@angular/core';
 
 import {
   TIPPY_CONFIG,
@@ -14,14 +19,23 @@ export function provideTippyLoader(loader: TippyLoader) {
   return makeEnvironmentProviders([{ provide: TIPPY_LOADER, useValue: loader }]);
 }
 
+export function provideTippyConfig(config: TippyConfig): Provider;
 export function provideTippyConfig(
   config: TippyConfig,
   ...features: EnvironmentProviders[]
-): EnvironmentProviders {
-  return makeEnvironmentProviders([
-    { provide: TIPPY_CONFIG, useValue: config },
-    ...features,
-  ]);
+): EnvironmentProviders;
+export function provideTippyConfig(
+  config: TippyConfig,
+  ...features: EnvironmentProviders[]
+): Provider | EnvironmentProviders {
+  if (features.length) {
+    return makeEnvironmentProviders([
+      { provide: TIPPY_CONFIG, useValue: config },
+      ...features,
+    ]);
+  } else {
+    return { provide: TIPPY_CONFIG, useValue: config };
+  }
 }
 
 export function withTippyLoaderComponent(component: Type<unknown>): EnvironmentProviders {
