@@ -5,7 +5,6 @@
     "node": "^20.19.0 || ^22.12.0 || >=24.0.0"
   },
   "scripts": {
-    "postinstall": "patch-package",
     "ng": "ng",
     "start-test": "start-server-and-test",
     "deploy": "ng deploy --base-href=https://ngneat.github.io/helipopper/",
@@ -14,9 +13,9 @@
     "contributors:add": "all-contributors add",
     "hooks:pre-commit": "node hooks/pre-commit.js",
     "commit": "git-cz",
-    "build:lib": "ng build @ngneat/helipopper --configuration production && npm run copy",
+    "build:lib": "ng build @ngneat/helipopper --configuration production && pnpm copy",
     "release": "cd projects/ngneat/helipopper && standard-version --infile ../../../CHANGELOG.md",
-    "test:lib:headless": "cross-env CI=true npm run test:lib",
+    "test:lib:headless": "cross-env CI=true pnpm test:lib",
     "copy": "cp -r README.md dist/ngneat/helipopper",
     "build:playground": "ng build --project helipopper-playground --configuration production",
     "test:playground": "ng test --project helipopper-playground",
@@ -60,6 +59,7 @@
     "@types/node": "24.5.2",
     "all-contributors-cli": "^6.8.1",
     "angular-cli-ghpages": "^0.6.2",
+    "chalk": "^5.6.2",
     "cross-env": "^5.2.0",
     "cypress": "15.13.1",
     "git-cz": "^3.2.1",
@@ -72,7 +72,6 @@
     "karma-jasmine-html-reporter": "^1.5.0",
     "lint-staged": "^9.2.0",
     "ng-packagr": "^21.2.2",
-    "patch-package": "8.0.0",
     "prettier": "3.6.2",
     "serve": "14.2.6",
     "standard-version": "^8.0.2",
@@ -94,7 +93,7 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -e $GIT_PARAMS",
-      "pre-commit": "npm run hooks:pre-commit && lint-staged"
+      "pre-commit": "pnpm hooks:pre-commit && lint-staged"
     }
   }
 }

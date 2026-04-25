@@ -1,0 +1,7 @@
+onlyBuiltDependencies:
+  - cypress
+  - esbuild
+  - '@parcel/watcher'
+
+publicHoistPattern:
+  - run-node
