@@ -1,6 +1,20 @@
 export { tooltipVariation, popperVariation, withContextMenuVariation } from './defaults';
 export {
   CreateOptions,
+  FloatingInstance,
+  FloatingProps,
+  ExtendedFloatingProps,
+  FloatingElement,
+  ExtendedFloatingInstance,
+  FloatingConfig,
+  FloatingContent,
+  FloatingLoader,
+  FLOATING_LOADER,
+  FLOATING_CONFIG,
+  FLOATING_LOADER_COMPONENT,
+  FLOATING_LOADER_TIMING,
+  FloatingLoaderTiming,
+  // Deprecated aliases
   TippyInstance,
   TippyProps,
   ExtendedTippyProps,
@@ -14,8 +28,13 @@ export {
   TIPPY_LOADER_COMPONENT,
   TIPPY_LOADER_TIMING,
   TippyLoaderTiming,
-} from './tippy.types';
+} from './floating.types';
 export {
+  provideFloatingLoader,
+  provideFloatingConfig,
+  withFloatingLoaderComponent,
+  withFloatingLoaderTiming,
+  // Deprecated aliases
   provideTippyLoader,
   provideTippyConfig,
   withTippyLoaderComponent,

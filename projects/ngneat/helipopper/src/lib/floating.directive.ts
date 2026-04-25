@@ -22,7 +22,6 @@ import {
 } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import type { Instance } from 'tippy.js';
 import { combineLatest, firstValueFrom, from, merge, Observable, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import {
@@ -42,22 +41,23 @@ import {
   isElementOverflow,
   normalizeClassName,
   observeVisibility,
-  onlyTippyProps,
+  onlyFloatingProps,
   overflowChanges,
 } from './utils';
 import {
-  TIPPY_CONFIG,
-  TIPPY_LOADER_COMPONENT,
-  TIPPY_LOADER_TIMING,
-  type TippyConfig,
-  type TippyContent,
-  type TippyInstance,
-  type TippyProps,
+  FLOATING_CONFIG,
+  FLOATING_LOADER_COMPONENT,
+  FLOATING_LOADER_TIMING,
+  type FloatingConfig,
+  type FloatingContent,
+  type FloatingInstance,
+  type FloatingProps,
 } from '@ngneat/helipopper/config';
-import { TippyFactory } from './tippy.factory';
-import { TippyService } from './tippy.service';
+import { FloatingFactory } from './floating.factory';
+import { FloatingInstanceImpl } from './floating-instance';
+import { FloatingService } from './floating.service';
 import { coerceBooleanAttribute } from './coercion';
-import { TIPPY_REF } from './inject-tippy';
+import { FLOATING_REF } from './inject-floating';
 
 // An arrow function defined inside a method closes over the method's lexical scope,
 // causing V8 to allocate a Context object that indirectly references the directive
@@ -70,162 +70,158 @@ const appendTo = function appendTo() {
   return document.fullscreenElement || document.body;
 }.bind(null);
 
-// These are the default values used by `tippy.js`.
-// We are providing them as default input values.
-// The `tippy.js` repository has been archived and is unlikely to
-// change in the future, so it is safe to use these values as defaults.
-const defaultAppendTo = (() => document.body) as TippyProps['appendTo'];
-const defaultDelay = 0 as TippyProps['delay'];
-const defaultDuration = [300, 250] as TippyProps['duration'];
-const defaultInteractiveBorder = 2 as TippyProps['interactiveBorder'];
-const defaultMaxWidth = 350 as TippyProps['maxWidth'];
-const defaultOffset = [0, 10] as TippyProps['offset'];
-const defaultPlacement = 'top' as TippyProps['placement'];
-const defaultTrigger = 'mouseenter focus' as TippyProps['trigger'];
-const defaultTriggerTarget = null as TippyProps['triggerTarget'];
-const defaultZIndex = 9999 as TippyProps['zIndex'];
-const defaultAnimation = 'fade' as TippyProps['animation'];
+// These are the default values used for the floating tooltip.
+const defaultAppendTo = (() => document.body) as FloatingProps['appendTo'];
+const defaultDelay = 0 as FloatingProps['delay'];
+const defaultDuration = [300, 250] as FloatingProps['duration'];
+const defaultInteractiveBorder = 2 as FloatingProps['interactiveBorder'];
+const defaultMaxWidth = 350 as FloatingProps['maxWidth'];
+const defaultOffset = [0, 10] as FloatingProps['offset'];
+const defaultPlacement = 'top' as FloatingProps['placement'];
+const defaultTrigger = 'mouseenter focus' as FloatingProps['trigger'];
+const defaultTriggerTarget = null as FloatingProps['triggerTarget'];
+const defaultZIndex = 9999 as FloatingProps['zIndex'];
+const defaultAnimation = 'fade' as FloatingProps['animation'];
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[tp]',
-  exportAs: 'tippy',
+  selector: '[fl]',
+  exportAs: 'floating',
 })
-export class TippyDirective implements OnChanges, AfterViewInit {
+export class FloatingDirective implements OnChanges, AfterViewInit {
   readonly appendTo = input(defaultAppendTo, {
-    alias: 'tpAppendTo',
+    alias: 'flAppendTo',
   });
 
-  readonly content = input<TippyContent | undefined | null>('', { alias: 'tp' });
+  readonly content = input<FloatingContent | undefined | null>('', { alias: 'fl' });
 
   readonly delay = input(defaultDelay, {
-    alias: 'tpDelay',
+    alias: 'flDelay',
   });
 
   readonly duration = input(defaultDuration, {
-    alias: 'tpDuration',
+    alias: 'flDuration',
   });
 
   readonly hideOnClick = input(true, {
-    alias: 'tpHideOnClick',
+    alias: 'flHideOnClick',
   });
 
   readonly interactive = input(false, {
-    alias: 'tpInteractive',
+    alias: 'flInteractive',
   });
 
   readonly interactiveBorder = input(defaultInteractiveBorder, {
-    alias: 'tpInteractiveBorder',
+    alias: 'flInteractiveBorder',
   });
 
   readonly maxWidth = input(defaultMaxWidth, {
-    alias: 'tpMaxWidth',
+    alias: 'flMaxWidth',
   });
 
   // Note that some of the input signal types are declared explicitly because the compiler
   // also uses types from `@popperjs/core` and requires a type annotation.
-  readonly offset: InputSignal<TippyProps['offset']> = input(defaultOffset, {
-    alias: 'tpOffset',
+  readonly offset: InputSignal<FloatingProps['offset']> = input(defaultOffset, {
+    alias: 'flOffset',
   });
 
-  readonly placement: InputSignal<TippyProps['placement']> = input(defaultPlacement, {
-    alias: 'tpPlacement',
+  readonly placement: InputSignal<FloatingProps['placement']> = input(defaultPlacement, {
+    alias: 'flPlacement',
   });
 
-  readonly popperOptions: InputSignal<TippyProps['popperOptions']> = input(
+  /** @deprecated Use `tpFloatingProps` with floating-ui `middleware` instead. */
+  readonly popperOptions = input<Record<string, unknown>>(
     {},
-    {
-      alias: 'tpPopperOptions',
-    },
+    { alias: 'flPopperOptions' },
   );
 
   readonly showOnCreate = input(false, {
-    alias: 'tpShowOnCreate',
+    alias: 'flShowOnCreate',
   });
 
   readonly trigger = input(defaultTrigger, {
-    alias: 'tpTrigger',
+    alias: 'flTrigger',
   });
 
   readonly triggerTarget = input(defaultTriggerTarget, {
-    alias: 'tpTriggerTarget',
+    alias: 'flTriggerTarget',
   });
 
   readonly zIndex = input(defaultZIndex, {
-    alias: 'tpZIndex',
+    alias: 'flZIndex',
   });
 
   readonly animation = input(defaultAnimation, {
-    alias: 'tpAnimation',
+    alias: 'flAnimation',
   });
 
   readonly useTextContent = input(false, {
     transform: coerceBooleanAttribute,
-    alias: 'tpUseTextContent',
+    alias: 'flUseTextContent',
   });
 
   readonly isLazy = input(false, {
     transform: coerceBooleanAttribute,
-    alias: 'tpIsLazy',
+    alias: 'flIsLazy',
   });
 
-  readonly variation = input<string | undefined>(undefined, { alias: 'tpVariation' });
+  readonly variation = input<string | undefined>(undefined, { alias: 'flVariation' });
 
-  readonly isEnabled = input(true, { alias: 'tpIsEnabled' });
+  readonly isEnabled = input(true, { alias: 'flIsEnabled' });
 
-  readonly className = input<string | string[]>('', { alias: 'tpClassName' });
+  readonly className = input<string | string[]>('', { alias: 'flClassName' });
 
   readonly onlyTextOverflow = input(false, {
     transform: coerceBooleanAttribute,
-    alias: 'tpOnlyTextOverflow',
+    alias: 'flOnlyTextOverflow',
   });
 
   readonly staticWidthHost = input(false, {
     transform: coerceBooleanAttribute,
-    alias: 'tpStaticWidthHost',
+    alias: 'flStaticWidthHost',
   });
 
-  readonly data = input<any>(undefined, { alias: 'tpData' });
+  readonly data = input<any>(undefined, { alias: 'flData' });
 
   /** Angular `inputBinding`/`outputBinding`/`twoWayBinding` descriptors forwarded to `createComponent`. */
-  readonly bindings = input<ViewOptions['bindings']>(undefined, { alias: 'tpBindings' });
+  readonly bindings = input<ViewOptions['bindings']>(undefined, { alias: 'flBindings' });
 
   /** Host directives (with optional bindings) forwarded to `createComponent`. */
   readonly directives = input<ViewOptions['directives']>(undefined, {
-    alias: 'tpDirectives',
+    alias: 'flDirectives',
   });
 
   readonly useHostWidth = input(false, {
     transform: coerceBooleanAttribute,
-    alias: 'tpUseHostWidth',
+    alias: 'flUseHostWidth',
   });
 
   readonly hideOnEscape = input(false, {
     transform: coerceBooleanAttribute,
-    alias: 'tpHideOnEscape',
+    alias: 'flHideOnEscape',
   });
 
-  readonly tippyProps = input<Record<string, unknown> | undefined>(undefined, {
-    alias: 'tpTippyProps',
+  readonly floatingProps = input<Record<string, unknown> | undefined>(undefined, {
+    alias: 'flFloatingProps',
   });
 
   readonly popperWidth = input<number | string | undefined>(undefined, {
-    alias: 'tpPopperWidth',
+    alias: 'flPopperWidth',
   });
 
-  readonly customHost = input<HTMLElement | undefined>(undefined, { alias: 'tpHost' });
+  readonly customHost = input<HTMLElement | undefined>(undefined, { alias: 'flHost' });
 
-  readonly tpOnShow = output<void>({ alias: 'tpOnShow' });
+  readonly flOnShow = output<void>({ alias: 'flOnShow' });
 
-  readonly tpOnHide = output<void>({ alias: 'tpOnHide' });
+  readonly flOnHide = output<void>({ alias: 'flOnHide' });
 
-  readonly isVisible = model(false, { alias: 'tpIsVisible' });
+  readonly isVisible = model(false, { alias: 'flIsVisible' });
 
-  visible = output<boolean>({ alias: 'tpVisible' });
+  visible = output<boolean>({ alias: 'flVisible' });
 
-  protected instance!: TippyInstance;
+  protected instance!: FloatingInstance;
   protected viewRef: ViewRef | null = null;
-  protected props!: Partial<TippyConfig>;
+  protected props!: Partial<FloatingConfig>;
   protected variationDefined = false;
   protected viewOptions$: ViewOptions | null = null;
 
@@ -251,16 +247,16 @@ export class TippyDirective implements OnChanges, AfterViewInit {
   }
 
   private destroyRef = inject(DestroyRef);
-  private tippyService = inject(TippyService);
+  private floatingService = inject(FloatingService);
+  private floatingFactory = inject(FloatingFactory);
   private isServer =
     // Drop `isPlatformServer` once `ngServeMode` is available during compilation.
     (typeof ngServerMode !== 'undefined' && ngServerMode) ||
     isPlatformServer(inject(PLATFORM_ID));
-  private tippyFactory = inject(TippyFactory);
   private destroyed = false;
   private created = false;
 
-  protected globalConfig = inject(TIPPY_CONFIG);
+  protected globalConfig = inject(FLOATING_CONFIG);
   protected injector = inject(Injector);
   protected viewService = inject(ViewService);
   protected vcr = inject(ViewContainerRef);
@@ -268,8 +264,8 @@ export class TippyDirective implements OnChanges, AfterViewInit {
   protected hostRef = inject(ElementRef);
 
   private loaderViewRef: ViewRef | null = null;
-  private globalLoaderComponent = inject(TIPPY_LOADER_COMPONENT, { optional: true });
-  private loaderTiming = inject(TIPPY_LOADER_TIMING);
+  private globalLoaderComponent = inject(FLOATING_LOADER_COMPONENT, { optional: true });
+  private loaderTiming = inject(FLOATING_LOADER_TIMING);
 
   constructor() {
     if (this.isServer) return;
@@ -300,13 +296,13 @@ export class TippyDirective implements OnChanges, AfterViewInit {
   ngOnChanges(changes: SimpleChanges) {
     if (this.isServer) return;
 
-    // `isVisible` and `tippyProps` are not merged into `this.props`; they are
+    // `isVisible` and `floatingProps` are not merged into `this.props`; they are
     // handled separately (model signal and direct-spread effect respectively).
     const changedProps = Object.keys(changes)
-      .filter((key) => key !== 'isVisible' && key !== 'tippyProps')
+      .filter((key) => key !== 'isVisible' && key !== 'floatingProps')
       .reduce(
         (accumulator, key) => ({ ...accumulator, [key]: changes[key].currentValue }),
-        {} as Partial<TippyConfig>,
+        {} as Partial<FloatingConfig>,
       );
 
     // Variation defaults are applied only on the first call or when the variation
@@ -384,10 +380,10 @@ export class TippyDirective implements OnChanges, AfterViewInit {
               this.instance.reference,
               () => {
                 this.hide();
-                // Because we have animation on the popper it doesn't close immediately doesn't trigger the `tpVisible` event.
-                // Tippy is relying on the transitionend event to trigger the `onHidden` callback.
-                // https://github.com/atomiks/tippyjs/blob/master/src/dom-utils.ts#L117
-                // This event never fires because the popper is removed from the DOM before the transition ends.
+                // Because we have animation on the popper it doesn't close immediately
+                // and doesn't trigger the `tpVisible` event. The transitionend event
+                // never fires because the popper is removed from the DOM before the
+                // transition ends.
                 if (this.props.animation) {
                   this.onHidden();
                 }
@@ -416,13 +412,16 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     this.instance?.disable();
   }
 
-  protected updateProps(props: Partial<TippyConfig>) {
+  protected updateProps(props: Partial<FloatingConfig>) {
     this.setProps({ ...this.props, ...props });
   }
 
-  protected setProps(props: Partial<TippyConfig>) {
+  protected setProps(props: Partial<FloatingConfig>) {
     this.props = props;
-    this.instance?.setProps({ ...onlyTippyProps(props), ...(this.tippyProps() ?? {}) });
+    this.instance?.setProps({
+      ...onlyFloatingProps(props),
+      ...(this.floatingProps() ?? {}),
+    });
   }
 
   protected setStatus(isEnabled: boolean) {
@@ -433,66 +432,64 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     return !!(this.content() || this.useTextContent());
   }
 
-  protected async createInstance() {
+  protected async createInstance(): Promise<void> {
     if (this.created || !this.hasContent()) {
       return;
     }
 
     this.created = true;
 
-    const tippy = await this.ngZone.runOutsideAngular(() => {
-      return firstValueFrom(this.tippyFactory.getTippyImpl(), {
-        defaultValue: undefined,
-      });
+    if (this.destroyRef.destroyed) return;
+
+    const ui = await firstValueFrom(this.floatingFactory.getFloatingImpl(), {
+      defaultValue: undefined,
     });
 
-    if (tippy === undefined || this.destroyRef.destroyed) {
-      return;
-    }
+    if (ui === undefined || this.destroyRef.destroyed) return;
 
     this.instance = this.ngZone.runOutsideAngular(() => {
-      return tippy(this.host(), {
-        appendTo,
-        allowHTML: true,
-        ...(this.globalConfig.zIndexGetter
-          ? { zIndex: this.globalConfig.zIndexGetter() }
-          : {}),
-        ...onlyTippyProps(this.globalConfig),
-        ...onlyTippyProps(this.props),
-        ...(this.tippyProps() ?? {}),
-        // Arrow functions or inline callbacks close over the method's lexical scope,
-        // causing V8 to allocate a Context object that indirectly retains the directive
-        // instance inside tippy.js after destroy. A JSBoundFunction has no [[Context]]
-        // slot — only { bound_target_function, bound_this, bound_arguments } — so no
-        // closure context is created. onHide is bound to null because it needs no `this`
-        // at all, fully breaking the retention chain (same reasoning as `appendTo` above).
-        onMount: this.onMount.bind(this),
-        onCreate: this.onCreate.bind(this),
-        onShow: this.onShow.bind(this),
-        onHide: function (instance: TippyInstance) {
-          instance.reference.removeAttribute('data-tippy-open');
-        }.bind(null),
-        onHidden: this.onHidden.bind(this),
-      });
+      return new FloatingInstanceImpl(
+        this.host(),
+        {
+          appendTo,
+          allowHTML: true,
+          ...(this.globalConfig.zIndexGetter
+            ? { zIndex: this.globalConfig.zIndexGetter() }
+            : {}),
+          ...onlyFloatingProps(this.globalConfig),
+          ...onlyFloatingProps(this.props),
+          ...(this.floatingProps() ?? {}),
+          // Bound functions have no [[Context]] slot in V8 — only
+          // { bound_target_function, bound_this, bound_arguments } — so no closure
+          // context is retained after destroy (same reasoning as `appendTo` above).
+          onMount: this.onMount.bind(this),
+          onCreate: this.onCreate.bind(this),
+          onShow: this.onShow.bind(this),
+          onHide: function (instance: FloatingInstance) {
+            instance.reference.removeAttribute('data-tippy-open');
+          }.bind(null),
+          onHidden: this.onHidden.bind(this),
+        },
+        ui,
+      );
     });
 
     this.setStatus(this.isEnabled());
     this.setProps(this.props);
-
     this.variation() === 'contextMenu' && this.handleContextMenu();
   }
 
   // `resolvedContent` is provided when the caller already awaited a lazy factory.
   // Passing it here avoids re-reading `this.content()`, which would still carry
   // the raw factory function type and require another cast.
-  protected resolveContent(instance: TippyInstance, resolvedContent?: Type<unknown>) {
+  protected resolveContent(instance: FloatingInstance, resolvedContent?: Type<unknown>) {
     const content = (resolvedContent ?? this.content()) as Content | undefined | null;
 
     if (!this.viewOptions$ && !isString(content)) {
       const injector = Injector.create({
         providers: [
           {
-            provide: TIPPY_REF,
+            provide: FLOATING_REF,
             useValue: this.instance,
           },
         ],
@@ -528,7 +525,7 @@ export class TippyDirective implements OnChanges, AfterViewInit {
 
       // We need to call `detectChanges` for OnPush components to update their content.
       if (isComponent(content)) {
-        // `ɵcmp` is a component defition set for any component.
+        // `ɵcmp` is a component definition set for any component.
         // Checking the `onPush` property of the component definition is a
         // smarter way to determine whether we need to call `detectChanges()`,
         // as users may be unaware of setting the binding.
@@ -621,20 +618,20 @@ export class TippyDirective implements OnChanges, AfterViewInit {
       });
   }
 
-  protected clearInstanceWidth(instance: Instance) {
+  protected clearInstanceWidth(instance: FloatingInstance) {
     instance.popper.style.width = '';
     instance.popper.style.maxWidth = '';
     (instance.popper.firstElementChild as HTMLElement).style.maxWidth = '';
   }
 
-  protected setInstanceWidth(instance: Instance, width: string | number) {
+  protected setInstanceWidth(instance: FloatingInstance, width: string | number) {
     const inPixels = coerceCssPixelValue(width);
     instance.popper.style.width = inPixels;
     instance.popper.style.maxWidth = inPixels;
     (instance.popper.firstElementChild as HTMLElement).style.maxWidth = inPixels;
   }
 
-  private onMount(instance: TippyInstance) {
+  private onMount(instance: FloatingInstance) {
     const isVisible = true;
     this.isVisible.set(isVisible);
     this.visibleInternal.next(isVisible);
@@ -643,7 +640,7 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     this.globalConfig.onMount?.(instance);
   }
 
-  private onCreate(instance: TippyInstance) {
+  private onCreate(instance: FloatingInstance) {
     instance.popper.classList.add(
       `tippy-variation-${this.variation() || this.globalConfig.defaultVariation}`,
     );
@@ -658,7 +655,7 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     }
   }
 
-  private onHidden(instance: TippyInstance = this.instance) {
+  private onHidden(instance: FloatingInstance = this.instance) {
     this.destroyView();
     const isVisible = false;
     // `model()` uses `OutputEmitterRef` internally to emit events when the
@@ -667,16 +664,16 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     if (!this.destroyed) {
       this.isVisible.set(isVisible);
       this.ngZone.run(() => this.visible.emit(isVisible));
-      this.tpOnHide.emit();
+      this.flOnHide.emit();
     }
     this.visibleInternal.next(isVisible);
 
     this.globalConfig.onHidden?.(instance);
   }
 
-  private onShow(instance: TippyInstance) {
+  private onShow(instance: FloatingInstance) {
     // In onlyTextOverflow mode the tooltip must not appear when the host is
-    // not overflowing. Returning false from onShow prevents tippy from
+    // not overflowing. Returning false from onShow prevents the tooltip from
     // showing regardless of the instance's enabled/disabled state. This
     // acts as a last-resort guard for cases where checkOverflow() hasn't
     // been called yet (e.g. Angular's scheduler hasn't flushed CD between
@@ -686,12 +683,12 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     }
 
     // The outer `onShow` must be synchronous so that `return false` above
-    // is seen as a boolean by tippy.js (an `async` function always returns
-    // a Promise, which is truthy and would never suppress the show).
+    // is seen as a boolean (an `async` function always returns a Promise,
+    // which is truthy and would never suppress the show).
     this.handleOnShow(instance);
   }
 
-  private async handleOnShow(instance: Instance) {
+  private async handleOnShow(instance: FloatingInstance) {
     instance.reference.setAttribute('data-tippy-open', '');
 
     const maybeContent = this.content();
@@ -760,7 +757,7 @@ export class TippyDirective implements OnChanges, AfterViewInit {
       this.setInstanceWidth(instance, this.popperWidth()!);
     }
     this.globalConfig.onShow?.(instance);
-    this.tpOnShow.emit();
+    this.flOnShow.emit();
   }
 
   private isOverflowing$() {
@@ -796,7 +793,7 @@ export class TippyDirective implements OnChanges, AfterViewInit {
       untracked(() => this.contentChanged.next());
     });
 
-    effect(() => this.setStatus(this.tippyService.enabled() && this.isEnabled()));
+    effect(() => this.setStatus(this.floatingService.enabled() && this.isEnabled()));
 
     effect(() => {
       const maxWidth = this.useHostWidth() ? this.hostWidth : defaultMaxWidth;
@@ -822,17 +819,24 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     });
 
     effect(() => {
-      const tippyProps = this.tippyProps();
-      untracked(() => this.instance?.setProps(tippyProps ?? {}));
+      const floatingProps = this.floatingProps();
+      untracked(() => this.instance?.setProps(floatingProps ?? {}));
     });
   }
 }
 
 function isComponentClass(
-  content: TippyContent | null | undefined,
+  content: FloatingContent | null | undefined,
 ): content is Type<any> {
   return (
     typeof content === 'function' &&
     /^class\s/.test(Function.prototype.toString.call(content))
   );
 }
+
+// ---------------------------------------------------------------------------
+// Deprecated alias kept for backwards compatibility
+// ---------------------------------------------------------------------------
+
+/** @deprecated Use `FloatingDirective` instead. */
+export { FloatingDirective as TippyDirective };

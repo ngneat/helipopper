@@ -2,8 +2,7 @@ import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core
 import { provideRouter } from '@angular/router';
 import {
   popperVariation,
-  provideTippyConfig,
-  provideTippyLoader,
+  provideFloatingConfig,
   tooltipVariation,
   withContextMenuVariation,
 } from '@ngneat/helipopper/config';
@@ -22,8 +21,7 @@ export const appConfig: ApplicationConfig = {
 
     provideRouter(routes),
 
-    provideTippyLoader(() => import('tippy.js')),
-    provideTippyConfig({
+    provideFloatingConfig({
       defaultVariation: 'tooltip',
       zIndexGetter: getZIndex,
       variations: {

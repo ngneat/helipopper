@@ -1,4 +1,10 @@
-export { TippyDirective } from './lib/tippy.directive';
-export { TippyService } from './lib/tippy.service';
+export { FloatingDirective, TippyDirective } from './lib/floating.directive';
+export { FloatingService, TippyService } from './lib/floating.service';
+export { FloatingFactory } from './lib/floating.factory';
 export { inView, overflowChanges } from './lib/utils';
-export { TIPPY_REF, injectTippyRef } from './lib/inject-tippy';
+export {
+  FLOATING_REF,
+  injectFloatingRef,
+  TIPPY_REF,
+  injectTippyRef,
+} from './lib/inject-floating';

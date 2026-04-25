@@ -1,7 +1,7 @@
-import type { TippyProps } from './tippy.types';
+import type { FloatingProps } from './floating.types';
 
-// A variation is a set of predefined tippy properties.
-type Variation = Partial<TippyProps>;
+// A variation is a set of predefined floating properties.
+type Variation = Partial<FloatingProps>;
 
 export const tooltipVariation: Variation = {
   theme: undefined,

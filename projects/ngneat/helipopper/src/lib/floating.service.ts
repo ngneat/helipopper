@@ -6,26 +6,27 @@ import {
   ViewService,
 } from '@ngneat/overview';
 import { Content } from '@ngneat/overview';
-import { map, type Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import {
   CreateOptions,
-  ExtendedTippyInstance,
-  TIPPY_CONFIG,
-  TippyInstance,
+  ExtendedFloatingInstance,
+  FLOATING_CONFIG,
+  FloatingInstance,
 } from '@ngneat/helipopper/config';
 
-import { TIPPY_REF } from './inject-tippy';
-import { TippyFactory } from './tippy.factory';
-import { normalizeClassName, onlyTippyProps } from './utils';
+import { FLOATING_REF } from './inject-floating';
+import { FloatingFactory } from './floating.factory';
+import { FloatingInstanceImpl } from './floating-instance';
+import { normalizeClassName, onlyFloatingProps } from './utils';
 
 @Injectable({ providedIn: 'root' })
-export class TippyService {
+export class FloatingService {
   private readonly _ngZone = inject(NgZone);
   private readonly _injector = inject(Injector);
-  private readonly _globalConfig = inject(TIPPY_CONFIG, { optional: true });
+  private readonly _globalConfig = inject(FLOATING_CONFIG, { optional: true });
   private readonly _viewService = inject(ViewService);
-  private readonly _tippyFactory = inject(TippyFactory);
+  private readonly _floatingFactory = inject(FloatingFactory);
 
   readonly enabled = signal(true);
 
@@ -41,17 +42,17 @@ export class TippyService {
     host: HTMLElement,
     content: T,
     options: Partial<CreateOptions> = {},
-  ): Observable<ExtendedTippyInstance<T>> {
+  ): Observable<ExtendedFloatingInstance<T>> {
     const variation = options.variation || this._globalConfig?.defaultVariation || '';
     const config = {
-      onShow: (instance: ExtendedTippyInstance<T>) => {
+      onShow: (instance: ExtendedFloatingInstance<T>) => {
         host.setAttribute('data-tippy-open', '');
         if (!instance.$viewOptions) {
           instance.$viewOptions = {
             injector: Injector.create({
               providers: [
                 {
-                  provide: TIPPY_REF,
+                  provide: FLOATING_REF,
                   useValue: instance,
                 },
               ],
@@ -78,7 +79,7 @@ export class TippyService {
         instance.setContent(instance.view.getElement());
         options?.onShow?.(instance);
       },
-      onHidden: (instance: ExtendedTippyInstance<T>) => {
+      onHidden: (instance: ExtendedFloatingInstance<T>) => {
         host.removeAttribute('data-tippy-open');
 
         if (!options.preserveView) {
@@ -87,10 +88,10 @@ export class TippyService {
         }
         options?.onHidden?.(instance);
       },
-      ...onlyTippyProps(this._globalConfig),
+      ...onlyFloatingProps(this._globalConfig),
       ...this._globalConfig?.variations?.[variation],
-      ...onlyTippyProps(options),
-      onCreate: (instance: TippyInstance) => {
+      ...onlyFloatingProps(options),
+      onCreate: (instance: FloatingInstance) => {
         instance.popper.classList.add(`tippy-variation-${variation}`);
         if (options.className) {
           for (const klass of normalizeClassName(options.className)) {
@@ -102,12 +103,26 @@ export class TippyService {
       },
     };
 
-    return this._tippyFactory.getTippyImpl().pipe(
-      map((tippy) => {
-        return this._ngZone.runOutsideAngular(() => {
-          return tippy(host, config) as ExtendedTippyInstance<T>;
-        });
-      }),
-    );
+    return this._floatingFactory
+      .getFloatingImpl()
+      .pipe(
+        map((ui) =>
+          this._ngZone.runOutsideAngular(
+            () =>
+              new FloatingInstanceImpl(
+                host,
+                config,
+                ui,
+              ) as unknown as ExtendedFloatingInstance<T>,
+          ),
+        ),
+      );
   }
 }
+
+// ---------------------------------------------------------------------------
+// Deprecated alias kept for backwards compatibility
+// ---------------------------------------------------------------------------
+
+/** @deprecated Use `FloatingService` instead. */
+export { FloatingService as TippyService };

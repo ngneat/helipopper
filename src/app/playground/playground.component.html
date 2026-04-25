@@ -55,10 +55,10 @@
     <div class="btn-container">
       <button
         class="btn btn-outline-primary"
-        tp="Helpful Message"
-        [tpPlacement]="tooltipPosition()"
-        [tpVariation]="tooltipType()"
-        [tpHideOnEscape]="hideOnEsc()"
+        fl="Helpful Message"
+        [flPlacement]="tooltipPosition()"
+        [flVariation]="tooltipType()"
+        [flHideOnEscape]="hideOnEsc()"
       >
         I have a tooltip
       </button>
@@ -68,7 +68,7 @@
   <h6>Default variation</h6>
   <div class="btn-container">
     <button
-      tp="Default tooltip"
+      fl="Default tooltip"
       class="btn btn-outline-secondary"
       data-cy="default-tooltip-button"
     >
@@ -80,20 +80,20 @@
     <h6>NIL values</h6>
     <div class="btn-container" id="tippy-value-non-nil">
       <button
-        [tp]="'I have a tooltip value different from nil'"
-        tpVariation="popper"
+        [fl]="'I have a tooltip value different from nil'"
+        flVariation="popper"
         class="btn btn-outline-secondary"
       >
         Click me to see my tooltip
       </button>
     </div>
     <div class="btn-container" id="tippy-value-null">
-      <button [tp]="null" tpVariation="popper" class="btn btn-outline-secondary">
+      <button [fl]="null" flVariation="popper" class="btn btn-outline-secondary">
         Click me but I won't show a tooltip
       </button>
     </div>
     <div class="btn-container" id="tippy-value-undefined">
-      <button [tp]="undefined" tpVariation="popper" class="btn btn-outline-secondary">
+      <button [fl]="undefined" flVariation="popper" class="btn btn-outline-secondary">
         Click me but I won't show a tooltip
       </button>
     </div>
@@ -103,10 +103,10 @@
     <h6>Custom Template</h6>
     <div class="btn-container" id="custom-template">
       <button
-        [tp]="tpl"
-        tpVariation="popper"
+        [fl]="tpl"
+        flVariation="popper"
         class="btn btn-outline-secondary"
-        #tippy2="tippy"
+        #tippy2="floating"
       >
         Click Me
       </button>
@@ -123,7 +123,7 @@
     <hr />
     <h6>ng-container</h6>
     <div class="btn-container">
-      <button [tp]="tpl2" tpVariation="popper" class="btn btn-outline-secondary">
+      <button [fl]="tpl2" flVariation="popper" class="btn btn-outline-secondary">
         Click Me
       </button>
     </div>
@@ -145,10 +145,10 @@
     <div class="btn-container">
       <button
         class="btn btn-outline-danger"
-        [tp]="comp"
-        [tpData]="{ name: input.value }"
-        tpVariation="popper"
-        (tpVisible)="handleStatus($event)"
+        [fl]="comp"
+        [flData]="{ name: input.value }"
+        flVariation="popper"
+        (flVisible)="handleStatus($event)"
       >
         Open component
       </button>
@@ -158,7 +158,7 @@
   <div id="manual-trigger" class="block">
     <h6>Manual Trigger</h6>
     <div class="btn-container items-center">
-      <p tp="Helpful Message" tpTrigger="manual" #tippy="tippy" class="mr-4">
+      <p fl="Helpful Message" flTrigger="manual" #tippy="floating" class="mr-4">
         Click open to see me
       </p>
       <button (click)="tippy.show()" class="btn btn-outline-dark">Open</button>
@@ -170,7 +170,7 @@
     <h6>Lazy</h6>
     <div style="height: 300px; overflow-y: auto">
       @for (item of items; track item) {
-        <div [tp]="item.label" [tpIsLazy]="true">
+        <div [fl]="item.label" [flIsLazy]="true">
           {{ item.label }}
         </div>
       }
@@ -182,9 +182,9 @@
     <button
       data-cy="lazy-factory-trigger"
       class="btn btn-outline-primary"
-      [tp]="lazyComp"
-      tpTrigger="click"
-      tpVariation="popper"
+      [fl]="lazyComp"
+      flTrigger="click"
+      flVariation="popper"
     >
       Load component lazily
     </button>
@@ -194,8 +194,8 @@
     <h6>Disabled</h6>
     <div class="btn-container">
       <button
-        [tpIsEnabled]="isEnabled"
-        tp="Tooltip"
+        [flIsEnabled]="isEnabled"
+        fl="Tooltip"
         class="btn btn-outline-dark"
         data-cy="disabled-tooltip-button"
       >
@@ -217,9 +217,9 @@
     <div style="max-width: 100px" class="overflow-hidden flex">
       <p
         class="ellipsis"
-        [tp]="text"
-        tpPlacement="right"
-        [tpOnlyTextOverflow]="true"
+        [fl]="text"
+        flPlacement="right"
+        [flOnlyTextOverflow]="true"
         data-cy="overflow-case-1"
       >
         {{ text }}
@@ -237,9 +237,9 @@
     <div [style.maxWidth.px]="maxWidth" class="overflow-hidden flex">
       <p
         class="ellipsis"
-        [tp]="text2"
-        tpPlacement="right"
-        [tpOnlyTextOverflow]="true"
+        [fl]="text2"
+        flPlacement="right"
+        [flOnlyTextOverflow]="true"
         data-cy="overflow-case-2"
       >
         {{ text2 }}
@@ -264,10 +264,10 @@
       <p
         style="width: 100px"
         class="ellipsis"
-        [tp]="text3"
-        tpPlacement="right"
-        tpStaticWidthHost
-        [tpOnlyTextOverflow]="true"
+        [fl]="text3"
+        flPlacement="right"
+        flStaticWidthHost
+        [flOnlyTextOverflow]="true"
         data-cy="overflow-case-3"
       >
         {{ text3 }}
@@ -285,8 +285,8 @@
   <h6>Show on Create</h6>
   <div class="btn-container">
     <button
-      tp="Shown immediately when created"
-      [tpShowOnCreate]="false"
+      fl="Shown immediately when created"
+      [flShowOnCreate]="false"
       class="btn btn-outline-secondary"
     >
       Show on Create
@@ -296,12 +296,12 @@
   <h6>Declaritive visibility (already set true before render in the component)</h6>
   <div class="btn-container">
     <button
-      tp="I'm a declarative tooltip"
-      tpVariation="tooltip"
-      tpTrigger="click"
-      tpClassName="declarativeTooltip"
+      fl="I'm a declarative tooltip"
+      flVariation="tooltip"
+      flTrigger="click"
+      flClassName="declarativeTooltip"
       class="btn btn-outline-secondary"
-      [tpIsVisible]="visibility"
+      [flIsVisible]="visibility"
       data-cy="tippy-reference-declarative"
     >
       Declaritive Tooltip
@@ -336,9 +336,9 @@
       @for (item of list; track item) {
         <li
           class="list-group-item"
-          [tp]="contextMenu"
-          [tpData]="item"
-          tpVariation="contextMenu"
+          [fl]="contextMenu"
+          [flData]="item"
+          flVariation="contextMenu"
         >
           {{ item.label }}
         </li>
@@ -353,9 +353,9 @@
         style="flex: 1; max-width: 600px"
         type="text"
         placeholder="host width"
-        tp="hello world"
-        tpVariation="menu"
-        [tpUseHostWidth]="true"
+        fl="hello world"
+        flVariation="menu"
+        [flUseHostWidth]="true"
       />
     </div>
   </div>
@@ -366,8 +366,8 @@
       <button
         class="btn btn-secondary dropdown-toggle"
         type="button"
-        [tp]="one"
-        tpVariation="menu"
+        [fl]="one"
+        flVariation="menu"
       >
         Dropdown button
       </button>
@@ -377,10 +377,10 @@
           <a
             class="dropdown-item"
             href="#"
-            [tp]="two"
-            tpPlacement="right"
-            tpVariation="menu"
-            tpTrigger="mouseenter"
+            [fl]="two"
+            flPlacement="right"
+            flVariation="menu"
+            flTrigger="mouseenter"
             >Another action</a
           >
           <a class="dropdown-item" href="#">Something else here</a>
@@ -393,10 +393,10 @@
           <a
             class="dropdown-item"
             href="#"
-            [tp]="three"
-            tpPlacement="right"
-            tpVariation="menu"
-            tpTrigger="mouseenter"
+            [fl]="three"
+            flPlacement="right"
+            flVariation="menu"
+            flTrigger="mouseenter"
             >Something else here 2</a
           >
         </div>
@@ -419,19 +419,19 @@
     style="max-width: 600px"
     type="text"
     placeholder="Sanitize"
-    tp="<img src='empty.gif' onerror='alert(1);' />"
+    fl="<img src='empty.gif' onerror='alert(1);' />"
   />
 </div>
 
 <hr />
 
 <div id="tippy-props">
-  <h6>tpTippyProps (pass-through tippy props)</h6>
+  <h6>flFloatingProps (pass-through floating props)</h6>
   <div class="btn-container">
     <button
-      tp="tpTippyProps tooltip"
-      tpTrigger="click"
-      [tpTippyProps]="{ animation: 'shift-away' }"
+      fl="flFloatingProps tooltip"
+      flTrigger="click"
+      [flFloatingProps]="{ animation: 'shift-away' }"
       class="btn btn-outline-secondary"
       data-cy="tippy-props-button"
     >
@@ -448,7 +448,7 @@
     style="max-width: 600px"
     type="text"
     placeholder="No content"
-    [tp]="noContextText"
+    [fl]="noContextText"
   />
 </div>
 
@@ -459,7 +459,11 @@
   <p>This demonstrates creating/destroying tooltips based on content changes:</p>
 
   <div class="btn-container">
-    <button [tp]="dynamicContent" class="btn btn-outline-primary" #dynamicTippy="tippy">
+    <button
+      [fl]="dynamicContent"
+      class="btn btn-outline-primary"
+      #dynamicTippy="floating"
+    >
       Hover me ({{ dynamicContent || 'No content' }})
     </button>
   </div>
@@ -495,17 +499,17 @@
   <h6>Disable All / Enable All</h6>
 
   <div class="btn-container">
-    <button tp="Tooltip A" class="btn btn-outline-dark" data-cy="disable-all-tooltip-a">
+    <button fl="Tooltip A" class="btn btn-outline-dark" data-cy="disable-all-tooltip-a">
       Tooltip A
     </button>
 
-    <button tp="Tooltip B" class="btn btn-outline-dark" data-cy="disable-all-tooltip-b">
+    <button fl="Tooltip B" class="btn btn-outline-dark" data-cy="disable-all-tooltip-b">
       Tooltip B
     </button>
 
     <button
-      tp="Locally disabled"
-      [tpIsEnabled]="false"
+      fl="Locally disabled"
+      [flIsEnabled]="false"
       class="btn btn-outline-dark"
       data-cy="disable-all-tooltip-local"
     >
@@ -526,7 +530,7 @@
 
 <div>
   <h6>Use text content</h6>
-  <span tp tpUseTextContent>{{ text }}</span>
+  <span tp flUseTextContent>{{ text }}</span>
 </div>
 
 <hr />
@@ -539,8 +543,8 @@
     <button
       (click)="toggleFullscreen()"
       class="btn btn-outline-primary"
-      tp="fullscreenTooltip"
-      tpPlacement="bottom"
+      fl="fullscreenTooltip"
+      flPlacement="bottom"
     >
       Toggle full screen
     </button>
@@ -549,8 +553,8 @@
   <div class="mt-3">
     <button
       class="btn btn-outline-secondary"
-      tp="This tooltip should work in both normal and fullscreen modes!"
-      tpPlacement="top"
+      fl="This tooltip should work in both normal and fullscreen modes!"
+      flPlacement="top"
     >
       Hover me (works in fullscreen)
     </button>
@@ -564,9 +568,9 @@
   <div class="btn-container">
     <button
       class="btn btn-outline-primary"
-      [tp]="bindingsComp"
-      tpVariation="popper"
-      [tpBindings]="bindingsExampleBindings"
+      [fl]="bindingsComp"
+      flVariation="popper"
+      [flBindings]="bindingsExampleBindings"
       data-cy="bindings-example-button"
     >
       Open with bindings
