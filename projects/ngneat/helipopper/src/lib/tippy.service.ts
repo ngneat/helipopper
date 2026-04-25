@@ -1,4 +1,4 @@
-import { inject, Injectable, Injector, signal } from '@angular/core';
+import { inject, Injectable, Injector, NgZone, signal } from '@angular/core';
 import {
   isComponent,
   isTemplateRef,
@@ -6,7 +6,7 @@ import {
   ViewService,
 } from '@ngneat/overview';
 import { Content } from '@ngneat/overview';
-import type { Observable } from 'rxjs';
+import { map, type Observable } from 'rxjs';
 
 import {
   CreateOptions,
@@ -21,6 +21,7 @@ import { normalizeClassName, onlyTippyProps } from './utils';
 
 @Injectable({ providedIn: 'root' })
 export class TippyService {
+  private readonly _ngZone = inject(NgZone);
   private readonly _injector = inject(Injector);
   private readonly _globalConfig = inject(TIPPY_CONFIG, { optional: true });
   private readonly _viewService = inject(ViewService);
@@ -101,8 +102,12 @@ export class TippyService {
       },
     };
 
-    return this._tippyFactory.create(host, config) as Observable<
-      ExtendedTippyInstance<T>
-    >;
+    return this._tippyFactory.getTippyImpl().pipe(
+      map((tippy) => {
+        return this._ngZone.runOutsideAngular(() => {
+          return tippy(host, config) as ExtendedTippyInstance<T>;
+        });
+      }),
+    );
   }
 }
