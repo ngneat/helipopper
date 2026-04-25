@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [13.1.0](https://github.com/ngneat/helipopper/compare/v13.0.0...v13.1.0) (2026-04-25)
+
+
+### Features
+
+* add tpTippyProps input for passing arbitrary tippy props ([#209](https://github.com/ngneat/helipopper/issues/209)) ([27371c5](https://github.com/ngneat/helipopper/commit/27371c5a50edd5b9324d19578a2c11bff8fb30de)), closes [#152](https://github.com/ngneat/helipopper/issues/152)
+* support lazy factory functions as tooltip content ([#205](https://github.com/ngneat/helipopper/issues/205)) ([2abf189](https://github.com/ngneat/helipopper/commit/2abf18938642a051628bfaac9c468ccf9f695dec))
+
+
+### Bug Fixes
+
+* make onShow synchronous so return false suppresses the tooltip ([#207](https://github.com/ngneat/helipopper/issues/207)) ([9e058a8](https://github.com/ngneat/helipopper/commit/9e058a86abde8901d788f5ee7cc4826f515ed9fe))
+
 ## [13.0.0](https://github.com/ngneat/helipopper/compare/v12.2.0...v13.0.0) (2026-04-16)
 
 
