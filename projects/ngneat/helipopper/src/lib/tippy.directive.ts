@@ -211,9 +211,9 @@ export class TippyDirective implements OnChanges, AfterViewInit {
 
   readonly customHost = input<HTMLElement | undefined>(undefined, { alias: 'tpHost' });
 
-  readonly onShow = output<void>({ alias: 'tpOnShow' });
+  readonly tpOnShow = output<void>({ alias: 'tpOnShow' });
 
-  readonly onHide = output<void>({ alias: 'tpOnHide' });
+  readonly tpOnHide = output<void>({ alias: 'tpOnHide' });
 
   readonly isVisible = model(false, { alias: 'tpIsVisible' });
 
@@ -429,15 +429,25 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     return !!(this.content() || this.useTextContent());
   }
 
-  protected createInstance() {
+  protected async createInstance() {
     if (this.created || !this.hasContent()) {
       return;
     }
 
     this.created = true;
 
-    this.tippyFactory
-      .create(this.host(), {
+    const tippy = await this.ngZone.runOutsideAngular(() => {
+      return firstValueFrom(this.tippyFactory.getTippyImpl(), {
+        defaultValue: undefined,
+      });
+    });
+
+    if (tippy === undefined || this.destroyRef.destroyed) {
+      return;
+    }
+
+    this.instance = this.ngZone.runOutsideAngular(() => {
+      return tippy(this.host(), {
         appendTo,
         allowHTML: true,
         ...(this.globalConfig.zIndexGetter
@@ -445,60 +455,26 @@ export class TippyDirective implements OnChanges, AfterViewInit {
           : {}),
         ...onlyTippyProps(this.globalConfig),
         ...onlyTippyProps(this.props),
-        onMount: (instance) => {
-          const isVisible = true;
-          this.isVisible.set(isVisible);
-          this.visibleInternal.next(isVisible);
-          this.ngZone.run(() => this.visible.emit(isVisible));
-          this.useHostWidth() && this.listenToHostResize();
-          this.globalConfig.onMount?.(instance);
-        },
-        onCreate: (instance) => {
-          instance.popper.classList.add(
-            `tippy-variation-${this.variation() || this.globalConfig.defaultVariation}`,
-          );
-          if (this.className()) {
-            for (const klass of normalizeClassName(this.className())) {
-              instance.popper.classList.add(klass);
-            }
-          }
-          this.globalConfig.onCreate?.(instance);
-          if (this.isVisible() === true) {
-            instance.show();
-          }
-        },
-        onShow: (instance) => {
-          // In onlyTextOverflow mode the tooltip must not appear when the host is
-          // not overflowing. Returning false from onShow prevents tippy from
-          // showing regardless of the instance's enabled/disabled state. This
-          // acts as a last-resort guard for cases where checkOverflow() hasn't
-          // been called yet (e.g. Angular's scheduler hasn't flushed CD between
-          // the content/width change and the trigger event).
-          if (this.onlyTextOverflow() && !isElementOverflow(this.host())) {
-            return false;
-          }
-
-          // The outer `onShow` must be synchronous so that `return false` above
-          // is seen as a boolean by tippy.js (an `async` function always returns
-          // a Promise, which is truthy and would never suppress the show).
-          this.handleOnShow(instance);
-        },
-        onHide(instance) {
+        // Arrow functions or inline callbacks close over the method's lexical scope,
+        // causing V8 to allocate a Context object that indirectly retains the directive
+        // instance inside tippy.js after destroy. A JSBoundFunction has no [[Environment]]
+        // slot — only { bound_target_function, bound_this, bound_arguments } — so no
+        // closure context is created. onHide is bound to null because it needs no `this`
+        // at all, fully breaking the retention chain (same reasoning as `appendTo` above).
+        onMount: this.onMount.bind(this),
+        onCreate: this.onCreate.bind(this),
+        onShow: this.onShow.bind(this),
+        onHide: function (instance: TippyInstance) {
           instance.reference.removeAttribute('data-tippy-open');
-        },
-        onHidden: (instance) => {
-          this.onHidden(instance);
-        },
-      })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((instance) => {
-        this.instance = instance;
-
-        this.setStatus(this.isEnabled());
-        this.setProps(this.props);
-
-        this.variation() === 'contextMenu' && this.handleContextMenu();
+        }.bind(null),
+        onHidden: this.onHidden.bind(this),
       });
+    });
+
+    this.setStatus(this.isEnabled());
+    this.setProps(this.props);
+
+    this.variation() === 'contextMenu' && this.handleContextMenu();
   }
 
   // `resolvedContent` is provided when the caller already awaited a lazy factory.
@@ -653,6 +629,30 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     (instance.popper.firstElementChild as HTMLElement).style.maxWidth = inPixels;
   }
 
+  private onMount(instance: TippyInstance) {
+    const isVisible = true;
+    this.isVisible.set(isVisible);
+    this.visibleInternal.next(isVisible);
+    this.ngZone.run(() => this.visible.emit(isVisible));
+    this.useHostWidth() && this.listenToHostResize();
+    this.globalConfig.onMount?.(instance);
+  }
+
+  private onCreate(instance: TippyInstance) {
+    instance.popper.classList.add(
+      `tippy-variation-${this.variation() || this.globalConfig.defaultVariation}`,
+    );
+    if (this.className()) {
+      for (const klass of normalizeClassName(this.className())) {
+        instance.popper.classList.add(klass);
+      }
+    }
+    this.globalConfig.onCreate?.(instance);
+    if (this.isVisible() === true) {
+      instance.show();
+    }
+  }
+
   private onHidden(instance: TippyInstance = this.instance) {
     this.destroyView();
     const isVisible = false;
@@ -662,11 +662,28 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     if (!this.destroyed) {
       this.isVisible.set(isVisible);
       this.ngZone.run(() => this.visible.emit(isVisible));
-      this.onHide.emit();
+      this.tpOnHide.emit();
     }
     this.visibleInternal.next(isVisible);
 
     this.globalConfig.onHidden?.(instance);
+  }
+
+  private onShow(instance: TippyInstance) {
+    // In onlyTextOverflow mode the tooltip must not appear when the host is
+    // not overflowing. Returning false from onShow prevents tippy from
+    // showing regardless of the instance's enabled/disabled state. This
+    // acts as a last-resort guard for cases where checkOverflow() hasn't
+    // been called yet (e.g. Angular's scheduler hasn't flushed CD between
+    // the content/width change and the trigger event).
+    if (this.onlyTextOverflow() && !isElementOverflow(this.host())) {
+      return false;
+    }
+
+    // The outer `onShow` must be synchronous so that `return false` above
+    // is seen as a boolean by tippy.js (an `async` function always returns
+    // a Promise, which is truthy and would never suppress the show).
+    this.handleOnShow(instance);
   }
 
   private async handleOnShow(instance: Instance) {
@@ -738,7 +755,7 @@ export class TippyDirective implements OnChanges, AfterViewInit {
       this.setInstanceWidth(instance, this.popperWidth()!);
     }
     this.globalConfig.onShow?.(instance);
-    this.onShow.emit();
+    this.tpOnShow.emit();
   }
 
   private isOverflowing$() {

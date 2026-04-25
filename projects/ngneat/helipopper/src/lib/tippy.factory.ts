@@ -1,7 +1,7 @@
 import type tippy from 'tippy.js';
 import { inject, Injectable, NgZone, ɵisPromise as isPromise } from '@angular/core';
-import { defer, map, Observable, of, tap } from 'rxjs';
-import { TIPPY_LOADER, type TippyProps } from '@ngneat/helipopper/config';
+import { defer, Observable, of, tap } from 'rxjs';
+import { TIPPY_LOADER } from '@ngneat/helipopper/config';
 
 @Injectable({ providedIn: 'root' })
 export class TippyFactory {
@@ -17,7 +17,7 @@ export class TippyFactory {
    * function, which may return a promise if the tippy.js library is to be
    * loaded asynchronously.
    */
-  create(target: HTMLElement, props?: Partial<TippyProps>) {
+  getTippyImpl() {
     this._tippyImpl$ ||= defer(() => {
       if (this._tippy) return of(this._tippy);
 
@@ -47,14 +47,10 @@ export class TippyFactory {
       return tippy$.pipe(
         tap((tippy) => {
           this._tippy = tippy;
-        })
+        }),
       );
     });
 
-    return this._tippyImpl$.pipe(
-      map((tippy) => {
-        return this._ngZone.runOutsideAngular(() => tippy(target, props));
-      })
-    );
+    return this._tippyImpl$;
   }
 }
