@@ -93,7 +93,7 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -e $GIT_PARAMS",
-      "pre-commit": "pnpm hooks:pre-commit && lint-staged"
+      "pre-commit": "pnpm hooks:pre-commit && pnpm exec lint-staged"
     }
   }
 }
