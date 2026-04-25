@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { injectTippyRef } from '@ngneat/helipopper';
+import { injectFloatingRef } from '@ngneat/helipopper';
 
 @Component({
   selector: 'app-example',
@@ -8,13 +8,13 @@ import { injectTippyRef } from '@ngneat/helipopper';
 })
 export class ExampleComponent implements OnInit, OnDestroy {
   name: string;
-  tippy = injectTippyRef();
+  floating = injectFloatingRef();
 
   constructor() {
-    const { name = 'world!' } = this.tippy.data ?? {};
+    const { name = 'world!' } = this.floating.data ?? {};
 
     setTimeout(() => {
-      this.tippy.hide();
+      this.floating.hide();
     }, 1000);
 
     this.name = name;

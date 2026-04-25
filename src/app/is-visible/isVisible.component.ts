@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { TippyDirective } from '@ngneat/helipopper';
+import { FloatingDirective } from '@ngneat/helipopper';
 
 @Component({
   selector: 'app-is-visible',
   templateUrl: './isVisible.component.html',
   standalone: true,
-  imports: [TippyDirective],
+  imports: [FloatingDirective],
 })
 export class IsVisibleComponent {
   visibility = true;

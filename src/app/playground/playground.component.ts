@@ -11,9 +11,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { ExampleComponent } from '../example/example.component';
 import { BindingsExampleComponent } from '../bindings-example/bindings-example.component';
-import type { TippyContent, TippyInstance } from '@ngneat/helipopper/config';
-import { TippyDirective, TippyService } from '@ngneat/helipopper';
-import type { Placement } from 'tippy.js';
+import type { FloatingContent, FloatingInstance } from '@ngneat/helipopper/config';
+import { FloatingDirective, FloatingService } from '@ngneat/helipopper';
+import type { Placement } from '@floating-ui/dom';
 import { startWith } from 'rxjs';
 
 @Component({
@@ -21,7 +21,7 @@ import { startWith } from 'rxjs';
   templateUrl: './playground.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [ReactiveFormsModule, TippyDirective, ExampleComponent],
+  imports: [ReactiveFormsModule, FloatingDirective, ExampleComponent],
 })
 export class PlaygroundComponent {
   tooltipPositions = ['auto', 'top', 'right', 'bottom', 'left'];
@@ -76,7 +76,7 @@ export class PlaygroundComponent {
   text3 = `Short`;
   comp = ExampleComponent;
 
-  readonly lazyComp: TippyContent = () =>
+  readonly lazyComp: FloatingContent = () =>
     import('../lazy-dummy/lazy-dummy.component').then((m) => m.LazyDummyComponent);
 
   bindingsComp = BindingsExampleComponent;
@@ -90,7 +90,7 @@ export class PlaygroundComponent {
 
   constructor(
     private fb: UntypedFormBuilder,
-    private service: TippyService,
+    private service: FloatingService,
   ) {}
 
   toggleText(text: string, index: number) {
@@ -119,7 +119,7 @@ export class PlaygroundComponent {
     console.log('show tooltip', $event);
   }
 
-  instance2!: TippyInstance;
+  instance2!: FloatingInstance;
 
   useService(host: HTMLButtonElement) {
     if (!this.instance2) {
@@ -129,7 +129,7 @@ export class PlaygroundComponent {
     }
   }
 
-  instance!: TippyInstance;
+  instance!: FloatingInstance;
 
   useServiceComponent(host2: HTMLButtonElement) {
     if (!this.instance) {

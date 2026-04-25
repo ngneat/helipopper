@@ -1,7 +1,8 @@
 onlyBuiltDependencies:
+  - '@parcel/watcher'
   - cypress
   - esbuild
-  - '@parcel/watcher'
+  - husky
 
 publicHoistPattern:
   - run-node

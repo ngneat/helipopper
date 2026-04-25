@@ -2,19 +2,23 @@
 
 <div class="btn-container">
   <button
-    tp="I'm a declarative tooltip"
-    tpVariation="tooltip"
-    tpTrigger="click"
-    tpClassName="declarativeTooltip"
+    fl="I'm a declarative tooltip"
+    flVariation="tooltip"
+    flTrigger="click"
+    flClassName="declarativeTooltip"
     class="btn btn-outline-secondary"
-    [tpIsVisible]="visibility"
+    [flIsVisible]="visibility"
     data-cy="tippy-reference-declarative"
   >
     Declarative Tooltip
   </button>
 </div>
 
-<button (click)="visibility = !visibility" data-cy="trigger-declarative" class="btn btn-outline-info btn-sm mt-2">
+<button
+  (click)="visibility = !visibility"
+  data-cy="trigger-declarative"
+  class="btn btn-outline-info btn-sm mt-2"
+>
   Toggle tooltip
 </button>
 

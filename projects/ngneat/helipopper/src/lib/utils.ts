@@ -1,7 +1,7 @@
 import { ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { auditTime, map } from 'rxjs/operators';
-import type { TippyElement } from '@ngneat/helipopper/config';
+import type { FloatingElement } from '@ngneat/helipopper/config';
 
 import { IntersectionObserver } from './intersection-observer';
 
@@ -18,7 +18,7 @@ export const enum TippyErrorCode {
 }
 
 export function inView(
-  host: TippyElement,
+  host: FloatingElement,
   options: IntersectionObserverInit = {
     root: null,
     threshold: 0.3,
@@ -60,7 +60,7 @@ export function isElementOverflow(host: HTMLElement): boolean {
   );
 }
 
-export function overflowChanges(host: TippyElement) {
+export function overflowChanges(host: FloatingElement) {
   const element = coerceElement(host);
 
   return dimensionsChanges(element).pipe(
@@ -83,11 +83,11 @@ export function dimensionsChanges(target: HTMLElement) {
   });
 }
 
-export function onlyTippyProps(allProps: any) {
-  const tippyProps: any = {};
+export function onlyFloatingProps(allProps: any) {
+  const floatingProps: any = {};
 
   if (!allProps) {
-    return tippyProps;
+    return floatingProps;
   }
 
   const ownProps = [
@@ -114,18 +114,22 @@ export function onlyTippyProps(allProps: any) {
     'staticWidthHost',
     'bindings',
     'directives',
+    'popperOptions',
   ];
 
   const overriddenMethods = ['onShow', 'onHidden', 'onCreate'];
 
   Object.keys(allProps).forEach((prop) => {
     if (!ownProps.includes(prop) && !overriddenMethods.includes(prop)) {
-      tippyProps[prop] = allProps[prop];
+      floatingProps[prop] = allProps[prop];
     }
   });
 
-  return tippyProps;
+  return floatingProps;
 }
+
+/** @deprecated Use `onlyFloatingProps` instead. */
+export const onlyTippyProps = onlyFloatingProps;
 
 export function normalizeClassName(className: string | string[]): string[] {
   const classes = typeof className === 'string' ? className.split(' ') : className;
@@ -141,7 +145,7 @@ export function coerceCssPixelValue<T>(value: T): string {
   return typeof value === 'string' ? value : `${value}px`;
 }
 
-function coerceElement(element: TippyElement) {
+function coerceElement(element: FloatingElement) {
   return element instanceof ElementRef ? element.nativeElement : element;
 }
 

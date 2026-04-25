@@ -1,9 +1,9 @@
-describe('tpTippyProps', () => {
+describe('flFloatingProps', () => {
   beforeEach(() => {
     cy.visit('/').wait(200);
   });
 
-  it('should pass tippy props to the instance', () => {
+  it('should pass floating props to the instance', () => {
     cy.get('[data-cy="tippy-props-button"]')
       .click({ force: true })
       .get('.tippy-box')
