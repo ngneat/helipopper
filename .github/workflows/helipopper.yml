@@ -10,42 +10,48 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - name: Npm install
-        uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: 'npm'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
         env:
-          HUSKY_SKIP_INSTALL: 'true'
-      - run: npm i
+          HUSKY: '0'
 
       - name: Build playground app in production mode
-        run: npm run build:playground
+        run: pnpm build:playground
 
-      - uses: cypress-io/github-action@v6
+      - uses: cypress-io/github-action@v7
         with:
           browser: chrome
-          start: npm run serve:playground:static
+          install: false
+          start: pnpm serve:playground:static
           wait-on: http://localhost:4200
 
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - name: Npm install
-        uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: 'npm'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
         env:
-          HUSKY_SKIP_INSTALL: 'true'
-      - run: npm i
+          HUSKY: '0'
 
       - name: Build library
-        run: npm run build:lib
-
-      - name: Build playground
-        run: npm run build
+        run: pnpm build:lib
