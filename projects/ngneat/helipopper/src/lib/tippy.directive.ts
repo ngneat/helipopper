@@ -479,7 +479,13 @@ export class TippyDirective implements OnChanges, AfterViewInit {
     this.setStatus(this.isEnabled());
     this.setProps(this.props);
 
-    this.variation() === 'contextMenu' && this.handleContextMenu();
+    const variationName = this.variation() || this.globalConfig.defaultVariation || '';
+    const variationConfig = this.globalConfig.variations?.[variationName];
+    // Check the isContextMenu marker set by withContextMenuVariation so any
+    // variation name works. The 'contextMenu' name fallback preserves
+    // compatibility with manually-constructed variations that predate this flag.
+    (variationConfig?.isContextMenu || variationName === 'contextMenu') &&
+      this.handleContextMenu();
   }
 
   // `resolvedContent` is provided when the caller already awaited a lazy factory.

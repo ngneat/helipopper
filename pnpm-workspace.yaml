@@ -1,7 +1,12 @@
+ignoredBuiltDependencies:
+  - core-js-pure
+  - lmdb
+  - msgpackr-extract
 onlyBuiltDependencies:
+  - '@parcel/watcher'
   - cypress
   - esbuild
-  - '@parcel/watcher'
+  - husky
 
 publicHoistPattern:
   - run-node

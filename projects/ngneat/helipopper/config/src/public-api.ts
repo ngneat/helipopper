@@ -14,6 +14,7 @@ export {
   TIPPY_LOADER_COMPONENT,
   TIPPY_LOADER_TIMING,
   TippyLoaderTiming,
+  VariationConfig,
 } from './tippy.types';
 export {
   provideTippyLoader,

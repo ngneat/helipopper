@@ -21,9 +21,17 @@ jobs:
           node-version: 24
           cache: pnpm
 
+      - uses: actions/cache@v5
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-binary-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: cypress-binary-${{ runner.os }}-
+
       - run: pnpm install --frozen-lockfile
         env:
           HUSKY: '0'
+
+      - run: pnpm exec cypress install
 
       - name: Build playground app in production mode
         run: pnpm build:playground

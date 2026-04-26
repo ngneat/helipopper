@@ -17,8 +17,12 @@ export interface TippyInstance extends Instance {
 
 export type TippyProps = Props;
 
+// Extends tippy props with isContextMenu so any named variation (not just one
+// called 'contextMenu') can opt into right-click listener behaviour.
+export type VariationConfig = Partial<TippyProps> & { isContextMenu?: boolean };
+
 export interface ExtendedTippyProps extends TippyProps {
-  variations: Record<string, Partial<TippyProps>>;
+  variations: Record<string, VariationConfig>;
   defaultVariation: keyof ExtendedTippyProps['variations'];
   beforeRender?: (text: string) => string;
   zIndexGetter?(): number;
