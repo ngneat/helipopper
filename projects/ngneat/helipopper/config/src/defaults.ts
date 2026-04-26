@@ -1,4 +1,4 @@
-import type { TippyProps } from './tippy.types';
+import type { TippyProps, VariationConfig } from './tippy.types';
 
 // A variation is a set of predefined tippy properties.
 type Variation = Partial<TippyProps>;
@@ -20,12 +20,13 @@ export const popperVariation: Variation = {
   interactive: true,
 };
 
-export function withContextMenuVariation(baseVariation: Variation): Variation {
+export function withContextMenuVariation(baseVariation: Variation): VariationConfig {
   return {
     ...baseVariation,
     placement: 'right-start',
     trigger: 'manual',
     arrow: false,
     offset: [0, 0],
+    isContextMenu: true, // signals the directive to attach the right-click listener
   };
 }
