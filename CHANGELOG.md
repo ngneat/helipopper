@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [13.1.1](https://github.com/ngneat/helipopper/compare/v13.1.0...v13.1.1) (2026-04-27)
+
+
+### Bug Fixes
+
+* allow provideTippyConfig return both Provider and EnvironmentProviders ([#212](https://github.com/ngneat/helipopper/issues/212)) ([eb5850d](https://github.com/ngneat/helipopper/commit/eb5850da9f3f90965aab57839fea09a95020757c))
+* support multiple contextMenu variations with any name ([#213](https://github.com/ngneat/helipopper/issues/213)) ([4e5e530](https://github.com/ngneat/helipopper/commit/4e5e5308c3b29686b5fa8c13a10083268a2c388d)), closes [#103](https://github.com/ngneat/helipopper/issues/103)
+
 ## [13.1.0](https://github.com/ngneat/helipopper/compare/v13.0.0...v13.1.0) (2026-04-25)
 
 
