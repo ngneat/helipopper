@@ -15,27 +15,18 @@ import {
   type TippyLoaderTiming,
 } from './tippy.types';
 
-export function provideTippyLoader(loader: TippyLoader) {
-  return makeEnvironmentProviders([{ provide: TIPPY_LOADER, useValue: loader }]);
+export function provideTippyLoader(
+  loader: TippyLoader,
+  ...features: EnvironmentProviders[]
+) {
+  return makeEnvironmentProviders([
+    { provide: TIPPY_LOADER, useValue: loader },
+    ...features,
+  ]);
 }
 
-export function provideTippyConfig(config: TippyConfig): Provider;
-export function provideTippyConfig(
-  config: TippyConfig,
-  ...features: EnvironmentProviders[]
-): EnvironmentProviders;
-export function provideTippyConfig(
-  config: TippyConfig,
-  ...features: EnvironmentProviders[]
-): Provider | EnvironmentProviders {
-  if (features.length) {
-    return makeEnvironmentProviders([
-      { provide: TIPPY_CONFIG, useValue: config },
-      ...features,
-    ]);
-  } else {
-    return { provide: TIPPY_CONFIG, useValue: config };
-  }
+export function provideTippyConfig(config: TippyConfig): Provider {
+  return { provide: TIPPY_CONFIG, useValue: config };
 }
 
 export function withTippyLoaderComponent(component: Type<unknown>): EnvironmentProviders {
@@ -44,6 +35,8 @@ export function withTippyLoaderComponent(component: Type<unknown>): EnvironmentP
   ]);
 }
 
-export function withTippyLoaderTiming(timing: TippyLoaderTiming): EnvironmentProviders {
-  return makeEnvironmentProviders([{ provide: TIPPY_LOADER_TIMING, useValue: timing }]);
+export function withTippyLoaderTiming(
+  timing: () => TippyLoaderTiming,
+): EnvironmentProviders {
+  return makeEnvironmentProviders([{ provide: TIPPY_LOADER_TIMING, useFactory: timing }]);
 }

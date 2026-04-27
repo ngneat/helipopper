@@ -144,6 +144,73 @@ class MyComponent {
 <button [tp]="MyComponent">Click Me</button>
 ```
 
+### Use a Lazy Factory to Resolve a Component
+
+Pass a factory function that returns a `Promise<Type<any>>` to defer loading the component until the tooltip is first shown. This is ideal for code-splitting — the component's chunk is only fetched on demand:
+
+```ts
+@Component({})
+class HostComponent {
+  lazyComponent = () => import('./heavy-popover.component').then(m => m.HeavyPopoverComponent);
+}
+```
+
+```html
+<button [tp]="lazyComponent" tpVariation="popper">Click Me</button>
+```
+
+The factory is called once; after the component resolves, subsequent shows reuse the already-loaded class.
+
+`provideTippyLoader` accepts optional feature functions as additional arguments to control what happens while the lazy component is being fetched:
+
+#### `withTippyLoaderComponent`
+
+Renders a placeholder component inside the tooltip while the import is in flight:
+
+```ts
+import { provideTippyLoader, withTippyLoaderComponent } from '@ngneat/helipopper/config';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideTippyLoader(
+      () => import('tippy.js'),
+      withTippyLoaderComponent(SpinnerComponent),
+    ),
+  ],
+});
+```
+
+`SpinnerComponent` is mounted as the tooltip content the moment the tooltip opens, then replaced by the resolved component once the import completes.
+
+#### `withTippyLoaderTiming`
+
+Controls the minimum time the loader is visible. The default is a synchronous observable (`of(undefined)`) that lets the swap happen as soon as the import resolves. Pass a factory — with full DI support — to impose a minimum display duration:
+
+```ts
+import { provideTippyLoader, withTippyLoaderTiming } from '@ngneat/helipopper/config';
+import { inject } from '@angular/core';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideTippyLoader(
+      () => import('tippy.js'),
+      withTippyLoaderComponent(SpinnerComponent),
+      withTippyLoaderTiming(() => {
+        const scheduler = inject(Scheduler);
+        return new Observable(subscriber => {
+          scheduler.schedule(() => {
+            subscriber.next();
+            subscriber.complete();
+          }, 300);
+        });
+      }),
+    ),
+  ],
+});
+```
+
+The tooltip swaps the loader for the real component only when **both** the import has resolved and the timing observable has emitted — so the spinner is guaranteed to be visible for at least the configured duration regardless of how fast the import finishes.
+
 ### Component Bindings
 
 Pass reactive Angular bindings (`inputBinding`, `outputBinding`, `twoWayBinding`) to a dynamically created component using the `tpBindings` input:
@@ -306,7 +373,7 @@ live [here](https://ngneat.github.io/helipopper/).
 ### Inputs
 
 ```ts
-tp: string | TemplateRef<any> | Type<any> | undefined | null;
+tp: string | TemplateRef<any> | Type<any> | (() => Promise<Type<any>>) | undefined | null;
 tpAppendTo: TippyProps['appendTo'];
 tpDelay: TippyProps['delay'];
 tpDuration: TippyProps['duration'];
