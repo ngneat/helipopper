@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [13.1.2](https://github.com/ngneat/helipopper/compare/v13.1.1...v13.1.2) (2026-04-28)
+
+
+### Bug Fixes
+
+* provide loading features at `provideTippyLoader` ([#214](https://github.com/ngneat/helipopper/issues/214)) ([f234bfa](https://github.com/ngneat/helipopper/commit/f234bfadb5d6124478e09798790d7f73ac4517c4))
+
 ### [13.1.1](https://github.com/ngneat/helipopper/compare/v13.1.0...v13.1.1) (2026-04-27)
 
 
